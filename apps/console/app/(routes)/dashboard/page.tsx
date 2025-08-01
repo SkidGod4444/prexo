@@ -1,9 +1,10 @@
-import React from 'react'
+import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
+import React from "react";
 
 export default function Dashboard() {
   return (
-    <div>
-      we are under development!
+    <div className="font-uxum">
+      <InfobarBreadCrumb />
     </div>
-  )
+  );
 }

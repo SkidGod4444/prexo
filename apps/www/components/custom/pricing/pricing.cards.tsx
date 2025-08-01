@@ -1,7 +1,12 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IconCheck } from "@tabler/icons-react";
 import { TextMorph } from "../text-morph";
@@ -11,26 +16,31 @@ import Link from "next/link";
 import { getCheckoutLink } from "@prexo/auth/client";
 import { useRouter } from "next/navigation";
 
-
-export default function PricingCards({ isYearly, items, isUserAuthenticated }: PCards) {
-    const router = useRouter();
-    const handleBtnClick = async () => {
-        try {
-            if (!isUserAuthenticated) {
-                console.log("User is not authenticated, redirecting to auth page");
-                router.push("/auth?redirect=/pricing");
-            }
-            const checkoutLink = await getCheckoutLink(["40aaafdf-3ebc-44fe-b11b-883e610a363b"]);
-            if (checkoutLink) {
-                router.push(checkoutLink);
-            } else {
-                console.error("Failed to get checkout link");
-            }
-        } catch (error) {
-            console.error("Error handling button:", error);
-        }
+export default function PricingCards({
+  isYearly,
+  items,
+  isUserAuthenticated,
+}: PCards) {
+  const router = useRouter();
+  const handleBtnClick = async () => {
+    try {
+      if (!isUserAuthenticated) {
+        console.log("User is not authenticated, redirecting to auth page");
+        router.push("/auth?redirect=/pricing");
+      }
+      const checkoutLink = await getCheckoutLink([
+        "40aaafdf-3ebc-44fe-b11b-883e610a363b",
+      ]);
+      if (checkoutLink) {
+        router.push(checkoutLink);
+      } else {
+        console.error("Failed to get checkout link");
+      }
+    } catch (error) {
+      console.error("Error handling button:", error);
     }
-        
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-15 mt-10">
       {items.map((item, index) => (
@@ -91,15 +101,11 @@ export default function PricingCards({ isYearly, items, isUserAuthenticated }: P
             </div>
 
             {item.isFree ? (
-                <Link href={"/auth"}>
-                <Button className="w-full">
-                {item.btn}
-              </Button>
+              <Link href={"/auth"}>
+                <Button className="w-full">{item.btn}</Button>
               </Link>
-            ): (
-                <Button onClick={handleBtnClick}>
-              {item.btn}
-               </Button>
+            ) : (
+              <Button onClick={handleBtnClick}>{item.btn}</Button>
             )}
           </CardHeader>
           <CardContent className="space-y-6 my-5">
@@ -119,10 +125,7 @@ export default function PricingCards({ isYearly, items, isUserAuthenticated }: P
             </ul>
           </CardContent>
           <CardFooter className="flex flex-col items-center justify-center gap-2 p-4">
-            <Button
-            variant={"ghost"}
-            className="rounded-2xl"
-            >
+            <Button variant={"ghost"} className="rounded-2xl">
               Questions? Chat with us.
             </Button>
           </CardFooter>

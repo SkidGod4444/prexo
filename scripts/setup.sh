@@ -3,12 +3,12 @@ touch ./.env
 echo "UPSTASH_VECTOR_REST_URL=ADD_YOUR_KEY" >> ./.env
 echo "UPSTASH_VECTOR_REST_TOKEN=ADD_YOUR_KEY" >> ./.env
 echo "TOGETHER_API_KEY=ADD_YOUR_KEY" >> ./.env
+echo "OPENAI_API_KEY=ADD_YOUR_KEY" >> ./.env
 echo "DATABASE_URL=ADD_YOUR_KEY" >> ./.env
 echo "DIRECT_DATABASE_URL=ADD_YOUR_KEY" >> ./.env
 echo "BETTER_AUTH_SECRET=ADD_YOUR_KEY" >> ./.env
 echo "BETTER_AUTH_URL=ADD_YOUR_KEY" >> ./.env
 echo "POLAR_ACCESS_TOKEN=ADD_YOUR_KEY" >> ./.env
-echo "POLAR_WEBHOOK_SECRET=ADD_YOUR_KEY" >> ./.env
 echo "GITHUB_CLIENT_ID=ADD_YOUR_KEY" >> ./.env
 echo "GITHUB_CLIENT_SECRET=ADD_YOUR_KEY" >> ./.env
 echo "DISCORD_CLIENT_ID=ADD_YOUR_KEY" >> ./.env
@@ -16,9 +16,20 @@ echo "DISCORD_CLIENT_SECRET=ADD_YOUR_KEY" >> ./.env
 echo "GOOGLE_CLIENT_ID=ADD_YOUR_KEY" >> ./.env
 echo "GOOGLE_CLIENT_SECRET=ADD_YOUR_KEY" >> ./.env
 echo "BASE_API_URL=http://localhost:3001/v1" >> ./.env
+echo "UNKEY_ROOT_API_KEY=ADD_YOUR_KEY" >> ./.env
+echo "UNKEY_API_ID=ADD_YOUR_KEY" >> ./.env
+echo "PREXO_API_KEY=ADD_YOUR_KEY" >> ./.env
+echo "UPSTASH_REDIS_REST_URL=ADD_YOUR_KEY" >> ./.env
+echo "UPSTASH_REDIS_REST_TOKEN=ADD_YOUR_KEY" >> ./.env
+echo "TRIGGER_SECRET_KEY=ADD_YOUR_KEY" >> ./.env
+echo "OCR_SPACE_API_KEY=ADD_YOUR_KEY" >> ./.env
+echo "RESEND_API_KEY=ADD_YOUR_KEY" >> ./.env
+echo "NEXT_PUBLIC_POSTHOG_KEY=ADD_YOUR_KEY" >> ./.env
+echo "NEXT_PUBLIC_POSTHOG_HOST=ADD_YOUR_KEY" >> ./.env
 
 touch ./apps/www/.env
 touch ./apps/api/.env
+touch ./apps/console/.env
 
 # Install dependencies using Bun
 echo "Installing dependencies..."

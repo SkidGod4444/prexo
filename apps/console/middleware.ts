@@ -35,9 +35,7 @@ export default async function authMiddleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (
-    session.user.role === "onboarded" && currentPath === "/"
-  ) {
+  if (session.user.role === "onboarded" && currentPath === "/") {
     return NextResponse.redirect(`${appDomain}/dashboard`);
   }
 

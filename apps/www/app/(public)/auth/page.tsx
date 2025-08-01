@@ -15,17 +15,21 @@ import { useLocalStorage } from "usehooks-ts";
 
 function LoginPageContent() {
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect');
-  const [lastUsedProvider, setLastUsedProvider] = useLocalStorage("@prexo-#lastUsedProvider", "");
+  const redirectUrl = searchParams.get("redirect");
+  const [lastUsedProvider, setLastUsedProvider] = useLocalStorage(
+    "@prexo-#lastUsedProvider",
+    "",
+  );
 
   const baseUrl =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000/onboarding"
       : "https://prexoai.xyz/onboarding";
 
-  const callbackUrl = redirectUrl && redirectUrl.startsWith('/')
-    ? `${baseUrl}?redirect=${encodeURIComponent(redirectUrl)}`
-    : baseUrl;
+  const callbackUrl =
+    redirectUrl && redirectUrl.startsWith("/")
+      ? `${baseUrl}?redirect=${encodeURIComponent(redirectUrl)}`
+      : baseUrl;
 
   const handleAuth = async (provider: "github" | "discord" | "google") => {
     switch (provider) {
@@ -88,7 +92,8 @@ function LoginPageContent() {
               <div className="flex flex-col items-start">
                 <h2 className="text-3xl font-bold">Agents, Everywhere</h2>
                 <p className="text-white/75">
-                  Experience seamless customer support and sales with Prexo Agents—try it free!
+                  Experience seamless customer support and sales with Prexo
+                  Agents—try it free!
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -100,7 +105,11 @@ function LoginPageContent() {
                 >
                   <IconBrandGoogle size="10" />
                   Continue with Google
-                  {lastUsedProvider === "google" && (<span className="text-muted-foreground text-sm">(last used)</span>)}
+                  {lastUsedProvider === "google" && (
+                    <span className="text-muted-foreground text-sm">
+                      (last used)
+                    </span>
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -110,7 +119,11 @@ function LoginPageContent() {
                 >
                   <IconBrandGithub size="10" />
                   Continue with Github
-                  {lastUsedProvider === "github" && (<span className="text-muted-foreground text-sm">(last used)</span>)}
+                  {lastUsedProvider === "github" && (
+                    <span className="text-muted-foreground text-sm">
+                      (last used)
+                    </span>
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -120,15 +133,19 @@ function LoginPageContent() {
                 >
                   <IconBrandDiscord size="10" />
                   Continue with Discord
-                  {lastUsedProvider === "discord" && (<span className="text-muted-foreground text-sm">(last used)</span>)}
+                  {lastUsedProvider === "discord" && (
+                    <span className="text-muted-foreground text-sm">
+                      (last used)
+                    </span>
+                  )}
                 </Button>
               </div>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t" />
             </div>
           </form>
           <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-            By clicking continue, you agree to our{" "}
-            <TermsAndConditionsDialog/> .
+            By clicking continue, you agree to our <TermsAndConditionsDialog />{" "}
+            .
           </div>
         </div>
       </div>

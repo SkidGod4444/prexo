@@ -13,10 +13,12 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <RootProvider
-        search={{
-          SearchDialog: PrexoSearchDialog,
-        }}
-        >{children}</RootProvider>
+          search={{
+            SearchDialog: PrexoSearchDialog,
+          }}
+        >
+          {children}
+        </RootProvider>
       </body>
     </html>
   );

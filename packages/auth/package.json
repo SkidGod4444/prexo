@@ -13,6 +13,7 @@
         "better-auth": "^1.2.8",
         "@prexo/utils": "workspace:*",
         "@prexo/polar": "workspace:*",
+        "@prexo/mail": "workspace:*",
         "@prexo/db": "workspace:*"
     },
     "devDependencies": {}

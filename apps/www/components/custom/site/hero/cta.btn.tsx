@@ -4,7 +4,7 @@ import React from "react";
 import { socials } from "@prexo/utils/constants";
 import { InteractiveHoverButton } from "../../interactive-hover-button";
 
-export default function CtaBtns({isMob = false}: { isMob?: boolean }) {
+export default function CtaBtns({ isMob = false }: { isMob?: boolean }) {
   return (
     <div className="flex items-center justify-center gap-4 mt-20 z-50">
       <Link href={socials.docs} target="_blank" rel="noreferrer">

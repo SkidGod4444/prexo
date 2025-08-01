@@ -8,13 +8,14 @@ import React, { useEffect, Suspense } from "react";
 function OnboardingInner() {
   const { myProfile } = useMyProfileStore();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect');
+  const redirectUrl = searchParams.get("redirect");
   const pathname = usePathname();
   const uID = pathname?.split("/onboarding/")[1] || null;
   const router = useRouter();
-  const consoleUrl = process.env.NODE_ENV === "production"
-  ? "https://console.prexoai.xyz"
-  : "http://localhost:3002";
+  const consoleUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://console.prexoai.xyz"
+      : "http://localhost:3002";
 
   useEffect(() => {
     if (
@@ -24,10 +25,10 @@ function OnboardingInner() {
     ) {
       router.replace(`/onboarding/${myProfile.id}`);
     } else {
-      if (redirectUrl && redirectUrl.startsWith('/')) {
-        router.push(redirectUrl)
+      if (redirectUrl && redirectUrl.startsWith("/")) {
+        router.push(redirectUrl);
       } else {
-        router.push(consoleUrl)
+        router.push(consoleUrl);
       }
     }
   }, [myProfile, router, redirectUrl, consoleUrl]);

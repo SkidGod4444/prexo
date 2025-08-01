@@ -18,7 +18,7 @@ interface GlobalChatConfig {
     name: string | "Prexo Ai";
     pfp:
       | string
-      | "https://raw.githubusercontent.com/plura-ai/prexo/refs/heads/main/apps/www/public/logo.png";
+      | "../../logo.png";
     lastSeen: Date;
   };
   placeholder?: string;

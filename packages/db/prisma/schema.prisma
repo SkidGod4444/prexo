@@ -97,6 +97,6 @@ model Project {
   updatedAt   DateTime
   userId      String
   memoId     String?
-  apiKey      String?
+  keyId      String? @unique
   @@map("project")
 }

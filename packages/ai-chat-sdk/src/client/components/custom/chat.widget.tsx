@@ -31,7 +31,7 @@ export interface PrexoAiChatBotProps {
     name: string | "Prexo Ai";
     pfp:
       | string
-      | "https://raw.githubusercontent.com/plura-ai/prexo/refs/heads/main/apps/www/public/logo.png";
+      | "../../logo.png";
     lastSeen: Date;
   };
   placeholder?: string;
@@ -306,7 +306,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
         <div className={`chat-bubble ${theme} ${getPositionClasses()}`}>
           <button type="button" onClick={handleOpen} className="bubble-button">
             <img
-              src="https://raw.githubusercontent.com/plura-ai/prexo/refs/heads/main/apps/www/public/logo.png"
+              src="../../logo.png"
               className="w-12 h-12 rounded-lg object-cover"
               alt="Chat bot avatar"
               onError={(e) => {
@@ -341,7 +341,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
             ) : (
               <div className="chat-title">
                 <img
-                  src="https://raw.githubusercontent.com/plura-ai/prexo/refs/heads/main/apps/www/public/logo.png"
+                  src="../../logo.png"
                   className="w-9 h-9 rounded-lg object-cover invert"
                   alt="Chat bot avatar"
                   onError={(e) => {
@@ -386,7 +386,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                   <div className="message bot">
                     <div className="bot-avatar">
                       <img
-                        src="https://raw.githubusercontent.com/plura-ai/prexo/refs/heads/main/apps/www/public/logo.png"
+                        src="../../logo.png"
                         className="w-10 h-10 rounded-lg object-cover invert"
                         alt="Chat bot avatar"
                         onError={(e) => {

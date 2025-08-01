@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -12,27 +12,32 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 export default function TermsAndConditionsDialog() {
-  const [hasReadToBottom, setHasReadToBottom] = useState(false)
-  const contentRef = useRef<HTMLDivElement>(null)
+  const [hasReadToBottom, setHasReadToBottom] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = () => {
-    const content = contentRef.current
-    if (!content) return
+    const content = contentRef.current;
+    if (!content) return;
 
     const scrollPercentage =
-      content.scrollTop / (content.scrollHeight - content.clientHeight)
+      content.scrollTop / (content.scrollHeight - content.clientHeight);
     if (scrollPercentage >= 0.99 && !hasReadToBottom) {
-      setHasReadToBottom(true)
+      setHasReadToBottom(true);
     }
-  }
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="link" className="text-primary *:[a]:hover:text-primary text-center text-xs text-balance underline *:[a]:underline-offset-4 p-0">Terms & Conditions</Button>
+        <Button
+          variant="link"
+          className="text-primary *:[a]:hover:text-primary text-center text-xs text-balance underline *:[a]:underline-offset-4 p-0"
+        >
+          Terms & Conditions
+        </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-0 p-0 sm:max-h-[min(640px,80vh)] sm:max-w-lg [&>button:last-child]:top-3.5">
         <DialogHeader className="contents space-y-0 text-left">
@@ -174,5 +179,5 @@ export default function TermsAndConditionsDialog() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

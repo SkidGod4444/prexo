@@ -12,6 +12,7 @@ import ProjectCardAiUi from "../../ai-ui/project.card";
 import ApiCardAiUi from "../../ai-ui/api.card";
 import { Button } from "@/components/ui/button";
 import OnboardingCardAiUi from "../../ai-ui/onboarding.card";
+import ApiKeyCardAiUi from "../../ai-ui/api.key.card";
 
 const PurePreviewMessage = ({
   message,
@@ -267,6 +268,29 @@ const PurePreviewMessage = ({
                           return null;
                       }
                     }
+                    case "sendApiCopyCard": {
+                      switch (state) {
+                        case "call":
+                          return (
+                            <div key={callId + "result"}>
+                              <div className="flex flex-col mb-5">
+                              {part.toolInvocation.args.message}
+                              </div>
+                              <ApiKeyCardAiUi
+                              append={append}
+                              callId={callId}
+                              />
+                            </div>
+                          );
+                        case "result":
+                          return (
+                            <div key={callId}>{part.toolInvocation.result}</div>
+                          );
+                        default:
+                          return null;
+                      }
+                    }
+
                     case "completeOnboarding": {
                       switch (state) {
                         case "call":

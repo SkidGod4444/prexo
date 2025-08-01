@@ -24,7 +24,8 @@ export default function OnboardingCardAiUi({
   callId,
 }: OnboardingCardAiUiProps) {
   const { myProfile, addMyProfile, removeMyProfile } = useMyProfileStore();
-  const [loading, setLoading] = React.useState(false);
+  const [loadingComp, setLoadingComp] = React.useState(false);
+  const [loadingCl, setLoadingCl] = React.useState(false);
   const router = useRouter();
 
   if (!myProfile?.id) {
@@ -33,7 +34,7 @@ export default function OnboardingCardAiUi({
   }
   const handleOnComplete = async () => {
     try {
-      setLoading(true);
+      setLoadingComp(true);
       console.log("Completing onboarding process...");
       const user = await completeOnboardingAction(myProfile.id);
       console.log("Onboarding process completed:", user);
@@ -56,13 +57,13 @@ export default function OnboardingCardAiUi({
           },
         ],
       });
-      setLoading(false);
+      setLoadingComp(false);
       setTimeout(() => {
         router.push("/dashboard");
       }, 1500);
     } catch (error) {
       console.error("Error completing onboarding process:", error);
-      setLoading(false);
+      setLoadingComp(false);
       addToolResult({
         toolCallId: callId,
         result: "Error completing onboarding process.",
@@ -82,7 +83,7 @@ export default function OnboardingCardAiUi({
   };
 
   const handleOnCancle = () => {
-    setLoading(true);
+    setLoadingCl(true);
     console.log("Onboarding process cancelled.");
     addToolResult({
       toolCallId: callId,
@@ -99,9 +100,10 @@ export default function OnboardingCardAiUi({
         },
       ],
     });
-    setLoading(false);
+    setLoadingCl(false);
     console.log("Onboarding process cancelled.");
   };
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -115,17 +117,17 @@ export default function OnboardingCardAiUi({
         <Button
           className="w-full"
           onClick={handleOnComplete}
-          disabled={loading}
+          disabled={loadingComp}
         >
-          {loading ? "Completing..." : "Complete Onboarding"}
+          {loadingComp ? "Completing..." : "Complete Onboarding"}
         </Button>
         <Button
           variant="outline"
           className="w-full"
           onClick={handleOnCancle}
-          disabled={loading}
+          disabled={loadingCl}
         >
-          {loading ? "Cancelling..." : "Cancel Onboarding"}
+          {loadingCl ? "Cancelling..." : "Cancel Onboarding"}
         </Button>
       </CardFooter>
     </Card>

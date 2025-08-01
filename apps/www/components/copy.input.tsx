@@ -14,8 +14,9 @@ import {
 
 type CopyInputProps = {
   value: string;
+  onCopy?: () => void;
 };
-export default function CopyInput({ value }: CopyInputProps) {
+export default function CopyInput({ value, onCopy }: CopyInputProps) {
   const id = useId();
   const [copied, setCopied] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +26,10 @@ export default function CopyInput({ value }: CopyInputProps) {
       navigator.clipboard.writeText(inputRef.current.value);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
+    }
+
+    if(onCopy) {
+      onCopy()
     }
   };
 

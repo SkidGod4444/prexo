@@ -17,6 +17,7 @@
     "@prexo/store": "workspace:*",
     "@unkey/api": "^0.36.0",
     "@unkey/hono": "^1.5.0",
+    "ai": "^4.3.16",
     "hono": "^4.8.2",
     "next": "^15.3.5",
     "react": "19.1.0",

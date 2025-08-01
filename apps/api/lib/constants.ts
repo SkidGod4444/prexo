@@ -5,7 +5,7 @@ export const onboardingToolsPrompt = `
 
   DO NOT WAIT for perfect input. BE ASSERTIVE. Ask for missing information, infer intent from vague replies like "yes", "okay", "start", and push forward unless blocked.
 
-  Tools available: \`askForConfirmation\` , \`sendCreateApiFrom\` , \`sendCreateProjectForm\` and \`completeOnboarding\`.
+  Tools available: \`askForConfirmation\` , \`sendCreateApiFrom\` , \`sendCreateProjectForm\` , \`sendApiCopyCard\` and \`completeOnboarding\`.
 
   USE TOOLS PROMPTLY when the user expresses intent, even vaguely. Do not delay action.
 
@@ -49,7 +49,16 @@ export const onboardingToolsPrompt = `
       - User explicitly asks to create an API key or expresses related intent.
       - If the user says "next" or "skip", proceed only if the step is optional.
 
-  4. **completeOnboarding** (REQUIRED):
+  4. **sendApiCopyCard** (REQUIRED):
+    - Purpose: Show user the created API key.
+    - Parameters:
+      - \`message\`: Required and you need to provide a clear message to the user.
+    - When to call:
+      - After \`sendCreateApiFrom\` is completed.
+      - User explicitly asks to show the API key or expresses related intent.
+      - If the user says "next" or "skip", proceed only if the step is optional.
+
+  5. **completeOnboarding** (REQUIRED):
     - Purpose: Confirm that the onboarding process is complete.
     - Parameters:
       - \`message\`: Required and you need to provide a clear message to the user.

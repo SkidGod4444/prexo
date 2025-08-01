@@ -9,10 +9,12 @@
     "build:trig": "bunx trigger.dev@latest deploy",
     "dev": "turbo run dev",
     "dev:www": "turbo --filter=www dev",
+    "dev:app": "turbo --filter=console dev",
     "dev:api": "turbo --filter=api dev",
     "dev:docs": "turbo --filter=docs dev",
     "dev:trig": "bunx trigger.dev@latest dev",
     "scan:www": "turbo --filter=www scanner",
+    "scan:app": "turbo --filter=console scanner",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
@@ -41,14 +43,10 @@
   ],
   "dependencies": {
     "@trigger.dev/sdk": "^3.3.17",
-    "canvas": "^3.1.2",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.2",
     "next": "^15.3.5",
     "pdf-parser": "^1.0.5",
-    "pdf2pic": "^3.2.0",
-    "pdfjs-dist": "^5.3.93",
-    "prexo": ".",
     "puppeteer": "^24.12.1",
     "tesseract.js": "^6.0.1"
   }

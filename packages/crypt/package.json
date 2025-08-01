@@ -1,0 +1,8 @@
+{
+  "name": "@prexo/crypt",
+  "version": "0.0.0",
+  "private": false,
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

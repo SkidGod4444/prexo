@@ -122,12 +122,8 @@ export default function DashboardHeader() {
                   <SelectPrimitive.SelectTrigger
                     aria-label="Select account type"
                     asChild
-                    
                   >
-                    <Button
-                      variant="secondary"
-                      size={"sm"}
-                    >
+                    <Button variant="secondary" size={"sm"}>
                       <SelectValue placeholder="Select account type" />
                       <ChevronsUpDown
                         size={14}
@@ -147,10 +143,7 @@ export default function DashboardHeader() {
                     aria-label="Select project"
                     asChild
                   >
-                    <Button
-                      variant="secondary"
-                      size={"sm"}
-                    >
+                    <Button variant="secondary" size={"sm"}>
                       <SelectValue placeholder="Select project" />
                       <ChevronsUpDown
                         size={14}

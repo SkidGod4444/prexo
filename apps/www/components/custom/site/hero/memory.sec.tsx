@@ -24,6 +24,9 @@ export default function MemorySec() {
 
         <div className="grid grid-cols-1 px-4 md:px-14 max-w-7xl mx-auto lg:grid-cols-2 gap-5">
           <Card className="flex items-center justify-between border-dashed bg-transparent p-5 rounded-3xl">
+            <span className="text-sm bg-muted text-muted-foreground border rounded-xl px-2 py-1 border-dashed self-start">
+              Context Memory
+            </span>
             <CardDescription>
               <span className="text-lg text-muted-foreground">
                 Agent&apos;s memory extracts contexts from your provided
@@ -37,7 +40,10 @@ export default function MemorySec() {
             </CardFooter>
           </Card>
 
-          <Card className="flex items-center justify-between border-dashed bg-transparent px-5 rounded-3xl">
+          <Card className="flex items-center justify-between border-dashed bg-transparent p-5 rounded-3xl">
+          <span className="text-sm bg-muted text-muted-foreground border rounded-xl px-2 py-1 border-dashed self-start">
+              Chat Memory
+            </span>
             <CardDescription>
               <span className="text-lg text-muted-foreground">
                 The memory database stores all the interactions and contexts,
@@ -46,7 +52,7 @@ export default function MemorySec() {
               </span>
             </CardDescription>
 
-            <CardFooter className="flex w-[350] md:w-full mt-4 md:px-auto md:mb-20">
+            <CardFooter className="flex w-[350] md:w-full md:px-auto mt-auto md:mb-20">
               <AnimatedBeamDB />
             </CardFooter>
           </Card>

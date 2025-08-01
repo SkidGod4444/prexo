@@ -43,21 +43,23 @@ export default function Home() {
         </div>
         <AnncBtn />
         <div className="flex flex-col items-center justify-center">
-        <SectionHeaderHeading>Transform Your SaaS with</SectionHeaderHeading>
-        <SectionHeaderHeading>AI-Powered Sales & Support</SectionHeaderHeading>
+          <SectionHeaderHeading>Transform Your SaaS with</SectionHeaderHeading>
+          <SectionHeaderHeading>
+            AI-Powered Sales & Support
+          </SectionHeaderHeading>
 
-        <SectionHeaderDescription className="mt-2 md:text-center">
-          Create intelligent agents that handle both sales and support 24/7,
-          engage customers, qualify leads, and resolve issues.
-        </SectionHeaderDescription>
+          <SectionHeaderDescription className="mt-2 md:text-center">
+            Create intelligent agents that handle both sales and support 24/7,
+            engage customers, qualify leads, and resolve issues.
+          </SectionHeaderDescription>
         </div>
-        <CtaBtns isMob={isMob}/>
+        <CtaBtns isMob={isMob} />
       </section>
       <section
         id="agents"
         className="flex flex-col items-center justify-center w-full h-full p-4 border-y border-dashed rounded-t-4xl rounded-b-4xl"
       >
-        <AgentsSec isMob={isMob}/>
+        <AgentsSec isMob={isMob} />
       </section>
 
       <section

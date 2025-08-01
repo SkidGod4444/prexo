@@ -4,7 +4,12 @@ const rootKey = process.env.UNKEY_ROOT_API_KEY!;
 const apiID = process.env.UNKEY_API_ID!;
 const unkey = new Unkey({ rootKey: rootKey });
 
-async function createApi(projectID: string, name: string, enabled: boolean) {
+async function createApi(
+  projectID: string,
+  name: string,
+  enabled: boolean,
+  expires?: number,
+) {
   try {
     const { result, error } = await unkey.keys.create({
       apiId: apiID,
@@ -25,6 +30,7 @@ async function createApi(projectID: string, name: string, enabled: boolean) {
         amount: 100,
       },
       enabled: enabled,
+      ...(expires !== undefined && expires !== null && { expires: expires }),
     });
     if (error) {
       console.error("Error creating API:", error);
@@ -64,9 +70,9 @@ async function verifyApi(apiKey: string, tags?: string[], cost?: number) {
   }
 }
 
-async function getApiKey(apiKey: string) {
+async function getApiKey(keyId: string) {
   try {
-    const { result, error } = await unkey.keys.get({ keyId: apiKey });
+    const { result, error } = await unkey.keys.get({ keyId: keyId });
     if (error) {
       console.error("Error getting API key:", error);
       throw new Error("Invalid API key");

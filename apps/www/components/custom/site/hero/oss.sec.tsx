@@ -59,7 +59,10 @@ export default function OssSec() {
                 label: "Follow us on Twitter",
               },
             ].map((card, i) => (
-              <Card key={i} className="flex flex-col justify-between h-full py-0">
+              <Card
+                key={i}
+                className="flex flex-col justify-between h-full py-0"
+              >
                 <CardContent className="flex flex-col items-start gap-2 p-5 pb-0">
                   <CardTitle>{card.title}</CardTitle>
                   <CardDescription className="text-base text-muted-foreground">
