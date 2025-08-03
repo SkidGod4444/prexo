@@ -28,8 +28,8 @@ export default function CopyInput({ value, onCopy }: CopyInputProps) {
       setTimeout(() => setCopied(false), 1500);
     }
 
-    if(onCopy) {
-      onCopy()
+    if (onCopy) {
+      onCopy();
     }
   };
 

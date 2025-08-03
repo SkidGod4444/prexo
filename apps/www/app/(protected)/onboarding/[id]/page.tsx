@@ -25,7 +25,11 @@ function OnboardingInner() {
     ) {
       router.replace(`/onboarding/${myProfile.id}`);
     } else {
-      if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl[1] !== "/") {
+      if (
+        redirectUrl &&
+        redirectUrl.startsWith("/") &&
+        redirectUrl[1] !== "/"
+      ) {
         router.push(redirectUrl);
       } else {
         router.push(consoleUrl);

@@ -41,7 +41,7 @@ export default function MemorySec() {
           </Card>
 
           <Card className="flex items-center justify-between border-dashed bg-transparent p-5 rounded-3xl">
-          <span className="text-sm bg-muted text-muted-foreground border rounded-xl px-2 py-1 border-dashed self-start">
+            <span className="text-sm bg-muted text-muted-foreground border rounded-xl px-2 py-1 border-dashed self-start">
               Chat Memory
             </span>
             <CardDescription>

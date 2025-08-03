@@ -39,10 +39,7 @@ export default function Infobar() {
   const { projects } = useProjectsStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [openPopover2, setOpenPopover2] = useState(false);
-  const [value, setValue] = useLocalStorage(
-    "@prexo-#consoleId",
-    "", 
-  );
+  const [value, setValue] = useLocalStorage("@prexo-#consoleId", "");
   const pathname = usePathname()
     .replace(/^\/|\/$/g, "")
     .split("/");
@@ -56,11 +53,15 @@ export default function Infobar() {
   }, []);
 
   useEffect(() => {
-    if(projects.length > 0 && !value) {
+    if (projects.length > 0 && !value) {
       setValue(projects[0].id);
     }
 
-    if(projects.length > 0 && value && !projects.find((proj) => proj.id === value)) {
+    if (
+      projects.length > 0 &&
+      value &&
+      !projects.find((proj) => proj.id === value)
+    ) {
       setValue(projects[0].id);
     }
   }, [projects, value, setValue]);
@@ -138,21 +139,22 @@ export default function Infobar() {
                 </PopoverContent>
               </Popover>
             </BreadcrumbItem>
-            {pathname.length > 0 && pathname.map((segment, idx) => (
-              <React.Fragment key={idx}>
-                <BreadcrumbSeparator>
-                  <Slash className="h-4 w-4" />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                  <Button
-                    variant={"ghost"}
-                    className="select-none p-2 h-6 border border-dashed"
-                  >
-                    {segment.charAt(0).toUpperCase() + segment.slice(1)}
-                  </Button>
-                </BreadcrumbItem>
-              </React.Fragment>
-            ))}
+            {pathname.length > 0 &&
+              pathname.map((segment, idx) => (
+                <React.Fragment key={idx}>
+                  <BreadcrumbSeparator>
+                    <Slash className="h-4 w-4" />
+                  </BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <Button
+                      variant={"ghost"}
+                      className="select-none p-2 h-6 border border-dashed"
+                    >
+                      {segment.charAt(0).toUpperCase() + segment.slice(1)}
+                    </Button>
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

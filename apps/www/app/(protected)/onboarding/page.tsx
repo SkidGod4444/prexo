@@ -17,10 +17,14 @@ function OnboardingInner() {
     ) {
       router.replace(`/onboarding/${myProfile.id}`);
     } else {
-    if (redirectUrl && redirectUrl.startsWith("/") && redirectUrl[1] !== "/") {
-      router.push(redirectUrl);
+      if (
+        redirectUrl &&
+        redirectUrl.startsWith("/") &&
+        redirectUrl[1] !== "/"
+      ) {
+        router.push(redirectUrl);
+      }
     }
-  }
   }, [router, redirectUrl, myProfile]);
 
   return null;

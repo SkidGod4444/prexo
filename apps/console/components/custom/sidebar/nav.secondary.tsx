@@ -36,7 +36,7 @@ export function NavSecondary({
                 isActive={path.includes(item.url)}
               >
                 <Link href={item.url}>
-                <item.icon className="text-muted-foreground"/>
+                  <item.icon className="text-muted-foreground" />
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>

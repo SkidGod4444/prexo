@@ -16,9 +16,7 @@ interface GlobalChatConfig {
   // theme?: "light" | "dark";
   user?: {
     name: string | "Prexo Ai";
-    pfp:
-      | string
-      | "../../logo.png";
+    pfp: string | "../../logo.png";
     lastSeen: Date;
   };
   placeholder?: string;

@@ -274,12 +274,9 @@ const PurePreviewMessage = ({
                           return (
                             <div key={callId + "result"}>
                               <div className="flex flex-col mb-5">
-                              {part.toolInvocation.args.message}
+                                {part.toolInvocation.args.message}
                               </div>
-                              <ApiKeyCardAiUi
-                              append={append}
-                              callId={callId}
-                              />
+                              <ApiKeyCardAiUi append={append} callId={callId} />
                             </div>
                           );
                         case "result":

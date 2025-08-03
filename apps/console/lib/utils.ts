@@ -34,7 +34,7 @@ export function generateApiKeyName(): string {
     "marvelous",
     "stellar",
     "supreme",
-    ];
+  ];
 
   const adjectives = [
     "moody",

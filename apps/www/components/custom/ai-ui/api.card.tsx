@@ -1,9 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type { UIMessage } from "ai";
 import { ProjectDropDownAiUi } from "./project.drop.down";
 import { Button } from "@/components/ui/button";
@@ -26,7 +23,7 @@ export default function ApiCardAiUi({
   const { myProfile } = useMyProfileStore();
   const { setProjects, addProject } = useProjectsStore();
   const name = "default-api-key";
-  const [apiKey, setApiKey] = useLocalStorage("@prexo-#tempApiKey", '');
+  const [apiKey, setApiKey] = useLocalStorage("@prexo-#tempApiKey", "");
   const [loading, setLoading] = useState(false);
 
   if (!name.trim() || !myProfile?.id) {
@@ -75,19 +72,19 @@ export default function ApiCardAiUi({
       <CardContent>
         <form>
           <div className="flex flex-col gap-6">
-          <div className="grid gap-2">
-                <ProjectDropDownAiUi onProjectSelect={setProjectID} />
-              </div>
-              <div className="grid gap-2">
-                <Button
-                  className="cursor-pointer"
-                  form="api-form"
-                  disabled={loading || !projectID}
-                  onClick={handleOnClick}
-                >
-                  {loading ? "Creating API Key..." : "Create API Key"}
-                </Button>
-              </div>
+            <div className="grid gap-2">
+              <ProjectDropDownAiUi onProjectSelect={setProjectID} />
+            </div>
+            <div className="grid gap-2">
+              <Button
+                className="cursor-pointer"
+                form="api-form"
+                disabled={loading || !projectID}
+                onClick={handleOnClick}
+              >
+                {loading ? "Creating API Key..." : "Create API Key"}
+              </Button>
+            </div>
           </div>
         </form>
       </CardContent>

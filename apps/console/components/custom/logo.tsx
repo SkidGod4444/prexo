@@ -40,12 +40,12 @@ export default function Logo({
 
   return (
     <div className="flex flex-row items-center gap-2 cursor-pointer">
-      <Image  
-  src={"/logo.png"}  
-  height={height ?? 50}  
-  width={width ?? 40}  
-  alt={alt ?? "logo"} 
-/>  
+      <Image
+        src={"/logo.png"}
+        height={height ?? 50}
+        width={width ?? 40}
+        alt={alt ?? "logo"}
+      />
       {!isCollapsed && isTextVisible && (
         <span className="text-2xl font-uxum font-bold p-2">{displayText}</span>
       )}

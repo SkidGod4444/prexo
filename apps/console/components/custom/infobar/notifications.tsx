@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { BellIcon } from "lucide-react"
+import { useState } from "react";
+import { BellIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import Image from "next/image"
+} from "@/components/ui/popover";
+import Image from "next/image";
 
 const initialNotifications = [
   {
@@ -57,8 +57,8 @@ const initialNotifications = [
     target: "Dashboard redesign",
     timestamp: "2 days ago",
     unread: false,
-  }
-]
+  },
+];
 
 function Dot({ className }: { className?: string }) {
   return (
@@ -73,31 +73,31 @@ function Dot({ className }: { className?: string }) {
     >
       <circle cx="3" cy="3" r="3" />
     </svg>
-  )
+  );
 }
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState(initialNotifications)
-  const unreadCount = notifications.filter((n) => n.unread).length
+  const [notifications, setNotifications] = useState(initialNotifications);
+  const unreadCount = notifications.filter((n) => n.unread).length;
 
   const handleMarkAllAsRead = () => {
     setNotifications(
       notifications.map((notification) => ({
         ...notification,
         unread: false,
-      }))
-    )
-  }
+      })),
+    );
+  };
 
   const handleNotificationClick = (id: number) => {
     setNotifications(
       notifications.map((notification) =>
         notification.id === id
           ? { ...notification, unread: false }
-          : notification
-      )
-    )
-  }
+          : notification,
+      ),
+    );
+  };
 
   return (
     <Popover>
@@ -174,5 +174,5 @@ export default function Notifications() {
         ))}
       </PopoverContent>
     </Popover>
-  )
+  );
 }

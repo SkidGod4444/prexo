@@ -47,14 +47,14 @@ const items = [
     title: "Conversations",
     url: "#",
     icon: MessageCircleDashed,
-    isDisabled: true
+    isDisabled: true,
   },
   {
     title: "Meetings",
     url: "#",
     icon: Video,
-    isDisabled: true
-  }
+    isDisabled: true,
+  },
 ];
 
 const navSecondary = [
@@ -77,16 +77,16 @@ const IntelItems = [
     icon: BrainCircuit,
     subItems: [
       {
-      title: "History",
-      url: "/memory/history",
-      icon: DatabaseBackup,
-    },
-    {
-      title: "Context",
-      url: "/memory/context",
-      icon: DatabaseZap,
-    }
-  ]
+        title: "History",
+        url: "/memory/history",
+        icon: DatabaseBackup,
+      },
+      {
+        title: "Context",
+        url: "/memory/context",
+        icon: DatabaseZap,
+      },
+    ],
   },
   {
     title: "Playground",
@@ -119,7 +119,7 @@ export function AppSidebar() {
                     className={`border ${item.isDisabled && "bg-black hover:bg-black border-dashed"}`}
                   >
                     <Link href={item.url}>
-                      <item.icon className="text-muted-foreground"/>
+                      <item.icon className="text-muted-foreground" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -137,29 +137,32 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    isActive={path.split("/").pop() === item.url.replace(/^\//, "")}
+                    isActive={
+                      path.split("/").pop() === item.url.replace(/^\//, "")
+                    }
                   >
                     <Link href={item.url}>
-                    <item.icon className="text-muted-foreground"/>
+                      <item.icon className="text-muted-foreground" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                   {item.subItems?.length ? (
-                  <SidebarMenuSub>
-                    {item.subItems.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild 
-                        isActive={path.includes(item.url)}
-                        >
-                          <Link href={item.url}>
-                            <item.icon className="text-muted-foreground"/>
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
+                    <SidebarMenuSub>
+                      {item.subItems.map((item) => (
+                        <SidebarMenuSubItem key={item.title}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={path.includes(item.url)}
+                          >
+                            <Link href={item.url}>
+                              <item.icon className="text-muted-foreground" />
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  ) : null}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

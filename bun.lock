@@ -51,6 +51,7 @@
       "dependencies": {
         "@hookform/resolvers": "^5.2.0",
         "@prexo/auth": "workspace:*",
+        "@prexo/logs": "workspace:*",
         "@prexo/polar": "workspace:*",
         "@prexo/store": "workspace:*",
         "@radix-ui/react-accordion": "^1.2.11",
