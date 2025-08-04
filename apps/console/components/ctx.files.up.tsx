@@ -14,7 +14,6 @@ import {
   UploadCloudIcon,
   UploadIcon,
   VideoIcon,
-  XIcon,
 } from "lucide-react";
 
 import {

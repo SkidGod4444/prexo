@@ -1,7 +1,6 @@
 import {
   BotMessageSquareIcon,
   CodeXml,
-  MessageCircleDashedIcon,
   Settings2,
 } from "lucide-react";
 

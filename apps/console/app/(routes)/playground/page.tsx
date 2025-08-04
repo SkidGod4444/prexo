@@ -1,5 +1,4 @@
 "use client";
-import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
 import ChatPanel from "@/components/custom/playground/chat/chat";
 import ChatHeader from "@/components/custom/playground/header";
 import { useSidebar } from "@/components/ui/sidebar";
