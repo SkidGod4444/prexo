@@ -20,6 +20,11 @@ const togetherai = createTogetherAI({
   apiKey: process.env.TOGETHER_API_KEY!,
 });
 
+// const openrouter = createTogetherAI({
+//   baseURL: "https://openrouter.ai/api/v1",
+//   apiKey: process.env.TOGETHER_API_KEY!,
+// });
+
 ai.post("/stream", async (c) => {
   const { messages } = await c.req.json();
   const filteredMessages = messages.map((msg: any) => {

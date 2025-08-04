@@ -1,5 +1,6 @@
 import { betterFetch } from "@better-fetch/fetch";
 import type { Session } from "@prexo/auth";
+import { ProjectType } from "@prexo/types";
 import { NextResponse, type NextRequest } from "next/server";
 const baseDomain =
   process.env.NODE_ENV === "production"
@@ -13,6 +14,28 @@ const appDomain =
   process.env.NODE_ENV === "production"
     ? "https://console.prexoai.xyz"
     : "http://localhost:3002";
+
+const projectsEndpoint =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/project/all"
+      : "https://api.prexoai.xyz/v1/project/all";
+
+
+const projectsState = {
+  projects: [] as ProjectType[],
+  get() {
+    return this.projects;
+  },
+  set(newArray: ProjectType[]) {
+    this.projects = newArray;
+  },
+  push(item: ProjectType) {
+    this.projects.push(item);
+  },
+  clear() {
+    this.projects = [];
+  },
+};
 
 export default async function authMiddleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>(
@@ -31,11 +54,31 @@ export default async function authMiddleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
+  // Check for inactive user role
+  if ("role" in session.user && session.user.role === "inactive") {
+    const { data } = await betterFetch<ProjectType[]>(
+      `${projectsEndpoint}`,
+      {
+        headers: {
+          cookie: request.headers.get("cookie") || "",
+        },
+      },
+    );
+
+    if(data && data.length == 0) {
+      return NextResponse.redirect(`${appDomain}/new`);
+    }
+  }
+
   if (!("role" in session.user) || session.user.role !== "onboarded") {
     return NextResponse.redirect(redirectUrl);
   }
 
   if (session.user.role === "onboarded" && currentPath === "/") {
+    return NextResponse.redirect(`${appDomain}/dashboard`);
+  }
+
+  if (session.user.role === "onboarded" && currentPath === "/new") {
     return NextResponse.redirect(`${appDomain}/dashboard`);
   }
 

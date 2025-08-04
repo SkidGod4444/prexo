@@ -24,13 +24,14 @@ export default async function authMiddleware(request: NextRequest) {
   );
 
   const currentPath = request.nextUrl.pathname;
+  const origin = request.nextUrl.origin;
 
   if (!session || !("role" in session.user)) {
     return NextResponse.next();
   }
 
   if (!session.user && protectedRoutes.includes(currentPath)) {
-    return NextResponse.redirect("/auth");
+    return NextResponse.redirect(new URL("/auth", origin));
   }
 
   if (
@@ -49,7 +50,7 @@ export default async function authMiddleware(request: NextRequest) {
     session.user.role !== "onboarded" &&
     currentPath.includes("/auth")
   ) {
-    return NextResponse.redirect(`/onboarding`);
+    return NextResponse.redirect(new URL(`/onboarding/${session.user.id}`, origin));
   }
 
   // Otherwise, allow

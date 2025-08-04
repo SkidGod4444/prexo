@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 export default function ApiKeyInput({ apiKey }: { apiKey: string }) {
   const id = useId();
@@ -21,6 +22,7 @@ export default function ApiKeyInput({ apiKey }: { apiKey: string }) {
     if (inputRef.current) {
       navigator.clipboard.writeText(inputRef.current.value);
       setCopied(true);
+      toast("Copied to clipboard!");
       setTimeout(() => setCopied(false), 1500);
     }
   };

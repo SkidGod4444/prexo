@@ -129,7 +129,7 @@ export default function EnvKeysSettings() {
           </Badge>
           <DBDorpdown />
           <Separator className="my-4" />
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-col md:flex-row gap-2">
             <div className="flex-1 flex-col">
               <Label htmlFor="env-key" className="mb-2">
                 Key
