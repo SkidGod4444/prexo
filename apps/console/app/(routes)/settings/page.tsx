@@ -4,7 +4,7 @@ import ApiKeySettings from "@/components/custom/settings/apikey.settings";
 import AppSettings from "@/components/custom/settings/app.settings";
 import DomainsSettings from "@/components/custom/settings/domains.settings";
 import EnvKeysSettings from "@/components/custom/settings/envkeys.settings";
-import ThemeSwitcher from "@/components/theme.switcher";
+import ThemeSwitcher from "@/components/custom/settings/theme.settings";
 import React from "react";
 
 export default function Settings() {

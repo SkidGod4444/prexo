@@ -75,7 +75,7 @@ export default function Infobar() {
       <div className="flex flex-row items-center gap-2 py-3 w-full">
         <Tooltip>
           <TooltipTrigger asChild>
-            <SidebarTrigger className="cursor-pointer" />
+            <SidebarTrigger className="cursor-pointer border" />
           </TooltipTrigger>
           <TooltipContent>
             <p>⌘ + B</p>
