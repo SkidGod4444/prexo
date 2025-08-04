@@ -50,7 +50,9 @@ export default async function authMiddleware(request: NextRequest) {
     session.user.role !== "onboarded" &&
     currentPath.includes("/auth")
   ) {
-    return NextResponse.redirect(new URL(`/onboarding/${session.user.id}`, origin));
+    return NextResponse.redirect(
+      new URL(`/onboarding/${session.user.id}`, origin),
+    );
   }
 
   // Otherwise, allow

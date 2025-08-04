@@ -13,6 +13,7 @@
     "@ai-sdk/openai": "^2.0.0",
     "@ai-sdk/togetherai": "^0.2.14",
     "@better-fetch/fetch": "^1.1.18",
+    "@openrouter/ai-sdk-provider": "^0.7.3",
     "@prexo/ai-chat-sdk": "workspace:*",
     "@prexo/keys": "workspace:*",
     "@prexo/store": "workspace:*",

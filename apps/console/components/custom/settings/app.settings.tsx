@@ -10,9 +10,9 @@ import { useReadLocalStorage } from "usehooks-ts";
 import { toast } from "sonner";
 
 export default function AppSettings() {
-  const {projects} = useProjectsStore();
+  const { projects } = useProjectsStore();
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
-  const thisProject = projects.find(project => project.id === consoleId);
+  const thisProject = projects.find((project) => project.id === consoleId);
   const [name, setName] = useState(thisProject?.name);
   const [apiId] = useState(thisProject?.keyId);
   const [isCopied, setIsCopied] = useState(false);
@@ -59,7 +59,8 @@ export default function AppSettings() {
                 Name
               </Label>
               <span className="text-sm text-muted-foreground">
-                Change the name of your Project. This is only visible to you and your team.
+                Change the name of your Project. This is only visible to you and
+                your team.
               </span>
               <div className="flex flex-row gap-2 items-center">
                 <Input
@@ -89,7 +90,8 @@ export default function AppSettings() {
                 API ID
               </Label>
               <span className="text-sm text-muted-foreground">
-                An identifier for this Project&apos;s API, used in some API calls.
+                An identifier for this Project&apos;s API, used in some API
+                calls.
               </span>
               <div className="flex flex-row gap-2 items-center">
                 <Input
@@ -107,7 +109,11 @@ export default function AppSettings() {
                   type="button"
                   aria-label="Copy API ID"
                 >
-                  {isCopied ? <CheckIcon size={16} className="text-green-500"/> : <Copy size={16} />}
+                  {isCopied ? (
+                    <CheckIcon size={16} className="text-green-500" />
+                  ) : (
+                    <Copy size={16} />
+                  )}
                 </Button>
               </div>
             </div>
@@ -119,7 +125,9 @@ export default function AppSettings() {
             <div className="flex flex-col">
               <Label className="text-lg mb-1">Delete Project</Label>
               <span className="text-sm text-muted-foreground mb-2">
-                Deleting your project will permanently remove all data and cannot be undone. This action is irreversible and can not be undone.
+                Deleting your project will permanently remove all data and
+                cannot be undone. This action is irreversible and can not be
+                undone.
               </span>
               <Button
                 size="sm"

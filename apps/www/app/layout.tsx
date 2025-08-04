@@ -100,7 +100,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex flex-col items-center bg-background">
+            <div className="flex flex-col items-center bg-background overflow-hidden">
               {children}
             </div>
           </ThemeProvider>

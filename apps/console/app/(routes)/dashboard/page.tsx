@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Dashboard() {
   return (
-    <div className="font-uxum">
+    <div className="flex flex-col overflow-hidden">
       <InfobarBreadCrumb />
     </div>
   );

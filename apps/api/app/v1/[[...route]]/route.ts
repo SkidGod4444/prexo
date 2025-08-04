@@ -14,6 +14,7 @@ import extractor from "../routes/sdk/extractor";
 import context from "../routes/sdk/context";
 import hist from "../routes/history";
 import cntxt from "../routes/context";
+import playgroundAi from "../routes/playground/ai";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -55,6 +56,9 @@ app.route("/sdk/configs", configs);
 app.route("/sdk/ai", aiSdk);
 app.route("/sdk/extractor", extractor);
 app.route("/sdk/context", context);
+
+// Playground Routes
+app.route("/playground/ai", playgroundAi);
 
 const GET = handle(app);
 const POST = handle(app);

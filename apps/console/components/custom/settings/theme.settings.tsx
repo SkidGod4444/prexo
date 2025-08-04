@@ -25,15 +25,11 @@ export default function ThemeSwitcher() {
       {theme ? (
         <div className="flex flex-col md:flex-row gap-2 ld:gap-4">
           <div className="flex flex-col">
-            <div
-              className={cn(
-                cardContainerClass
-              )}
-            >
+            <div className={cn(cardContainerClass)}>
               <div
                 className={cn(
                   cardInnerClass,
-                  theme == "system" && "border-border"
+                  theme == "system" && "border-border",
                 )}
                 onClick={() => setTheme("system")}
               >
@@ -50,7 +46,7 @@ export default function ThemeSwitcher() {
               <div
                 className={cn(
                   cardInnerClass,
-                  theme == "light" && "border-border"
+                  theme == "light" && "border-border",
                 )}
                 onClick={() => setTheme("light")}
               >
@@ -67,7 +63,7 @@ export default function ThemeSwitcher() {
               <div
                 className={cn(
                   cardInnerClass,
-                  theme == "dark" && "border-border"
+                  theme == "dark" && "border-border",
                 )}
                 onClick={() => setTheme("dark")}
               >

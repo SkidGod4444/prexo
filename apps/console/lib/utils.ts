@@ -120,3 +120,7 @@ export function generateApiKeyName(): string {
 
   return parts.join("-");
 }
+
+export function sanitizeText(text: string) {
+  return text.replace("<has_function_call>", "");
+}

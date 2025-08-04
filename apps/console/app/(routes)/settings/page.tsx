@@ -12,7 +12,7 @@ export default function Settings() {
     <div className="flex flex-col items-start justify-start min-h-screen w-full overflow-hidden">
       <InfobarBreadCrumb />
       <div className="flex flex-col gap-16 mt-4">
-        <AppSettings/>
+        <AppSettings />
         <DomainsSettings />
         <ApiKeySettings />
         <EnvKeysSettings />

@@ -1,9 +1,12 @@
 import React from "react";
 
-export const LightMode = ({ className = "", ...props }: React.SVGProps<SVGSVGElement>) => {
+export const LightMode = ({
+  className = "",
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
-     className={className}
+      className={className}
       viewBox="0 0 282 193"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

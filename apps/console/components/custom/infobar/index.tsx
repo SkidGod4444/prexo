@@ -69,7 +69,7 @@ export default function Infobar() {
   return (
     <nav
       className={`flex w-full items-center sticky top-0 right-0 bg-background border-b ${
-        isScrolled ? "z-50" : ""
+        isScrolled ? "z-[500]" : "z-50"
       }`}
     >
       <div className="flex flex-row items-center gap-2 py-3 w-full">

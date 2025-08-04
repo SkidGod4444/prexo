@@ -35,7 +35,8 @@
         "RESEND_API_KEY",
         "NEXT_PUBLIC_POSTHOG_KEY",
         "NEXT_PUBLIC_POSTHOG_HOST",
-        "LOGS_WEBHOOK_URL"
+        "LOGS_WEBHOOK_URL",
+        "OPENROUTER_API_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$"],
       "outputs": [".next/**", "!.next/cache/**"]

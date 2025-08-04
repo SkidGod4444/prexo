@@ -16,10 +16,9 @@ const appDomain =
     : "http://localhost:3002";
 
 const projectsEndpoint =
-    process.env.NODE_ENV == "development"
-      ? "http://localhost:3001/v1/project/all"
-      : "https://api.prexoai.xyz/v1/project/all";
-
+  process.env.NODE_ENV == "development"
+    ? "http://localhost:3001/v1/project/all"
+    : "https://api.prexoai.xyz/v1/project/all";
 
 const projectsState = {
   projects: [] as ProjectType[],
@@ -56,16 +55,13 @@ export default async function authMiddleware(request: NextRequest) {
 
   // Check for inactive user role
   if ("role" in session.user && session.user.role === "inactive") {
-    const { data } = await betterFetch<ProjectType[]>(
-      `${projectsEndpoint}`,
-      {
-        headers: {
-          cookie: request.headers.get("cookie") || "",
-        },
+    const { data } = await betterFetch<ProjectType[]>(`${projectsEndpoint}`, {
+      headers: {
+        cookie: request.headers.get("cookie") || "",
       },
-    );
+    });
 
-    if(data && data.length == 0) {
+    if (data && data.length == 0) {
       return NextResponse.redirect(`${appDomain}/new`);
     }
   }

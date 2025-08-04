@@ -1,6 +1,9 @@
 import React from "react";
 
-export const DarkMode = ({ className = "", ...props }: React.SVGProps<SVGSVGElement>) => {
+export const DarkMode = ({
+  className = "",
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       className={className}

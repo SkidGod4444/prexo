@@ -7,13 +7,12 @@ import {
   streamText,
   ToolExecutionError,
 } from "ai";
-import { systemPrompt } from "@/lib/constants";
-import { z } from "zod";
+import { playgroundPrompt } from "@/lib/constants";
 import { checkUser } from "@/checks/check.user";
 
-const ai = new Hono();
+const playgroundAi = new Hono();
 
-ai.use(checkUser);
+playgroundAi.use(checkUser);
 
 export const maxDuration = 30;
 
@@ -25,7 +24,7 @@ const togetherai = createTogetherAI({
 //   apiKey: process.env.OPENROUTER_API_KEY!,
 // });
 
-ai.post("/stream", async (c) => {
+playgroundAi.post("/stream", async (c) => {
   const { messages } = await c.req.json();
   const filteredMessages = messages.map((msg: any) => {
     if (!msg.parts) return msg;
@@ -41,54 +40,9 @@ ai.post("/stream", async (c) => {
   const result = streamText({
     model: togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"),
     // model: openrouter("deepseek/deepseek-chat-v3-0324:free"),
-    system: systemPrompt(),
+    system: playgroundPrompt,
     messages: filteredMessages,
     maxSteps: 5,
-    onError: (error) => {
-      console.error("Error in streamText:", error.error);
-    },
-    tools: {
-      askForConfirmation: {
-        description: "Ask the user for any confirmation.",
-        parameters: z.object({
-          message: z
-            .string()
-            .describe("Onboarding message to ask for confirmation."),
-        }),
-      },
-      sendCreateProjectForm: {
-        description: "Send create project form to user. After confirmation.",
-        parameters: z.object({
-          message: z
-            .string()
-            .describe("Message to send to user after confirmation."),
-        }),
-      },
-      sendCreateApiFrom: {
-        description: "Send create API form to user. After confirmation.",
-        parameters: z.object({
-          message: z
-            .string()
-            .describe("Message to send to user after confirmation."),
-        }),
-      },
-      sendApiCopyCard: {
-        description: "Send API Key copy card. After confirmation.",
-        parameters: z.object({
-          message: z
-            .string()
-            .describe("Message to send to user after confirmation."),
-        }),
-      },
-      completeOnboarding: {
-        description: "Send UI to user to confirm onboarding is complete.",
-        parameters: z.object({
-          message: z
-            .string()
-            .describe("Message to ask if onboarding is complete."),
-        }),
-      },
-    },
     onStepFinish: (step) => {
       // console.log("Step finished:", step);
     },
@@ -113,4 +67,4 @@ ai.post("/stream", async (c) => {
   });
 });
 
-export default ai;
+export default playgroundAi;
