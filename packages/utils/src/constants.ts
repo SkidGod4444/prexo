@@ -24,6 +24,7 @@ const socials = {
   discord: "https://l.devwtf.in/plura-dc",
   github: "https://git.new/prexo",
   docs: "https://docs.prexoai.xyz",
+  changelogs: "https://changelogs.prexoai.xyz",
   sponsor: "https://l.devwtf.in/sponsor",
   me: "https://devwtf.in",
   myX: "https://l.devwtf.in/x",

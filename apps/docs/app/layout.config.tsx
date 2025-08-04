@@ -1,7 +1,7 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { socials } from "@prexo/utils/constants";
 import Logo from "@/components/custom/logo";
-import { HeartPlus, MessageCircleDashed } from "lucide-react";
+import { GitCompareArrows, HeartPlus, MessageCircleDashed } from "lucide-react";
 /**
  * Shared layout configurations
  *
@@ -15,6 +15,10 @@ export const baseOptions: BaseLayoutProps = {
     transparentMode: "always",
   },
   githubUrl: socials.github,
+  searchToggle: {
+    enabled: true
+  },
+
   links: [
     {
       type: "button",
@@ -27,6 +31,12 @@ export const baseOptions: BaseLayoutProps = {
       text: "Sponsor on GitHub",
       url: socials.sponsor,
       icon: <HeartPlus />,
+    },
+    {
+      type: "button",
+      text: "Changelogs",
+      url: socials.changelogs,
+      icon: <GitCompareArrows />,
     },
   ],
 };

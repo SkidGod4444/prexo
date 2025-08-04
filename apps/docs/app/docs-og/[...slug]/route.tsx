@@ -13,6 +13,8 @@ export async function GET(
   return generateOGImage({
     title: page.data.title,
     description: page.data.description,
+    primaryColor: "#171717",
+    primaryTextColor: "#ffffff",
     site: "Prexo Ai Documentation",
   });
 }
