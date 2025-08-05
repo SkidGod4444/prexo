@@ -4,7 +4,6 @@ import {
   SectionHeaderHeading,
   SectionHeaderDescription,
 } from "../../text-wrappers";
-import { WarpBackground } from "../../warp-background";
 import {
   Card,
   CardContent,
@@ -31,7 +30,7 @@ export default function OssSec() {
           </SectionHeaderDescription>
         </SectionHeader>
 
-        <WarpBackground className="p-10 md:p-20">
+        <div className="p-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-2">
             {[
               {
@@ -61,26 +60,31 @@ export default function OssSec() {
             ].map((card, i) => (
               <Card
                 key={i}
-                className="flex flex-col justify-between h-full py-0"
+                className="relative h-full rounded-2xl border p-2 md:rounded-3xl md:p-3 bg-transparent"
               >
-                <CardContent className="flex flex-col items-start gap-2 p-5 pb-0">
-                  <CardTitle>{card.title}</CardTitle>
-                  <CardDescription className="text-base text-muted-foreground">
-                    {card.description}
-                  </CardDescription>
-                </CardContent>
-                <CardFooter className="p-5 pt-4">
-                  <Link href={card.href} target="_blank" rel="noreferrer">
-                    <Button className="text-sm">
-                      {card.icon}
-                      {card.label}
-                    </Button>
-                  </Link>
-                </CardFooter>
+                  <div className="border relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 md:p-6 dark:shadow-[0px_0px_20px_0px_#2D2D2D]">
+                    <div className="relative flex flex-1 flex-col justify-between gap-3">
+                      <CardContent className="flex flex-col items-start gap-2 p-0 pb-0">
+                        <CardTitle>{card.title}</CardTitle>
+                        <CardDescription className="text-base text-muted-foreground">
+                          {card.description}
+                        </CardDescription>
+                      </CardContent>
+                      <CardFooter className="p-0 pt-4">
+                        <Link href={card.href} target="_blank" rel="noreferrer">
+                          <Button className="text-sm">
+                            {card.icon}
+                            {card.label}
+                          </Button>
+                        </Link>
+                      </CardFooter>
+                    </div>
+                  </div>
               </Card>
             ))}
           </div>
-        </WarpBackground>
+        </div>
+
       </div>
     </div>
   );
