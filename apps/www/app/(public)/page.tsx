@@ -5,6 +5,7 @@ import { AnncBtn } from "@/components/custom/site/hero/annc.btn";
 import CtaBtns from "@/components/custom/site/hero/cta.btn";
 import MemorySec from "@/components/custom/site/hero/memory.sec";
 import OssSec from "@/components/custom/site/hero/oss.sec";
+import SalesSec from "@/components/custom/site/hero/sales.sec";
 import {
   SectionHeaderDescription,
   SectionHeaderHeading,
@@ -74,6 +75,34 @@ export default function Home() {
         className="flex flex-col items-center justify-center w-full h-full p-4 border-y border-dashed rounded-t-4xl rounded-b-4xl"
       >
         <OssSec />
+      </section>
+
+      <section
+        id="sales"
+        className="relative flex flex-col items-center justify-center w-full h-full p-4 border-y border-dashed rounded-t-4xl rounded-b-4xl"
+      >
+        <div
+          className="absolute inset-0 z-0 flex overflow-hidden [mask-image:radial-gradient(circle_at_center,white_0%,white_30%,transparent_70%)]"
+          style={{ opacity: 0.5 }}
+        >
+          <div
+            className="absolute inset-0 h-full w-full opacity-[0.2] [mask-image:radial-gradient(#fff,transparent,70%)]"
+            style={{
+              backgroundImage: 'url("/img/noise.png")',
+              backgroundSize: "40%",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="flex w-full h-full">
+            {Array.from({ length: g_len }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 min-w-0 h-full bg-gradient-to-r from-neutral-100 to-white shadow-[2px_0px_0px_0px_var(--color-neutral-200)] dark:from-neutral-900 dark:to-black dark:shadow-[2px_0px_0px_0px_var(--color-neutral-800)]"
+              />
+            ))}
+          </div>
+        </div>
+        <SalesSec />
       </section>
     </main>
   );
