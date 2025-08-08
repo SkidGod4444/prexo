@@ -24,10 +24,20 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/auth.context";
 import { UserType } from "@prexo/types";
+import { authClient } from "@prexo/auth/client";
+import { useMyProfileStore } from "@prexo/store";
+import PlansDialog from "./plans.dialog";
 
 export function NavUser({ user }: { user: UserType }) {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
+  const {myProfile} = useMyProfileStore();
+  const isPremium = myProfile?.role === "pro";
+
+  const handleBiling = async () => {
+    const res = await authClient.customer.portal();
+    console.log(res)
+  }
 
   return (
     <SidebarMenu>
@@ -81,10 +91,11 @@ export function NavUser({ user }: { user: UserType }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
+              {isPremium ? <DropdownMenuItem className="cursor-pointer" onClick={handleBiling}>
                 <CreditCard />
                 Billing
-              </DropdownMenuItem>
+              </DropdownMenuItem> : <PlansDialog/>}
+              
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout} className="cursor-pointer">
