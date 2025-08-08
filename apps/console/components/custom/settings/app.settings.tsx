@@ -8,6 +8,7 @@ import { CheckIcon, Copy, Trash2 } from "lucide-react";
 import { useProjectsStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";
 import { toast } from "sonner";
+import DeleteProject from "../proj.delete.btn";
 
 export default function AppSettings() {
   const { projects } = useProjectsStore();
@@ -21,10 +22,15 @@ export default function AppSettings() {
 
   const handleCopy = () => {
     if (inputRef.current && apiId) {
-      navigator.clipboard.writeText(inputRef.current.value);
-      setIsCopied(true);
-      toast("Copied to clipboard!");
-      setTimeout(() => setIsCopied(false), 1500);
+      navigator.clipboard.writeText(inputRef.current.value)
+        .then(() => {
+          setIsCopied(true);
+          toast("Copied to clipboard!");
+          setTimeout(() => setIsCopied(false), 1500);
+        })
+        .catch(() => {
+          toast("Failed to copy to clipboard");
+        });
     }
   };
 
@@ -129,16 +135,7 @@ export default function AppSettings() {
                 cannot be undone. This action is irreversible and can not be
                 undone.
               </span>
-              <Button
-                size="sm"
-                className="w-fit flex items-center justify-end gap-2 bg-red-700 hover:bg-red-800 text-primary"
-                onClick={handleDeleteProject}
-                disabled={isDeleting}
-                type="button"
-              >
-                <Trash2 size={16} />
-                {isDeleting ? "Deleting..." : "Delete Project"}
-              </Button>
+              <DeleteProject name={thisProject?.name ?? ""} />
             </div>
           </CardContent>
         </Card>

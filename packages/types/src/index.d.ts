@@ -22,6 +22,18 @@ type KeyType = {
   roles: string[];
 };
 
+type NotificationType = {
+  id: string;
+  userId: string;
+  title: string;
+  desc?: string | null;
+  icon?: string | null;
+  url?: string | null;
+  isSeen: boolean;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
 type ProjectType = {
   id: string;
   name: string;
@@ -53,4 +65,4 @@ interface PCards {
   }>;
 }
 
-export type { UserType, ProjectType, PCards, KeyType };
+export type { UserType, ProjectType, PCards, KeyType, NotificationType };

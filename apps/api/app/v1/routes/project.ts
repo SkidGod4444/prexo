@@ -29,6 +29,23 @@ project.post("/create", async (c) => {
   return c.json({ project: newProject }, 201);
 });
 
+project.post("/delete", async (c) => {
+  const { id } = await c.req.json();
+  if (!id) {
+    return c.json({ message: "Project id is required" }, 400);
+  }
+
+  try {
+    const deletedProject = await prisma.project.delete({
+      where: { id },
+    });
+    return c.json({ project: deletedProject }, 200);
+  } catch (error) {
+    console.error("Failed to delete project:", error);
+    return c.json({ message: "Failed to delete project" }, 500);
+  }
+});
+
 project.get("/all", async (c) => {
   const session = await auth.api.getSession({
     headers: c.req.raw.headers,

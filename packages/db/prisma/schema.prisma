@@ -1,11 +1,10 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
@@ -89,14 +88,29 @@ model Passkey {
 }
 
 model Project {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
-  domains      String[]
+  domains     String[]
   createdAt   DateTime
   updatedAt   DateTime
   userId      String
-  memoId     String?
-  keyId      String? @unique
+  memoId      String?
+  keyId       String?  @unique
+
   @@map("project")
+}
+
+model Notifications {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  desc      String?
+  icon      String?
+  url       String?
+  isSeen    Boolean  @default(false)
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@map("notifications")
 }

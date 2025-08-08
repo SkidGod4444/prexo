@@ -9,6 +9,9 @@ import {
   DatabaseZap,
   MessageCircleDashed,
   Video,
+  // DollarSign,
+  // SquareDashedMousePointer,
+  // Bolt,
 } from "lucide-react";
 
 import {
@@ -88,6 +91,23 @@ const IntelItems = [
       },
     ],
   },
+  // {
+  //   title: "Commerce",
+  //   url: "#",
+  //   icon: DollarSign,
+  //   subItems: [
+  //     {
+  //       title: "Configs",
+  //       url: "/memory/history",
+  //       icon: Bolt,
+  //     },
+  //     {
+  //       title: "Tools",
+  //       url: "/memory/context",
+  //       icon: SquareDashedMousePointer,
+  //     },
+  //   ],
+  // },
   {
     title: "Playground",
     url: "/playground",

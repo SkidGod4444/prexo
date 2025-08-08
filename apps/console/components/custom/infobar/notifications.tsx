@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BellIcon } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,54 +10,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import Image from "next/image";
+import { toast } from "sonner";
+import { NotificationType } from "@prexo/types";
+import { useRouter } from "next/navigation";
+import { formatDateTimeAgo } from "@/lib/utils";
 
-const initialNotifications = [
-  {
-    id: 1,
-    image: "/logo.png",
-    user: "Chris Tompson",
-    action: "requested review on",
-    target: "PR #42: Feature implementation",
-    timestamp: "15 minutes ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    image: "/logo.png",
-    user: "Emma Davis",
-    action: "shared",
-    target: "New component library",
-    timestamp: "45 minutes ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    image: "/logo.png",
-    user: "James Wilson",
-    action: "assigned you to",
-    target: "API integration task",
-    timestamp: "4 hours ago",
-    unread: false,
-  },
-  {
-    id: 4,
-    image: "/logo.png",
-    user: "Alex Morgan",
-    action: "replied to your comment in",
-    target: "Authentication flow",
-    timestamp: "12 hours ago",
-    unread: false,
-  },
-  {
-    id: 5,
-    image: "/logo.png",
-    user: "Sarah Chen",
-    action: "commented on",
-    target: "Dashboard redesign",
-    timestamp: "2 days ago",
-    unread: false,
-  },
-];
+const nEndpoint =
+  process.env.NODE_ENV == "development"
+    ? "http://localhost:3001/v1/notification"
+    : "https://api.prexoai.xyz/v1/notification";
 
 function Dot({ className }: { className?: string }) {
   return (
@@ -77,30 +37,97 @@ function Dot({ className }: { className?: string }) {
 }
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState(initialNotifications);
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const unreadCount = notifications.filter((n) => !n.isSeen).length;
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleMarkAllAsRead = () => {
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setIsLoading(true);
+      // Wrap the fetch in a toast.promise
+      toast.promise(
+        (async () => {
+          const res = await fetch(`${nEndpoint}/all`, {
+            credentials: "include",
+          });
+          if (!res.ok) {
+            throw new Error("Error while fetching notifications!");
+          }
+          const data = await res.json();
+          if (data.notifications) {
+            setNotifications(data.notifications);
+          }
+          return { name: "Notifications" };
+        })(),
+        {
+          loading: "Loading...",
+          success: (data) => {
+            setIsLoading(false);
+            return `${data.name} fetched successfully!`;
+          },
+          error: (err) => {
+            setIsLoading(false);
+            console.log("Error while fetching notifications!", err);
+            return "Error";
+          },
+        }
+      );
+    };
+
+    if (isOpen) {
+      fetchNotifications();
+    }
+  }, [isOpen]);
+
+  const handleMarkAllAsRead = async () => {
+    const ids = notifications.map((notification) => notification.id);
+    if (ids.length === 0) return;
+
+    await fetch(`${nEndpoint}/mark-as-seen`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ ids }),
+    });
+
     setNotifications(
       notifications.map((notification) => ({
         ...notification,
-        unread: false,
+        isSeen: true,
       })),
     );
+
+    toast.success("Marked all notifications as seen!")
   };
 
-  const handleNotificationClick = (id: number) => {
+  const handleNotificationClick = async (id: string) => {
+    const notification = notifications.find((n) => n.id === id);
+    await fetch(`${nEndpoint}/mark-as-seen`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ ids: [id] }),
+    });
+
     setNotifications(
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, unread: false }
-          : notification,
+      notifications.map((n) =>
+        n.id === id ? { ...n, isSeen: true } : n
       ),
     );
+
+    if (notification && notification.url) {
+      router.push(notification.url);
+    }
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           size="icon"
@@ -133,45 +160,62 @@ export default function Notifications() {
           aria-orientation="horizontal"
           className="bg-border -mx-1 my-1 h-px"
         ></div>
-        {notifications.map((notification) => (
-          <div
-            key={notification.id}
-            className="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors"
-          >
-            <div className="relative flex items-start gap-3 pe-3">
-              <Image
-                className="size-9 rounded-md"
-                src={notification.image}
-                width={32}
-                height={32}
-                alt={notification.user}
-              />
-              <div className="flex-1 space-y-1">
-                <button
-                  className="text-foreground/80 text-left after:absolute after:inset-0"
-                  onClick={() => handleNotificationClick(notification.id)}
-                >
-                  <span className="text-foreground font-medium hover:underline">
-                    {notification.user}
-                  </span>{" "}
-                  {notification.action}{" "}
-                  <span className="text-foreground font-medium hover:underline">
-                    {notification.target}
-                  </span>
-                  .
-                </button>
-                <div className="text-muted-foreground text-xs">
-                  {notification.timestamp}
+        {isLoading || notifications.length == 0 ? (
+          // Skeletons for loading state
+          <>
+            {[...Array(5)].map((_, idx) => (
+              <div
+                key={idx}
+                className="rounded-md px-3 py-2 text-sm animate-pulse flex items-start gap-3 pe-3"
+              >
+                <div className="size-9 rounded-md bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-2/3 bg-muted rounded" />
+                  <div className="h-2 w-1/3 bg-muted rounded" />
                 </div>
+                <div className="size-2 rounded-full bg-muted self-center" />
               </div>
-              {notification.unread && (
-                <div className="absolute end-0 self-center">
-                  <Dot />
+            ))}
+          </>
+        ) : (
+          notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors"
+            >
+              <div className="relative flex items-start gap-3 pe-3">
+                <Image
+                  className="size-9 rounded-md"
+                  src={notification.icon!}
+                  width={32}
+                  height={32}
+                  alt={notification.id}
+                />
+                <div className="flex-1 space-y-1 cursor-pointer">
+                  <button
+                    className="text-foreground/80 text-left after:absolute after:inset-0 cursor-pointer"
+                    onClick={() => handleNotificationClick(notification.id)}
+                  >
+                    <span className="text-foreground font-medium hover:underline">
+                      {notification.title}
+                    </span>
+                    <span className="text-foreground font-medium hover:underline">
+                      {notification.desc}
+                    </span>
+                  </button>
+                  <div className="text-muted-foreground text-xs">
+                    {formatDateTimeAgo(notification.createdAt)}
+                  </div>
                 </div>
-              )}
+                {!notification.isSeen && (
+                  <div className="absolute end-0 self-center">
+                    <Dot />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </PopoverContent>
     </Popover>
   );
