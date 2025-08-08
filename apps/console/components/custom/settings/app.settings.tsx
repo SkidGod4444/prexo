@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckIcon, Copy, Trash2 } from "lucide-react";
+import { CheckIcon, Copy } from "lucide-react";
 import { useProjectsStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";
 import { toast } from "sonner";
@@ -17,7 +17,6 @@ export default function AppSettings() {
   const [name, setName] = useState(thisProject?.name);
   const [apiId] = useState(thisProject?.keyId);
   const [isCopied, setIsCopied] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCopy = () => {
@@ -40,12 +39,6 @@ export default function AppSettings() {
 
   const handleNameSave = () => {
     // Save logic here
-  };
-
-  const handleDeleteProject = () => {
-    setIsDeleting(true);
-    // Add your delete logic here
-    setTimeout(() => setIsDeleting(false), 1200);
   };
 
   return (
