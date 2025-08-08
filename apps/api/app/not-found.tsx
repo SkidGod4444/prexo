@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 // Inline SVG with gradients for the warning icon
 function WarningIcon() {
@@ -49,11 +48,10 @@ export default function NotFound() {
         We&apos;re sorry, we couldn&apos;t find the page you were looking for.
       </p>
       <Link
-        href="/"
+        href="https://prexoai.xyz/auth"
+        className="inline-block px-4 py-2 rounded-md bg-white text-black font-medium text-sm shadow hover:bg-gray-100 transition-colors"
       >
-        <Button size={"sm"}>
         Return home
-        </Button>
       </Link>
     </div>
   );

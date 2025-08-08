@@ -30,4 +30,33 @@ const socials = {
   myX: "https://l.devwtf.in/x",
 };
 
-export { site, socials };
+const pricingModels = [
+  {
+    productId: "0",
+    label: "Free",
+    amount: 0,
+    features: [
+      "Create unlimited projects.",
+      "Remove watermarks.",
+      "Add unlimited users and free viewers.",
+      "Upload unlimited files.",
+      "7-day money back guarantee.",
+      "Advanced permissions.",
+    ]
+  },
+  {
+    productId: "40aaafdf-3ebc-44fe-b11b-883e610a363b",
+    label: "Premium",
+    amount: 19,
+    features: [
+      "Create unlimited projects.",
+      "Remove watermarks.",
+      "Add unlimited users and free viewers.",
+      "Upload unlimited files.",
+      "7-day money back guarantee.",
+      "Advanced permissions.",
+    ]
+  }
+]
+
+export { site, socials, pricingModels };

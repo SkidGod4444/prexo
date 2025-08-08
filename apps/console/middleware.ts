@@ -20,22 +20,6 @@ const projectsEndpoint =
     ? "http://localhost:3001/v1/project/all"
     : "https://api.prexoai.xyz/v1/project/all";
 
-const projectsState = {
-  projects: [] as ProjectType[],
-  get() {
-    return this.projects;
-  },
-  set(newArray: ProjectType[]) {
-    this.projects = newArray;
-  },
-  push(item: ProjectType) {
-    this.projects.push(item);
-  },
-  clear() {
-    this.projects = [];
-  },
-};
-
 export default async function authMiddleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>(
     `${baseDomain}/v1/auth/get-session`,
