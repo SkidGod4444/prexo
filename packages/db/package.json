@@ -19,6 +19,5 @@
         "drizzle-orm": "^0.44.2",
         "postgres": "^3.4.7",
         "prisma": "^6.10.1"
-    },
-    "devDependencies": {}
+    }
 }

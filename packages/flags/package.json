@@ -1,0 +1,17 @@
+{
+  "name": "@prexo/flags",
+  "private": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@flags-sdk/posthog": "^0.2.0",
+    "flags": "^4.0.1"
+  }
+}
