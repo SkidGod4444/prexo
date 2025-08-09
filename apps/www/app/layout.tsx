@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/context/auth.context";
 import { Analytics } from "@vercel/analytics/next";
-import { siteConfig } from "@/lib/config";
+import { siteConfig } from "@prexo/utils/config";
 
 const uxumGrotesque = localFont({
   src: [

@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/auth.context";
 import { ContentProvider } from "@/context/store.context";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { consoleConfig } from "@prexo/utils/config";
 
 const uxumGrotesque = localFont({
   src: [
@@ -83,8 +84,54 @@ const untitledSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Prexo Ai Console",
-  description: "Operated by Plexy HQ",
+  title: {
+    default: consoleConfig.name,
+    template: `%s - ${consoleConfig.name}`,
+  },
+  metadataBase: new URL(consoleConfig.url),
+  description: consoleConfig.description,
+  keywords: [
+    "Saidev Dhal",
+    "Prexo Ai",
+    "Sales Ai Agents",
+    "Customer Support",
+    "Chat Ai Agents",
+    "Chat bot",
+    "AI Chatbot",
+  ],
+  authors: [
+    {
+      name: "Saidev Dhal",
+      url: "https://devwtf.in",
+    },
+  ],
+  creator: "Saidev Dhal",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: consoleConfig.url,
+    title: consoleConfig.name,
+    description: consoleConfig.description,
+    siteName: consoleConfig.name,
+    images: [
+      {
+        url: consoleConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: consoleConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: consoleConfig.name,
+    description: consoleConfig.description,
+    images: [consoleConfig.ogImage],
+    creator: "@SaidevDhal",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
