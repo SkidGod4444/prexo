@@ -1,6 +1,12 @@
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
-import { createApi, getApiKey, verifyApi } from "@prexo/keys";
+import {
+  createApi,
+  deleteApiKey,
+  getApiKey,
+  listApiKeys,
+  verifyApi,
+} from "@prexo/keys";
 import { checkUser } from "@/checks/check.user";
 
 const api = new Hono();
@@ -69,6 +75,34 @@ api.post("/verify", async (c) => {
   }
 
   return c.json({ result: verify.result }, 201);
+});
+
+api.post("/delete", async (c) => {
+  const { keyId } = await c.req.json();
+  if (!keyId) {
+    return c.json({ message: "API keyId is required" }, 400);
+  }
+
+  const res = await deleteApiKey(keyId);
+  if (!res) {
+    return c.json({ message: "Failed to delete API key" }, 401);
+  }
+
+  return c.json({ message: "API key deleted successfully!" }, 201);
+});
+
+api.get("/list/:extId", async (c) => {
+  const extId = c.req.param("extId");
+  if (!extId) {
+    return c.json({ message: "External ID is required" }, 400);
+  }
+
+  const res = await listApiKeys(extId);
+  if (!res.keys) {
+    return c.json({ message: "Failed to list API keys" }, 401);
+  }
+
+  return c.json({ result: res.keys }, 201);
 });
 
 api.get("/key/:keyId", async (c) => {

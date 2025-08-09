@@ -1,7 +1,7 @@
-import { useId, useState } from "react"
-import { CheckIcon, BanknoteArrowUp, RefreshCcwIcon } from "lucide-react"
+import { useId, useState } from "react";
+import { CheckIcon, BanknoteArrowUp, RefreshCcwIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,24 +10,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useMyProfileStore } from "@prexo/store"
-import { useRouter } from "next/navigation"
-import { getCheckoutLink } from "@prexo/auth/client"
-import {pricingModels} from "@prexo/utils/constants"
-
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useMyProfileStore } from "@prexo/store";
+import { useRouter } from "next/navigation";
+import { getCheckoutLink } from "@prexo/auth/client";
+import { pricingModels } from "@prexo/utils/constants";
 
 export default function PlansDialog() {
-  const id = useId()
-  const [value, setValue] = useState(pricingModels[0].productId)
-  const {myProfile} = useMyProfileStore();
+  const id = useId();
+  const [value, setValue] = useState(pricingModels[0].productId);
+  const { myProfile } = useMyProfileStore();
   const router = useRouter();
   const redirectUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://prexoai.xyz/auth"
-    : "http://localhost:3000/auth";
+    process.env.NODE_ENV === "production"
+      ? "https://prexoai.xyz/auth"
+      : "http://localhost:3000/auth";
 
   const handleBtnClick = async (prodId: string) => {
     try {
@@ -35,9 +34,7 @@ export default function PlansDialog() {
         console.log("User is not authenticated, redirecting to auth page");
         router.push(`${redirectUrl}?redirect=/pricing`);
       }
-      const checkoutLink = await getCheckoutLink([
-        prodId,
-      ]);
+      const checkoutLink = await getCheckoutLink([prodId]);
       if (checkoutLink) {
         router.push(checkoutLink);
       } else {
@@ -51,9 +48,12 @@ export default function PlansDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"ghost"} className="w-full items-start justify-start px-0">
-        <BanknoteArrowUp className="size-5 text-muted-foreground" />
-            Upgrade Plan
+        <Button
+          variant={"ghost"}
+          className="w-full items-start justify-start px-0"
+        >
+          <BanknoteArrowUp className="size-5 text-muted-foreground" />
+          Upgrade Plan
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -91,7 +91,9 @@ export default function PlansDialog() {
                   className="order-1 after:absolute after:inset-0 cursor-pointer"
                 />
                 <div className="grid grow gap-1">
-                  <Label htmlFor={`${id}-${plan.productId}`}>{plan.label}</Label>
+                  <Label htmlFor={`${id}-${plan.productId}`}>
+                    {plan.label}
+                  </Label>
                   <p
                     id={`${id}-${plan.productId}-description`}
                     className="text-muted-foreground text-xs"
@@ -109,7 +111,8 @@ export default function PlansDialog() {
             </p>
             <ul className="text-muted-foreground space-y-2 text-sm">
               {pricingModels
-                .find((plan) => plan.productId === value)?.features.map((feature, i) => (
+                .find((plan) => plan.productId === value)
+                ?.features.map((feature, i) => (
                   <li className="flex gap-2" key={i}>
                     <CheckIcon
                       size={16}
@@ -140,5 +143,5 @@ export default function PlansDialog() {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

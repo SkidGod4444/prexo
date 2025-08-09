@@ -38,7 +38,7 @@ type ProjectType = {
   id: string;
   name: string;
   description?: string | null;
-  domains: string[];
+  domains: DomainType[];
   createdAt: Date | string;
   updatedAt: Date | string;
   userId: string;
@@ -46,6 +46,12 @@ type ProjectType = {
   keyId?: string | null;
 };
 
+type DomainType = {
+  id: string;
+  name: string;
+  alias?: string;
+  status: "Valid" | "Invalid" | "Pending";
+};
 interface PCards {
   isYearly?: boolean;
   isUserAuthenticated?: boolean;
@@ -65,4 +71,11 @@ interface PCards {
   }>;
 }
 
-export type { UserType, ProjectType, PCards, KeyType, NotificationType };
+export type {
+  UserType,
+  ProjectType,
+  PCards,
+  KeyType,
+  NotificationType,
+  DomainType,
+};

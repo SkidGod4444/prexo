@@ -1,6 +1,10 @@
 "use client";
-import { useApiKeyStore, useProjectsStore } from "@prexo/store";
-import { ProjectType } from "@prexo/types";
+import {
+  useApiKeyStore,
+  useDomainsStore,
+  useProjectsStore,
+} from "@prexo/store";
+import { DomainType, ProjectType } from "@prexo/types";
 import {
   createContext,
   useContext,
@@ -21,12 +25,18 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
 
   const { projects, setProjects } = useProjectsStore();
+  const { domains, setDomains } = useDomainsStore();
   const { key, setKey } = useApiKeyStore();
 
   const PROJECTS_API_ENDPOINT =
     process.env.NODE_ENV == "development"
       ? "http://localhost:3001/v1/project/all"
       : "https://api.prexoai.xyz/v1/project/all";
+
+  const DOMAINS_API_ENDPOINT =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/domain/all"
+      : "https://api.prexoai.xyz/v1/domain/all";
 
   function getKeyApiEndpoint(keyId: string) {
     return process.env.NODE_ENV == "development"
@@ -58,10 +68,42 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchDomains() {
+      setContentLoading(true);
+      try {
+        const data = await fetch(DOMAINS_API_ENDPOINT, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ projectId: consoleId }),
+        });
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch domains: ${data.status}`);
+        }
+
+        const response = await data.json();
+        if (response?.domains) {
+          setDomains(response.domains.map((domain: DomainType) => domain));
+        }
+      } catch (error) {
+        console.error("Error fetching domains:", error);
+        // Consider adding error state to context for UI feedback
+      } finally {
+        setContentLoading(false);
+      }
+    }
+
     if (projects.length === 0) {
       fetchProjects();
     }
-  }, [projects.length, setProjects]);
+
+    if (domains.length === 0) {
+      fetchDomains();
+    }
+  }, [projects.length, setProjects, consoleId, setDomains, domains]);
 
   useEffect(() => {
     async function fetchKeyDetails() {

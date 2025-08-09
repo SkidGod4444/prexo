@@ -51,6 +51,7 @@ export function FeedbackModal() {
     "happy",
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { myProfile } = useMyProfileStore();
 
   const form = useForm<PostSchema>({
@@ -75,19 +76,22 @@ export function FeedbackModal() {
               : "#ef4444", // red
       });
       setIsLoading(false);
+      setIsOpen(false);
     } catch (error) {
       setIsLoading(false);
+      setIsOpen(false);
       console.error(error);
       toast.error(`Error in submiting feeback !Please try again `);
     } finally {
       setIsLoading(false);
+      setIsOpen(false);
       form.reset();
       toast.success(`Thanks for your feedback!`);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"}>
           <PenLine /> Feedback{" "}

@@ -16,7 +16,7 @@ export const baseOptions: BaseLayoutProps = {
   },
   githubUrl: socials.github,
   searchToggle: {
-    enabled: true
+    enabled: true,
   },
 
   links: [

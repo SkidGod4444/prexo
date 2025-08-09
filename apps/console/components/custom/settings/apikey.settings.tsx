@@ -72,7 +72,7 @@ export default function ApiKeySettings() {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<number | null>(
-    options[0].value,
+    options[0]?.value ?? null,
   );
   useEffect(() => {
     if (apiKey.length > 0 && !isOpen && !isOpen2) {

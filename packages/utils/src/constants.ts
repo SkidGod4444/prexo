@@ -42,7 +42,7 @@ const pricingModels = [
       "Upload unlimited files.",
       "7-day money back guarantee.",
       "Advanced permissions.",
-    ]
+    ],
   },
   {
     productId: "40aaafdf-3ebc-44fe-b11b-883e610a363b",
@@ -55,8 +55,8 @@ const pricingModels = [
       "Upload unlimited files.",
       "7-day money back guarantee.",
       "Advanced permissions.",
-    ]
-  }
-]
+    ],
+  },
+];
 
 export { site, socials, pricingModels };

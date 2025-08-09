@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ApiKeyStore, MyProfileStore, ProjectStore, UserStore } from "../types";
+import {
+  ApiKeyStore,
+  DomainStore,
+  MyProfileStore,
+  ProjectStore,
+  UserStore,
+} from "../types";
 import { KeyType } from "@prexo/types";
 
 const useUsersStore = create<UserStore>()(
@@ -50,6 +56,24 @@ const useProjectsStore = create<ProjectStore>()(
   ),
 );
 
+const useDomainsStore = create<DomainStore>()(
+  persist(
+    (set) => ({
+      domains: [],
+      addDomain: (domain) =>
+        set((state) => ({ domains: [...state.domains, domain] })),
+      removeDomain: (domainId) =>
+        set((state) => ({
+          domains: state.domains.filter((p) => p.id !== domainId),
+        })),
+      setDomains: (domains) => set({ domains }),
+    }),
+    {
+      name: "@prexo-#domains",
+    },
+  ),
+);
+
 const useMyProfileStore = create<MyProfileStore>()(
   persist(
     (set) => ({
@@ -69,4 +93,10 @@ const useMyProfileStore = create<MyProfileStore>()(
   ),
 );
 
-export { useUsersStore, useMyProfileStore, useProjectsStore, useApiKeyStore };
+export {
+  useUsersStore,
+  useMyProfileStore,
+  useProjectsStore,
+  useApiKeyStore,
+  useDomainsStore,
+};

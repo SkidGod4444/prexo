@@ -1,4 +1,4 @@
-import { ProjectType, UserType, KeyType } from "@prexo/types";
+import { ProjectType, UserType, KeyType, DomainType } from "@prexo/types";
 
 type UserStore = {
   users: UserType[];
@@ -27,4 +27,17 @@ type ProjectStore = {
   setProjects: (projects: ProjectType[]) => void;
 };
 
-export type { UserStore, MyProfileStore, ProjectStore, ApiKeyStore };
+type DomainStore = {
+  domains: DomainType[];
+  addDomain: (domain: DomainType) => void;
+  removeDomain: (domainId: string) => void;
+  setDomains: (domains: DomainType[]) => void;
+};
+
+export type {
+  UserStore,
+  MyProfileStore,
+  ProjectStore,
+  ApiKeyStore,
+  DomainStore,
+};

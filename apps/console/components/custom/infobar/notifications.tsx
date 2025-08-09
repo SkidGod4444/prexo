@@ -72,7 +72,7 @@ export default function Notifications() {
             console.log("Error while fetching notifications!", err);
             return "Error";
           },
-        }
+        },
       );
     };
 
@@ -101,7 +101,7 @@ export default function Notifications() {
       })),
     );
 
-    toast.success("Marked all notifications as seen!")
+    toast.success("Marked all notifications as seen!");
   };
 
   const handleNotificationClick = async (id: string) => {
@@ -116,9 +116,7 @@ export default function Notifications() {
     });
 
     setNotifications(
-      notifications.map((n) =>
-        n.id === id ? { ...n, isSeen: true } : n
-      ),
+      notifications.map((n) => (n.id === id ? { ...n, isSeen: true } : n)),
     );
 
     if (notification && notification.url) {

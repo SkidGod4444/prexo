@@ -38,7 +38,7 @@ async function feedbacksLogger({
       ].join("\n"),
     )
     .setColor(color);
-  logger.log({ embed: embed });
+  logger.log({ embed: embed, content: "<@&1403569727351164958>" });
   return true;
 }
 

@@ -69,7 +69,7 @@ export default function Infobar() {
   return (
     <nav
       className={`flex w-full items-center sticky top-0 right-0 bg-background border-b ${
-        isScrolled ? "z-[500]" : "z-50"
+        isScrolled ? "z-[100]" : "z-50"
       }`}
     >
       <div className="flex flex-row items-center gap-2 py-3 w-full">
@@ -99,7 +99,7 @@ export default function Infobar() {
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0 ml-2">
+                <PopoverContent className="w-[200px] p-0 ml-2 z-[500]">
                   <Command>
                     <CommandInput
                       placeholder="Search project..."

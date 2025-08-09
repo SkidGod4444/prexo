@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String          @id
   name          String
   email         String
   emailVerified Boolean
@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   passkeys      Passkey[]
+  notifications Notifications[]
 
   @@unique([email])
   @@map("user")
@@ -91,7 +92,7 @@ model Project {
   id          String   @id @default(uuid())
   name        String
   description String?
-  domains     String[]
+  domains     Domain[]
   createdAt   DateTime
   updatedAt   DateTime
   userId      String
@@ -101,16 +102,31 @@ model Project {
   @@map("project")
 }
 
+model Domain {
+  id        String   @id @default(uuid())
+  name      String // full domain e.g. "www.xyz.com"
+  alias     String // subdomain/alias
+  status    String // e.g. "Invalid", "Pending", "Active"
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  hash      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("domain")
+}
+
 model Notifications {
   id        String   @id @default(uuid())
   userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   desc      String?
   icon      String?
   url       String?
   isSeen    Boolean  @default(false)
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("notifications")
 }

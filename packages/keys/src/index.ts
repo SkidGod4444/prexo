@@ -88,19 +88,16 @@ async function getApiKey(keyId: string) {
   }
 }
 
-async function deleteApiKey(apiKey: string) {
+async function deleteApiKey(keyId: string) {
   try {
     const { result, error } = await unkey.keys.delete({
-      keyId: apiKey,
+      keyId: keyId,
     });
     if (error) {
       console.error("Error deleting API key:", error);
       throw new Error("Invalid API key");
     }
-    if (!result) {
-      throw new Error("API key not found");
-    }
-    console.log("API key deleted successfully:", result);
+    console.log("API key deleted successfully");
     return result;
   } catch (error) {
     console.error("Error deleting API key:", error);
@@ -127,6 +124,28 @@ async function getApiAnalytics(apiKey: string, projectID: string) {
   } catch (error) {
     console.error("Error getting API analytics:", error);
     throw new Error("Failed to get API analytics");
+  }
+}
+
+async function listApiKeys(externalId: string) {
+  try {
+    const { result, error } = await unkey.apis.listKeys({
+      apiId: apiID,
+      externalId,
+      limit: 100,
+    });
+    if (error) {
+      console.error("Error getting API keys:", error);
+      throw new Error("Failed to get API keys");
+    }
+    if (!result) {
+      throw new Error("No API keys found");
+    }
+    console.log("API keys retrieved successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error getting API keys:", error);
+    throw new Error("Failed to get API keys");
   }
 }
 
@@ -157,4 +176,5 @@ export {
   getApiAnalytics,
   deleteApiKey,
   listAllApiKeys,
+  listApiKeys,
 };

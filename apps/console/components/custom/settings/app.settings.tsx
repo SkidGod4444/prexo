@@ -21,7 +21,8 @@ export default function AppSettings() {
 
   const handleCopy = () => {
     if (inputRef.current && apiId) {
-      navigator.clipboard.writeText(inputRef.current.value)
+      navigator.clipboard
+        .writeText(inputRef.current.value)
         .then(() => {
           setIsCopied(true);
           toast("Copied to clipboard!");

@@ -48,12 +48,8 @@ export default function NotFound() {
       <p className="text-gray-400 text-base mb-8 text-center max-w-md">
         We&apos;re sorry, we couldn&apos;t find the page you were looking for.
       </p>
-      <Link
-        href="/"
-      >
-        <Button size={"sm"}>
-        Return home
-        </Button>
+      <Link href="/">
+        <Button size={"sm"}>Return home</Button>
       </Link>
     </div>
   );

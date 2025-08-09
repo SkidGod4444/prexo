@@ -62,29 +62,28 @@ export default function OssSec() {
                 key={i}
                 className="relative h-full rounded-2xl border p-2 md:rounded-3xl md:p-3 bg-transparent"
               >
-                  <div className="border relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 md:p-6 dark:shadow-[0px_0px_20px_0px_#2D2D2D]">
-                    <div className="relative flex flex-1 flex-col justify-between gap-3">
-                      <CardContent className="flex flex-col items-start gap-2 p-0 pb-0">
-                        <CardTitle>{card.title}</CardTitle>
-                        <CardDescription className="text-base text-muted-foreground">
-                          {card.description}
-                        </CardDescription>
-                      </CardContent>
-                      <CardFooter className="p-0 pt-4">
-                        <Link href={card.href} target="_blank" rel="noreferrer">
-                          <Button className="text-sm">
-                            {card.icon}
-                            {card.label}
-                          </Button>
-                        </Link>
-                      </CardFooter>
-                    </div>
+                <div className="border relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 md:p-6 dark:shadow-[0px_0px_20px_0px_#2D2D2D]">
+                  <div className="relative flex flex-1 flex-col justify-between gap-3">
+                    <CardContent className="flex flex-col items-start gap-2 p-0 pb-0">
+                      <CardTitle>{card.title}</CardTitle>
+                      <CardDescription className="text-base text-muted-foreground">
+                        {card.description}
+                      </CardDescription>
+                    </CardContent>
+                    <CardFooter className="p-0 pt-4">
+                      <Link href={card.href} target="_blank" rel="noreferrer">
+                        <Button className="text-sm">
+                          {card.icon}
+                          {card.label}
+                        </Button>
+                      </Link>
+                    </CardFooter>
                   </div>
+                </div>
               </Card>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

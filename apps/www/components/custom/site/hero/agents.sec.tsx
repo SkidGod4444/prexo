@@ -66,7 +66,7 @@ export default function AgentsSec({ isMob = false }: { isMob?: boolean }) {
               key={index}
               className={cn(
                 card.class,
-                "relative group h-full rounded-2xl border p-2 md:rounded-3xl md:p-3 flex flex-col"
+                "relative group h-full rounded-2xl border p-2 md:rounded-3xl md:p-3 flex flex-col",
               )}
             >
               <div className="border relative flex flex-1 flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 md:p-6 dark:shadow-[0px_0px_20px_0px_#2D2D2D]">

@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import React, { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 export default function ChatPannel() {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -7,11 +12,9 @@ export default function ChatPannel() {
   return (
     <Card
       className={`flex flex-col h-full p-0 w-full bg-black text-white transition-all duration-300 ${
-        isFullscreen
-          ? 'fixed inset-0 z-50 rounded-none h-screen w-screen'
-          : ''
+        isFullscreen ? "fixed inset-0 z-50 rounded-none h-screen w-screen" : ""
       }`}
-    //   style={isFullscreen ? { borderRadius: 0 } : {}}
+      //   style={isFullscreen ? { borderRadius: 0 } : {}}
     >
       {/* Header */}
       <CardHeader className="flex flex-row items-center justify-between px-4 py-2 border-b">
@@ -30,7 +33,15 @@ export default function ChatPannel() {
               onClick={() => setIsFullscreen(false)}
             >
               {/* Minimize Icon */}
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-zinc-400"
+                aria-hidden="true"
+              >
                 <rect x="4" y="8" width="10" height="2" rx="1" />
               </svg>
             </button>
@@ -42,7 +53,15 @@ export default function ChatPannel() {
               onClick={() => setIsFullscreen(true)}
             >
               {/* Maximize Icon */}
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-zinc-400"
+                aria-hidden="true"
+              >
                 <rect x="3" y="3" width="12" height="12" rx="2" />
               </svg>
             </button>
@@ -53,7 +72,17 @@ export default function ChatPannel() {
             title="Info"
             aria-label="Info"
           >
-            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400" aria-hidden="true"><circle cx="9" cy="9" r="7"></circle></svg>
+            <svg
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="text-zinc-400"
+              aria-hidden="true"
+            >
+              <circle cx="9" cy="9" r="7"></circle>
+            </svg>
           </button>
         </div>
       </CardHeader>
@@ -62,11 +91,14 @@ export default function ChatPannel() {
         <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-lg shadow-lg p-6">
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-zinc-400 text-xs">OpenAI / GPT-3.5 Turbo Instruct</span>
+              <span className="text-zinc-400 text-xs">
+                OpenAI / GPT-3.5 Turbo Instruct
+              </span>
             </div>
             <div className="text-zinc-300 text-sm">
               <p>
-                Faster, capable, and API-compatible. Complete all legacy Completions endpoints except Chat Completions.
+                Faster, capable, and API-compatible. Complete all legacy
+                Completions endpoints except Chat Completions.
               </p>
             </div>
           </div>
@@ -85,13 +117,21 @@ export default function ChatPannel() {
             </div>
           </div>
           <div className="flex gap-2 mt-4 text-xs text-zinc-500">
-            <a href="#" className="hover:underline">Model Page</a>
+            <a href="#" className="hover:underline">
+              Model Page
+            </a>
             <span>·</span>
-            <a href="#" className="hover:underline">Terms</a>
+            <a href="#" className="hover:underline">
+              Terms
+            </a>
             <span>·</span>
-            <a href="#" className="hover:underline">Privacy</a>
+            <a href="#" className="hover:underline">
+              Privacy
+            </a>
             <span>·</span>
-            <a href="#" className="hover:underline">Website</a>
+            <a href="#" className="hover:underline">
+              Website
+            </a>
           </div>
         </div>
       </CardContent>
@@ -107,7 +147,15 @@ export default function ChatPannel() {
           title="Send"
           aria-label="Send"
         >
-          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" className="inline-block" aria-hidden="true">
+          <svg
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="inline-block"
+            aria-hidden="true"
+          >
             <path d="M3 10l13-5-5 13-2-6-6-2z"></path>
           </svg>
         </button>

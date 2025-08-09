@@ -154,4 +154,3 @@ export function formatDateTimeAgo(date: Date | string): string {
   const years = Math.floor(months / 12);
   return `${years} year${years === 1 ? "" : "s"} ago`;
 }
-

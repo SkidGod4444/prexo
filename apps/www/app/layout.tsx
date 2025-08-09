@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/context/auth.context";
+import { Analytics } from "@vercel/analytics/next";
 
 const uxumGrotesque = localFont({
   src: [
@@ -105,6 +106,7 @@ export default function RootLayout({
             </div>
           </ThemeProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
