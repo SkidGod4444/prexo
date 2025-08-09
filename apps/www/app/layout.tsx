@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/context/auth.context";
 import { Analytics } from "@vercel/analytics/next";
+import { siteConfig } from "@/lib/config";
 
 const uxumGrotesque = localFont({
   src: [
@@ -80,8 +81,54 @@ const untitledSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Prexo AI",
-  description: "Operated by Plexy HQ",
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  metadataBase: new URL(siteConfig.url),
+  description: siteConfig.description,
+  keywords: [
+    "Saidev Dhal",
+    "Prexo Ai",
+    "Sales Ai Agents",
+    "Customer Support",
+    "Chat Ai Agents",
+    "Chat bot",
+    "AI Chatbot",
+  ],
+  authors: [
+    {
+      name: "Saidev Dhal",
+      url: "https://devwtf.in",
+    },
+  ],
+  creator: "Saidev Dhal",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+    creator: "@SaidevDhal",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

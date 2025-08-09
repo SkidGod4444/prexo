@@ -18,7 +18,6 @@ export const baseOptions: BaseLayoutProps = {
   searchToggle: {
     enabled: true,
   },
-
   links: [
     {
       type: "button",
