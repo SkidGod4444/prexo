@@ -46,6 +46,35 @@ project.post("/delete", async (c) => {
   }
 });
 
+project.post("/update", async (c) => {
+  const { id, ...fields } = await c.req.json();
+  if (!id) {
+    return c.json({ message: "Project id is required" }, 400);
+  }
+
+  // Remove fields that should not be updated directly
+  delete fields.id;
+  delete fields.createdAt;
+  // Always update updatedAt
+  fields.updatedAt = new Date();
+
+  if (Object.keys(fields).length === 1 && fields.updatedAt) {
+    // No updatable fields provided
+    return c.json({ message: "No fields to update" }, 400);
+  }
+
+  try {
+    const updatedProject = await prisma.project.update({
+      where: { id },
+      data: fields,
+    });
+    return c.json({ project: updatedProject }, 200);
+  } catch (error) {
+    console.error("Failed to update project:", error);
+    return c.json({ message: "Failed to update project" }, 500);
+  }
+});
+
 project.get("/all", async (c) => {
   const session = await auth.api.getSession({
     headers: c.req.raw.headers,

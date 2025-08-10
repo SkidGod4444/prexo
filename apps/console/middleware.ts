@@ -1,6 +1,5 @@
 import { betterFetch } from "@better-fetch/fetch";
 import type { Session } from "@prexo/auth";
-import { ProjectType } from "@prexo/types";
 import { NextResponse, type NextRequest } from "next/server";
 const baseDomain =
   process.env.NODE_ENV === "production"
@@ -15,11 +14,6 @@ const appDomain =
     ? "https://console.prexoai.xyz"
     : "http://localhost:3002";
 
-const projectsEndpoint =
-  process.env.NODE_ENV == "development"
-    ? "http://localhost:3001/v1/project/all"
-    : "https://api.prexoai.xyz/v1/project/all";
-
 export default async function authMiddleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>(
     `${baseDomain}/v1/auth/get-session`,
@@ -33,32 +27,38 @@ export default async function authMiddleware(request: NextRequest) {
 
   const currentPath = request.nextUrl.pathname;
 
+  // If not authenticated, redirect to login unless already there
   if (!session) {
+    if (currentPath.startsWith("/auth")) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Check for inactive user role
+  // If user is inactive, always redirect to /new unless already there
   if ("role" in session.user && session.user.role === "inactive") {
-    const { data } = await betterFetch<ProjectType[]>(`${projectsEndpoint}`, {
-      headers: {
-        cookie: request.headers.get("cookie") || "",
-      },
-    });
-
-    if (data && data.length == 0) {
+    if (currentPath !== "/new") {
       return NextResponse.redirect(`${appDomain}/new`);
     }
+    return NextResponse.next();
   }
 
-  if (!("role" in session.user) || session.user.role !== "onboarded") {
+  // If user is not onboarded or inactive, redirect to login unless already there
+  if (
+    !("role" in session.user) ||
+    (session.user.role !== "onboarded" && session.user.role !== "inactive")
+  ) {
+    if (currentPath.startsWith("/auth")) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (session.user.role === "onboarded" && currentPath === "/") {
-    return NextResponse.redirect(`${appDomain}/dashboard`);
-  }
-
-  if (session.user.role === "onboarded" && currentPath === "/new") {
+  // If onboarded and on root or /new, redirect to dashboard
+  if (
+    session.user.role === "onboarded" &&
+    (currentPath === "/" || currentPath === "/new")
+  ) {
     return NextResponse.redirect(`${appDomain}/dashboard`);
   }
 

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.pinimg.com",
       },
+      {
+        protocol: "https",
+        hostname: "bqg1lznd8n.ufs.sh",
+      },
     ],
   },
 };

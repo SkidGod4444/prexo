@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import SectionLabel from "../section.label";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,15 +9,24 @@ import { useProjectsStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";
 import { toast } from "sonner";
 import DeleteProject from "../proj.delete.btn";
+import { useRouter } from "next/navigation";
+
+const API_ENDPOINT =
+  process.env.NODE_ENV == "development"
+    ? "http://localhost:3001/v1/project"
+    : "https://api.prexoai.xyz/v1/project";
 
 export default function AppSettings() {
-  const { projects } = useProjectsStore();
+  const { projects, setProjects } = useProjectsStore();
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const thisProject = projects.find((project) => project.id === consoleId);
   const [name, setName] = useState(thisProject?.name);
+  const [desc, setDesc] = useState(thisProject?.description);
   const [apiId] = useState(thisProject?.keyId);
   const [isCopied, setIsCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleCopy = () => {
     if (inputRef.current && apiId) {
@@ -34,12 +43,44 @@ export default function AppSettings() {
     }
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
-  const handleNameSave = () => {
-    // Save logic here
+  const handleOnSave = () => {
+    if (name && name?.length > 0) {
+      setIsLoading(true);
+      toast.promise(
+        (async () => {
+          const res = await fetch(`${API_ENDPOINT}/update`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: consoleId,
+              name: name?.trim(),
+              description: desc?.trim(),
+            }),
+          });
+          if (!res.ok) {
+            throw new Error("Error while updating name!");
+          }
+          return { name: "Name & Description" };
+        })(),
+        {
+          loading: "Loading...",
+          success: (data) => {
+            setIsLoading(false);
+            setProjects([]);
+            router.refresh();
+            return `${data.name} updated successfully!`;
+          },
+          error: (err) => {
+            setIsLoading(false);
+            console.log("Error while updating name!", err);
+            return "Error";
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -51,74 +92,94 @@ export default function AppSettings() {
         />
       </div>
       <div className="flex flex-col gap-4 w-full mt-5">
-        {/* Name Card */}
+        {/* Name & Description Card */}
         <Card className="w-full p-0">
           <CardContent className="p-3">
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="project-name" className="text-lg font-medium">
-                Name
-              </Label>
-              <span className="text-sm text-muted-foreground">
-                Change the name of your Project. This is only visible to you and
-                your team.
-              </span>
-              <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="project-name" className="text-lg font-medium">
+                  Name
+                </Label>
+                <span className="text-sm text-muted-foreground">
+                  Change the name of your Project. This is only visible to you
+                  and your team.
+                </span>
                 <Input
                   id="project-name"
                   value={name}
-                  onChange={handleNameChange}
-                  className="flex-1"
+                  onChange={(e) => setName(e.target.value)}
                   autoComplete="off"
+                  disabled={isLoading}
                 />
-                <Button
-                  size="sm"
-                  className="px-4"
-                  onClick={handleNameSave}
-                  type="button"
-                >
-                  Save
-                </Button>
+              </div>
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="project-desc" className="text-lg font-medium">
+                  Description
+                </Label>
+                <span className="text-sm text-muted-foreground">
+                  Change the description of your Project. This is only visible
+                  to you and your team.
+                </span>
+                <Input
+                  id="project-desc"
+                  value={desc!}
+                  onChange={(e) => setDesc(e.target.value)}
+                  autoComplete="off"
+                  disabled={isLoading}
+                />
               </div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end border-t p-2">
+            <Button
+              className="flex-1"
+              onClick={handleOnSave}
+              type="button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
+            </Button>
+          </CardFooter>
         </Card>
         {/* API ID Card */}
-        <Card className="w-full p-0">
-          <CardContent className="p-3">
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="api-id" className="text-lg font-medium">
-                API ID
-              </Label>
-              <span className="text-sm text-muted-foreground">
-                An identifier for this Project&apos;s API, used in some API
-                calls.
-              </span>
-              <div className="flex flex-row gap-2 items-center">
-                <Input
-                  id="api-id"
-                  value={apiId!}
-                  readOnly
-                  ref={inputRef}
-                  className="flex-1"
-                />
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="px-2"
-                  onClick={handleCopy}
-                  type="button"
-                  aria-label="Copy API ID"
-                >
-                  {isCopied ? (
-                    <CheckIcon size={16} className="text-green-500" />
-                  ) : (
-                    <Copy size={16} />
-                  )}
-                </Button>
+        {apiId && (
+          <Card className="w-full p-0">
+            <CardContent className="p-3">
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="api-id" className="text-lg font-medium">
+                  API ID
+                </Label>
+                <span className="text-sm text-muted-foreground">
+                  An identifier for this Project&apos;s API, used in some API
+                  calls.
+                </span>
+                <div className="flex flex-row gap-2 items-center">
+                  <Input
+                    id="api-id"
+                    value={apiId!}
+                    readOnly
+                    ref={inputRef}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="px-2"
+                    onClick={handleCopy}
+                    type="button"
+                    aria-label="Copy API ID"
+                  >
+                    {isCopied ? (
+                      <CheckIcon size={16} className="text-green-500" />
+                    ) : (
+                      <Copy size={16} />
+                    )}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
         {/* Delete Project Card */}
         <Card className="w-full p-0">
           <CardContent className="p-3">

@@ -11,6 +11,9 @@ const socials = {
   dashboard: "https://console.prexoai.xyz",
 };
 
+const logoUrl =
+  "https://bqg1lznd8n.ufs.sh/f/gqK0LVQDoyuw7sESAXos1YawOJpiue2bSzn06vylhGBx5kmg";
+
 const pricingModels = [
   {
     productId: "0",
@@ -40,4 +43,4 @@ const pricingModels = [
   },
 ];
 
-export { socials, pricingModels };
+export { socials, pricingModels, logoUrl };

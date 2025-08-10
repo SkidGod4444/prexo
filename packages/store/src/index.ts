@@ -27,9 +27,9 @@ const useUsersStore = create<UserStore>()(
 const useApiKeyStore = create<ApiKeyStore>()(
   persist(
     (set) => ({
-      key: {} as KeyType,
+      key: null,
       addKey: (key) => set({ key }),
-      removeKey: () => set({ key: {} as KeyType }),
+      removeKey: () => set({ key: null }),
       setKey: (key) => set({ key }),
     }),
     {

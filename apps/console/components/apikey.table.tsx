@@ -22,6 +22,9 @@ const renderSkeletonRows = () => (
 
 export default function ApiKeyTable({ keyData }: { keyData: KeyType }) {
   const key = keyData;
+  if (!key) {
+    return;
+  }
 
   return (
     <div className="flex h-full w-full min-w-0">

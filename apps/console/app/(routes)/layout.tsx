@@ -10,7 +10,7 @@ async function RouteLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <div className="py-2 px-6 w-full">
+      <div className="md:px-6 md:py-3 py-2 px-3 w-full">
         <Infobar />
         {children}
       </div>

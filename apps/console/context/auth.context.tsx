@@ -85,6 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     removeKey,
     setCons,
     setProjects,
+    cons,
   ]);
 
   // Add logout logic here, inbuilt removeMyProfile

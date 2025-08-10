@@ -1,3 +1,4 @@
+import { logoUrl } from "@prexo/utils/constants";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
@@ -22,7 +23,7 @@ export default function Logo({
   useEffect(() => {
     if (isCollapsed) {
       setDisplayText("");
-    } else {
+    } else if (isTextVisible) {
       // Show text letter by letter
       let currentLength = 0;
       const interval = setInterval(() => {
@@ -35,13 +36,15 @@ export default function Logo({
       }, 50); // Adjust speed as needed
 
       return () => clearInterval(interval);
+    } else {
+      setDisplayText("");
     }
-  }, [isCollapsed]);
+  }, [isCollapsed, isTextVisible]);
 
   return (
     <div className="flex flex-row items-center gap-2 cursor-pointer">
       <Image
-        src={"/logo.png"}
+        src={logoUrl}
         height={height ?? 50}
         width={width ?? 40}
         alt={alt ?? "logo"}

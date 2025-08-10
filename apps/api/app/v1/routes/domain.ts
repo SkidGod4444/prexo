@@ -5,7 +5,7 @@ import { Hono } from "hono";
 const domain = new Hono();
 
 domain.use(checkUser);
-
+// @_TODO_ check project ownership
 domain.post("/create", async (c) => {
   const { name, alias, status, projectId } = await c.req.json();
   if (!name || !projectId) {
@@ -40,6 +40,23 @@ domain.post("/all", async (c) => {
   } catch (error) {
     console.error("Error fetching domains:", error);
     return c.json({ message: "Failed to fetch domains" }, 500);
+  }
+});
+
+// Delete route for domain
+domain.delete("/delete", async (c) => {
+  const { id } = await c.req.json();
+  if (!id) {
+    return c.json({ message: "Domain id is required" }, 400);
+  }
+  try {
+    const deletedDomain = await prisma.domain.delete({
+      where: { id },
+    });
+    return c.json({ message: "Domain deleted", domain: deletedDomain }, 200);
+  } catch (error) {
+    console.error("Error deleting domain:", error);
+    return c.json({ message: "Failed to delete domain" }, 500);
   }
 });
 

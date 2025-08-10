@@ -28,6 +28,10 @@ export default function InfobarBreadCrumb() {
   const page = usePathname();
   const { key } = useApiKeyStore();
 
+  if (!key) {
+    return;
+  }
+
   return (
     <div className="flex flex-col w-full items-start justify-center mt-2 mb-4">
       <div className="flex w-full gap-5 items-center justify-between">

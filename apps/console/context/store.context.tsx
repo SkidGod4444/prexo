@@ -2,6 +2,7 @@
 import {
   useApiKeyStore,
   useDomainsStore,
+  useMyProfileStore,
   useProjectsStore,
 } from "@prexo/store";
 import { DomainType, ProjectType } from "@prexo/types";
@@ -11,11 +12,24 @@ import {
   ReactNode,
   useEffect,
   useState,
+  useCallback,
 } from "react";
 import { useReadLocalStorage } from "usehooks-ts";
+import { useAuth } from "./auth.context";
 
 interface StoreContextType {
   contentLoading: boolean;
+  hardReload: () => void;
+}
+
+// Global hard reload event name
+const HARD_RELOAD_EVENT = "__PREXO_HARD_RELOAD__";
+
+// Exportable function to trigger hard reload from anywhere
+export function triggerHardReload() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(HARD_RELOAD_EVENT));
+  }
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -23,10 +37,31 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
-
+  const { user, loading } = useAuth();
   const { projects, setProjects } = useProjectsStore();
   const { domains, setDomains } = useDomainsStore();
-  const { key, setKey } = useApiKeyStore();
+  const { key, removeKey, setKey } = useApiKeyStore();
+
+  // Hard reload function: empties all stores and optionally localStorage
+  const hardReload = useCallback(() => {
+    setProjects([]);
+    setDomains([]);
+    removeKey();
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("@prexo-#consoleId");
+    }
+  }, [setProjects, setDomains, removeKey]);
+
+  // Listen for global hard reload event
+  useEffect(() => {
+    function onHardReloadEvent() {
+      hardReload();
+    }
+    window.addEventListener(HARD_RELOAD_EVENT, onHardReloadEvent);
+    return () => {
+      window.removeEventListener(HARD_RELOAD_EVENT, onHardReloadEvent);
+    };
+  }, [hardReload]);
 
   const PROJECTS_API_ENDPOINT =
     process.env.NODE_ENV == "development"
@@ -45,6 +80,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // Only fetch if myProfile exists and role is not "inactive"
+    if (loading || user?.role === "inactive") {
+      return;
+    }
+
     async function fetchProjects() {
       setContentLoading(true);
       try {
@@ -62,7 +102,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
-        // Consider adding error state to context for UI feedback
       } finally {
         setContentLoading(false);
       }
@@ -90,7 +129,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error("Error fetching domains:", error);
-        // Consider adding error state to context for UI feedback
       } finally {
         setContentLoading(false);
       }
@@ -103,9 +141,22 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     if (domains.length === 0) {
       fetchDomains();
     }
-  }, [projects.length, setProjects, consoleId, setDomains, domains]);
+  }, [
+    projects.length,
+    setProjects,
+    consoleId,
+    setDomains,
+    domains,
+    user,
+    loading,
+  ]);
 
   useEffect(() => {
+    // Only fetch if myProfile exists and role is not "inactive"
+    if (loading || user?.role === "inactive") {
+      return;
+    }
+
     async function fetchKeyDetails() {
       if (consoleId && projects.length > 0) {
         const selectedProj = projects.find(
@@ -127,7 +178,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
           const response = await data.json();
           if (response?.apiKey) {
-            // Only pick fields defined in KeyType
             const {
               id,
               name,
@@ -155,20 +205,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           }
         } catch (error) {
           console.error("Error fetching projects:", error);
-          // Consider adding error state to context for UI feedback
         } finally {
           setContentLoading(false);
         }
       }
     }
 
-    if (!key.id) {
+    if (!key) {
       fetchKeyDetails();
     }
-  }, [key.id, setKey, consoleId, projects]);
+  }, [key, setKey, consoleId, projects, user, loading]);
 
   const value = {
     contentLoading,
+    hardReload: triggerHardReload, // Use the exported trigger function
   };
 
   return (
@@ -178,7 +228,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
 export function useContent() {
   const context = useContext(StoreContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useContent must be used within a ContentProvider");
   }
   return context;

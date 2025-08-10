@@ -9,7 +9,7 @@ async function createProjectAction(
   description?: string | null,
   userId?: string,
 ) {
-  const cookieHeader = cookies().toString();
+  const cookieHeader = await cookies().toString();
   const response = await fetch(`${BASE_API_URL}/project/create`, {
     method: "POST",
     body: JSON.stringify({
@@ -33,7 +33,7 @@ async function createApiKeyAction(
   projectId: string,
   userId: string,
 ) {
-  const cookieHeader = cookies().toString();
+  const cookieHeader = await cookies().toString();
   const response = await fetch(`${BASE_API_URL}/api/create`, {
     method: "POST",
     body: JSON.stringify({ name, projectId, userId }),
@@ -50,7 +50,7 @@ async function createApiKeyAction(
 
 async function completeOnboardingAction(userId: string) {
   try {
-    const cookieHeader = cookies().toString();
+    const cookieHeader = await cookies().toString();
     const res = await fetch(`${BASE_API_URL}/user/onboarded`, {
       method: "POST",
       body: JSON.stringify({ userId }),

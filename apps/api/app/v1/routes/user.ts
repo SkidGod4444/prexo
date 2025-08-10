@@ -54,4 +54,20 @@ user.post("/onboarded", async (c) => {
   return c.json({ user }, 200);
 });
 
+user.post("/inactive", async (c) => {
+  const { userId } = await c.req.json();
+  if (!userId) {
+    return c.json({ message: "UserId is required", status: 401 }, 401);
+  }
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      role: "inactive",
+    },
+  });
+  return c.json({ user }, 200);
+});
+
 export default user;

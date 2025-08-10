@@ -8,7 +8,7 @@ type UserStore = {
 };
 
 type ApiKeyStore = {
-  key: KeyType;
+  key: KeyType | null;
   addKey: (key: KeyType) => void;
   removeKey: () => void;
   setKey: (key: KeyType) => void;

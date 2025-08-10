@@ -243,9 +243,18 @@ export default function ApiKeySettings() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="flex mt-2 md:mt-5 h-full w-full">
-        <ApiKeyTable keyData={key} />
-      </div>
+      {key ? (
+        <div className="flex mt-2 md:mt-5 h-full w-full">
+          <ApiKeyTable keyData={key} />
+        </div>
+      ) : (
+        <div className="w-full flex flex-col mt-5 items-center justify-center py-8 bg-card rounded-2xl">
+          <span className="text-muted-foreground mb-2">No API keys found.</span>
+          <span className="text-xs text-muted-foreground">
+            Create your API key to start using our SDK.
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -60,6 +60,8 @@ export default function DomainsSettings() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (isMobile) return;
+
     let isMounted = true;
     let timeoutId: NodeJS.Timeout;
     let intervalId: NodeJS.Timeout;
@@ -81,7 +83,7 @@ export default function DomainsSettings() {
       clearTimeout(timeoutId);
       clearTimeout(intervalId);
     };
-  }, []);
+  }, [isMobile]);
 
   const handleAddDomain = () => {
     const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]{1,63}\.)+[a-zA-Z]{2,}$/;

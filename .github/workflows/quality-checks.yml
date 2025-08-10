@@ -23,9 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-      
-      - name: Run Cleanup
-        run: bun run cleanup
       - name: Format code with Prettier
         run: bun run format
 
