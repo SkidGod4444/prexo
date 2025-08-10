@@ -1,9 +1,11 @@
+
 import type { Metadata, Viewport } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { ThemeProvider } from "@/components/theme-provider"
-import { siteConfig } from "@/lib/site"
+import { changelogConfig } from "@prexo/utils/config"
 import "./globals.css"
+import { Toaster } from "@/components/ui/sonner"
 
 export const viewport: Viewport = {
   themeColor: [
@@ -11,14 +13,53 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
   ],
 }
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: changelogConfig.name,
+    template: `%s - ${changelogConfig.name}`,
   },
-  description: siteConfig.description,
+  metadataBase: new URL(changelogConfig.url),
+  description: changelogConfig.description,
+  keywords: [
+    "Next.js",
+    "React",
+    "Tailwind CSS",
+    "Server Components",
+    "Radix UI",
+  ],
+  authors: [
+    {
+      name: "Saidev Dhal",
+      url: "https://devwtf.in",
+    },
+  ],
+  creator: "Saidev Dhal",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: changelogConfig.url,
+    title: changelogConfig.name,
+    description: changelogConfig.description,
+    siteName: changelogConfig.name,
+    images: [
+      {
+        url: changelogConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: changelogConfig.name,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: changelogConfig.name,
+    description: changelogConfig.description,
+    images: [changelogConfig.ogImage],
+    creator: "@SaidevDhal",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({
@@ -41,6 +82,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Toaster/>
       </body>
     </html>
   )

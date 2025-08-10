@@ -15,5 +15,13 @@ export const consoleConfig = {
     description:
       "The dashboard for managing your Prexo AI agents, settings, and analytics. Access and control all your AI-powered sales and support tools in one place.",
   };
+
+  export const changelogConfig = {
+    name: "Prexo AI Changelogs",
+    url: "https://changelogs.prexoai.xyz",
+    ogImage: "https://prexoai.xyz/og.png",
+    description:
+      "Stay up to date with the latest updates, improvements, and new features for Prexo AI. Explore detailed changelogs to track progress and enhancements across all our AI tools and services.",
+  };
   
-export type ConsoleConfig = typeof consoleConfig;
+export type ChangelogConfig = typeof changelogConfig;
