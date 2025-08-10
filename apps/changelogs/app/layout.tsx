@@ -1,18 +1,17 @@
-
-import type { Metadata, Viewport } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
-import { ThemeProvider } from "@/components/theme-provider"
-import { changelogConfig } from "@prexo/utils/config"
-import "./globals.css"
-import { Toaster } from "@/components/ui/sonner"
+import type { Metadata, Viewport } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { ThemeProvider } from "@/components/theme-provider";
+import { changelogConfig } from "@prexo/utils/config";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: dark)", color: "#000000" },
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
   ],
-}
+};
 export const metadata: Metadata = {
   title: {
     default: changelogConfig.name,
@@ -60,12 +59,12 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -82,8 +81,8 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
-  )
+  );
 }

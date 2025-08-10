@@ -1,7 +1,7 @@
-import type { NextConfig } from "next"
-import { createMDX } from "fumadocs-mdx/next"
+import type { NextConfig } from "next";
+import { createMDX } from "fumadocs-mdx/next";
 
-const withMDX = createMDX()
+const withMDX = createMDX();
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -9,11 +9,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/c/:slug",  // e.g., /c/date
-        destination: "/",    // still serves the home page
+        source: "/c/:slug", // e.g., /c/date
+        destination: "/", // still serves the home page
       },
     ];
   },
-}
+};
 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);

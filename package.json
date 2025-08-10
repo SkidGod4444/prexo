@@ -24,7 +24,8 @@
     "db:migrate": "cd packages/db && bun db:migrate",
     "db:studio": "cd packages/db && bun db:studio",
     "setup": "bash scripts/setup.sh",
-    "envc": "bash scripts/envc.sh"
+    "envc": "bash scripts/envc.sh",
+    "cleanup": "bash scripts/cleanup.sh"
   },
   "devDependencies": {
     "@trigger.dev/build": "^3.3.17",

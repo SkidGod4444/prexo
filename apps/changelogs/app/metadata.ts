@@ -1,5 +1,5 @@
-import { Metadata } from "next"
-import { siteConfig } from "@/lib/site"
+import { Metadata } from "next";
+import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: siteConfig.name,
@@ -37,4 +37,4 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-}
+};

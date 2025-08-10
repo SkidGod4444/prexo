@@ -2,15 +2,15 @@ import {
   defineConfig,
   defineDocs,
   frontmatterSchema,
-} from "fumadocs-mdx/config"
-import { z } from "zod"
+} from "fumadocs-mdx/config";
+import { z } from "zod";
 
 export default defineConfig({
   lastModifiedTime: "git",
   mdxOptions: {
     providerImportSource: "@/mdx-components",
   },
-})
+});
 
 export const { docs, meta } = defineDocs({
   dir: "changelog/content",
@@ -21,4 +21,4 @@ export const { docs, meta } = defineDocs({
       version: z.string().optional(),
     }),
   },
-})
+});

@@ -1,4 +1,3 @@
-
 const socials = {
   npm: "https://l.devwtf.in/npmXyZ",
   x: "https://l.devwtf.in/plura-x",
