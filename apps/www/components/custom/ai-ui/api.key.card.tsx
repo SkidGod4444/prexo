@@ -10,23 +10,32 @@ import { useLocalStorage } from "usehooks-ts";
 import type { UIMessage } from "ai";
 
 type ApiKeyCardProps = {
+  addToolResult: (result: { toolCallId: string; result: string }) => void;
   append: (message: UIMessage) => void;
   callId: string;
 };
 
-export default function ApiKeyCardAiUi({ append, callId }: ApiKeyCardProps) {
+export default function ApiKeyCardAiUi({
+  append,
+  callId,
+  addToolResult,
+}: ApiKeyCardProps) {
   const [apiKey, setApiKey] = useLocalStorage("@prexo-#tempApiKey", "");
 
   const handleOnCopy = async () => {
+    addToolResult({
+      toolCallId: callId,
+      result: "Seems like you have copied the key successfully!",
+    });
     setApiKey("");
     append({
       id: `${callId}-${Date.now()}`,
       role: "user",
-      content: "API Key copied successfully!",
+      content: "Yes!",
       parts: [
         {
           type: "text",
-          text: "API Key copied successfully!",
+          text: "Yes!",
         },
       ],
     });

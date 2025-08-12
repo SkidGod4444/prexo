@@ -17,6 +17,7 @@ import cntxt from "../routes/context";
 import playgroundAi from "../routes/playground/ai";
 import notifications from "../routes/notifications";
 import domain from "../routes/domain";
+import envs from "../routes/environments";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -50,6 +51,7 @@ app.route("/ai", ai);
 app.route("/user", user);
 app.route("/project", project);
 app.route("/domain", domain);
+app.route("/envs", envs);
 app.route("/notification", notifications);
 app.route("/api", api);
 app.route("/history", hist);

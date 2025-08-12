@@ -1,4 +1,5 @@
 import { checkUser } from "@/checks/check.user";
+import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 
@@ -50,6 +51,22 @@ domain.delete("/delete", async (c) => {
     return c.json({ message: "Domain id is required" }, 400);
   }
   try {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    if (!session?.user?.id) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    const dom = await prisma.domain.findUnique({
+      where: { id },
+      select: { id: true, project: { select: { userId: true } } },
+    });
+    if (!dom) {
+      return c.json({ message: "Not found" }, 404);
+    }
+    if (dom.project.userId !== session.user.id) {
+      return c.json({ message: "Forbidden" }, 403);
+    }
+
     const deletedDomain = await prisma.domain.delete({
       where: { id },
     });

@@ -36,6 +36,22 @@ project.post("/delete", async (c) => {
   }
 
   try {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    if (!session?.user?.id) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    const proj = await prisma.project.findUnique({
+      where: { id },
+      select: { id: true, userId: true },
+    });
+    if (!proj) {
+      return c.json({ message: "Not found" }, 404);
+    }
+    if (proj.userId !== session.user.id) {
+      return c.json({ message: "Forbidden" }, 403);
+    }
+
     const deletedProject = await prisma.project.delete({
       where: { id },
     });

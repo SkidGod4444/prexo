@@ -1,4 +1,10 @@
-import { ProjectType, UserType, KeyType, DomainType } from "@prexo/types";
+import {
+  ProjectType,
+  UserType,
+  KeyType,
+  DomainType,
+  NotificationType,
+} from "@prexo/types";
 
 type UserStore = {
   users: UserType[];
@@ -27,6 +33,13 @@ type ProjectStore = {
   setProjects: (projects: ProjectType[]) => void;
 };
 
+type NotificationsStore = {
+  notifications: NotificationType[];
+  addNotifications: (noty: NotificationType) => void;
+  removeNotification: (notyId: string) => void;
+  setNotifications: (notys: NotificationType[]) => void;
+};
+
 type DomainStore = {
   domains: DomainType[];
   addDomain: (domain: DomainType) => void;
@@ -40,4 +53,5 @@ export type {
   ProjectStore,
   ApiKeyStore,
   DomainStore,
+  NotificationsStore,
 };

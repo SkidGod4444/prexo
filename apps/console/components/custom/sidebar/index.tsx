@@ -9,6 +9,7 @@ import {
   DatabaseZap,
   MessageCircleDashed,
   Video,
+  GitCompareArrows,
   // DollarSign,
   // SquareDashedMousePointer,
   // Bolt,
@@ -70,6 +71,11 @@ const navSecondary = [
     title: "Documentation",
     url: "https://docs.prexoai.xyz",
     icon: BookMarked,
+  },
+  {
+    title: "Changelogs",
+    url: "https://changelogs.prexoai.xyz",
+    icon: GitCompareArrows,
   },
 ];
 // Playground items.

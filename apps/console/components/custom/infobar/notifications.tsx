@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BellIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/popover";
 import Image from "next/image";
 import { toast } from "sonner";
-import { NotificationType } from "@prexo/types";
 import { useRouter } from "next/navigation";
 import { formatDateTimeAgo } from "@/lib/utils";
+import { useNotificationsStore } from "@prexo/store";
 
 const nEndpoint =
   process.env.NODE_ENV == "development"
@@ -37,89 +37,69 @@ function Dot({ className }: { className?: string }) {
 }
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  const unreadCount = notifications.filter((n) => !n.isSeen).length;
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { notifications, setNotifications } = useNotificationsStore();
+  const unreadCount = notifications.filter((n) => !n.isSeen).length;
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      setIsLoading(true);
-      // Wrap the fetch in a toast.promise
-      toast.promise(
-        (async () => {
-          const res = await fetch(`${nEndpoint}/all`, {
-            credentials: "include",
-          });
-          if (!res.ok) {
-            throw new Error("Error while fetching notifications!");
-          }
-          const data = await res.json();
-          if (data.notifications) {
-            setNotifications(data.notifications);
-          }
-          return { name: "Notifications" };
-        })(),
-        {
-          loading: "Loading...",
-          success: (data) => {
-            setIsLoading(false);
-            return `${data.name} fetched successfully!`;
-          },
-          error: (err) => {
-            setIsLoading(false);
-            console.log("Error while fetching notifications!", err);
-            return "Error";
-          },
-        },
-      );
-    };
-
-    if (isOpen) {
-      fetchNotifications();
-    }
-  }, [isOpen]);
-
   const handleMarkAllAsRead = async () => {
-    const ids = notifications.map((notification) => notification.id);
+    const unreadNotifications = notifications.filter((n) => !n.isSeen);
+    const ids = unreadNotifications.map((notification) => notification.id);
     if (ids.length === 0) return;
-
-    await fetch(`${nEndpoint}/mark-as-seen`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ ids }),
-    });
-
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isSeen: true,
-      })),
-    );
-
-    toast.success("Marked all notifications as seen!");
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${nEndpoint}/mark-as-seen`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ ids }),
+      });
+      if (!res.ok) throw new Error("Failed to mark as seen");
+      setNotifications(
+        notifications.map((notification) =>
+          ids.includes(notification.id)
+            ? { ...notification, isSeen: true }
+            : notification,
+        ),
+      );
+      toast.success("Marked all notifications as seen!");
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to mark notifications as seen");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleNotificationClick = async (id: string) => {
     const notification = notifications.find((n) => n.id === id);
-    await fetch(`${nEndpoint}/mark-as-seen`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ ids: [id] }),
-    });
-
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isSeen: true } : n)),
-    );
-
-    if (notification && notification.url) {
+    if (!notification) return;
+    if (!notification.isSeen) {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`${nEndpoint}/mark-as-seen`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ ids: [id] }),
+        });
+        if (!res.ok) throw new Error("Failed to mark as seen");
+        setNotifications(
+          notifications.map((n) => (n.id === id ? { ...n, isSeen: true } : n)),
+        );
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to mark notification as seen");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    if (notification.url) {
       router.push(notification.url);
     }
   };
@@ -148,6 +128,7 @@ export default function Notifications() {
             <button
               className="text-xs font-medium hover:underline cursor-pointer"
               onClick={handleMarkAllAsRead}
+              disabled={isLoading}
             >
               Mark all as read
             </button>
@@ -158,7 +139,7 @@ export default function Notifications() {
           aria-orientation="horizontal"
           className="bg-border -mx-1 my-1 h-px"
         ></div>
-        {isLoading || notifications.length == 0 ? (
+        {isLoading ? (
           // Skeletons for loading state
           <>
             {[...Array(5)].map((_, idx) => (
@@ -175,6 +156,10 @@ export default function Notifications() {
               </div>
             ))}
           </>
+        ) : notifications.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8 text-sm">
+            You are all clear!
+          </div>
         ) : (
           notifications.map((notification) => (
             <div
@@ -182,13 +167,17 @@ export default function Notifications() {
               className="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors"
             >
               <div className="relative flex items-start gap-3 pe-3">
-                <Image
-                  className="size-9 rounded-md"
-                  src={notification.icon!}
-                  width={32}
-                  height={32}
-                  alt={notification.id}
-                />
+                {notification.icon ? (
+                  <Image
+                    className="size-9 rounded-md"
+                    src={notification.icon}
+                    width={32}
+                    height={32}
+                    alt={notification.id}
+                  />
+                ) : (
+                  <div className="size-9 rounded-md bg-muted" />
+                )}
                 <div className="flex-1 space-y-1 cursor-pointer">
                   <button
                     className="text-foreground/80 text-left after:absolute after:inset-0 cursor-pointer"
@@ -197,9 +186,11 @@ export default function Notifications() {
                     <span className="text-foreground font-medium hover:underline">
                       {notification.title}
                     </span>
-                    <span className="text-foreground font-medium hover:underline">
-                      {notification.desc}
-                    </span>
+                    {notification.desc && (
+                      <span className="block text-foreground font-medium hover:underline">
+                        {notification.desc}
+                      </span>
+                    )}
                   </button>
                   <div className="text-muted-foreground text-xs">
                     {formatDateTimeAgo(notification.createdAt)}

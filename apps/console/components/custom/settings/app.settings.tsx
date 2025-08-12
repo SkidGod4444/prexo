@@ -9,7 +9,6 @@ import { useProjectsStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";
 import { toast } from "sonner";
 import DeleteProject from "../proj.delete.btn";
-import { useRouter } from "next/navigation";
 
 const API_ENDPOINT =
   process.env.NODE_ENV == "development"
@@ -26,7 +25,6 @@ export default function AppSettings() {
   const [isCopied, setIsCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleCopy = () => {
     if (inputRef.current && apiId) {
@@ -70,7 +68,7 @@ export default function AppSettings() {
           success: (data) => {
             setIsLoading(false);
             setProjects([]);
-            router.refresh();
+            window.location.reload();
             return `${data.name} updated successfully!`;
           },
           error: (err) => {

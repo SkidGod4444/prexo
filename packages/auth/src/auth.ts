@@ -12,6 +12,8 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   }),
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
+      console.log("Auth hook called for path:", ctx.path);
+
       if (ctx.path.startsWith("/sign-up")) {
         const newSession = ctx.context.newSession;
         if (newSession) {
@@ -20,10 +22,30 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
         }
       }
 
-      if (ctx.path.startsWith("/sign-in")) {
+      // For social sign-in, /sign-up is never called, so we need to check if this is the user's first login
+      if (ctx.path === "/sign-in/social") {
         const newSession = ctx.context.newSession;
         if (newSession) {
-          console.log(`New user loggedin: `, newSession.user.email);
+          // Check if this is the user's first login by checking createdAt === updatedAt
+          // (Assumes user object has createdAt and updatedAt fields)
+          const { createdAt, updatedAt, email, name } = newSession.user;
+          if (
+            createdAt &&
+            updatedAt &&
+            createdAt.getTime() === updatedAt.getTime()
+          ) {
+            // First time login via social
+            await sendWelcomeMail(email, name);
+            console.log(`New user registered via social: `, email);
+          } else {
+            // Existing user logging in via social
+            console.log(`Existing user logged in via social: `, email);
+          }
+        }
+      } else if (ctx.path.startsWith("/sign-in")) {
+        const newSession = ctx.context.newSession;
+        if (newSession) {
+          console.log(`New user logged in: `, newSession.user.email);
         }
       }
     }),
@@ -86,6 +108,19 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET!,
 
   user: {
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async (
+        { user, newEmail, url, token },
+        request,
+      ) => {
+        // await sendEmail({
+        //     to: user.email, // verification email must be sent to the current user email to approve the change
+        //     subject: 'Approve email change',
+        //     text: `Click the link to approve the change: ${url}`
+        // })
+      },
+    },
     deleteUser: {
       enabled: true,
       sendDeleteAccountVerification: async (
@@ -106,6 +141,16 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
         required: true,
         input: false,
         defaultValue: "user",
+      },
+      hashKey: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      lang: {
+        type: "string",
+        required: false,
+        defaultValue: "en",
       },
     },
   },

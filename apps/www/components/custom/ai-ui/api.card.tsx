@@ -55,11 +55,11 @@ export default function ApiCardAiUi({
       append({
         id: `${myProfile.id}-${Date.now()}`,
         role: "user",
-        content: "Thanks, Lets complete the onboarding.",
+        content: "Lets procced to the next step.",
         parts: [
           {
             type: "text",
-            text: "Thanks, Lets complete the onboarding.",
+            text: "Lets procced to the next step.",
           },
         ],
       });

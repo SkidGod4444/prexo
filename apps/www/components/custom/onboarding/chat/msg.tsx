@@ -244,11 +244,6 @@ const PurePreviewMessage = ({
                               <div className="flex flex-col mb-5">
                                 {part.toolInvocation.result}
                               </div>
-                              <ApiCardAiUi
-                                addToolResult={addToolResult}
-                                append={append}
-                                callId={callId}
-                              />
                             </div>
                           );
                         case "call":
@@ -276,7 +271,11 @@ const PurePreviewMessage = ({
                               <div className="flex flex-col mb-5">
                                 {part.toolInvocation.args.message}
                               </div>
-                              <ApiKeyCardAiUi append={append} callId={callId} />
+                              <ApiKeyCardAiUi
+                                append={append}
+                                callId={callId}
+                                addToolResult={addToolResult}
+                              />
                             </div>
                           );
                         case "result":

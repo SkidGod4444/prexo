@@ -2,10 +2,10 @@
 import {
   useApiKeyStore,
   useDomainsStore,
-  useMyProfileStore,
+  useNotificationsStore,
   useProjectsStore,
 } from "@prexo/store";
-import { DomainType, ProjectType } from "@prexo/types";
+import { DomainType, NotificationType, ProjectType } from "@prexo/types";
 import {
   createContext,
   useContext,
@@ -36,9 +36,11 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
+
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const { user, loading } = useAuth();
   const { projects, setProjects } = useProjectsStore();
+  const { notifications, setNotifications } = useNotificationsStore();
   const { domains, setDomains } = useDomainsStore();
   const { key, removeKey, setKey } = useApiKeyStore();
 
@@ -47,10 +49,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     setProjects([]);
     setDomains([]);
     removeKey();
+    setNotifications([]);
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("@prexo-#consoleId");
     }
-  }, [setProjects, setDomains, removeKey]);
+  }, [setProjects, setDomains, removeKey, setNotifications]);
 
   // Listen for global hard reload event
   useEffect(() => {
@@ -73,15 +76,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       ? "http://localhost:3001/v1/domain/all"
       : "https://api.prexoai.xyz/v1/domain/all";
 
+  const NOTI_API_ENDPOINT =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/notification"
+      : "https://api.prexoai.xyz/v1/notification";
+
   function getKeyApiEndpoint(keyId: string) {
     return process.env.NODE_ENV == "development"
       ? `http://localhost:3001/v1/api/key/${keyId}`
       : `https://api.prexoai.xyz/v1/api/key/${keyId}`;
   }
 
+  // Fetch projects and domains, poll every 30 seconds
   useEffect(() => {
-    // Only fetch if myProfile exists and role is not "inactive"
-    if (loading || user?.role === "inactive") {
+    if (loading) {
       return;
     }
 
@@ -97,11 +105,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
 
         const response = await data.json();
-        if (response?.projects) {
+        if (Array.isArray(response?.projects)) {
           setProjects(response.projects.map((project: ProjectType) => project));
+        } else {
+          setProjects([]);
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
+        setProjects([]);
       } finally {
         setContentLoading(false);
       }
@@ -124,35 +135,82 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         }
 
         const response = await data.json();
-        if (response?.domains) {
+        if (Array.isArray(response?.domains)) {
           setDomains(response.domains.map((domain: DomainType) => domain));
+        } else {
+          setDomains([]);
         }
       } catch (error) {
         console.error("Error fetching domains:", error);
+        setDomains([]);
       } finally {
         setContentLoading(false);
       }
     }
 
-    if (projects.length === 0) {
-      fetchProjects();
+    async function fetchAll() {
+      await Promise.all([fetchProjects(), fetchDomains()]);
     }
 
-    if (domains.length === 0) {
-      fetchDomains();
+    if (projects.length == 0 || domains.length == 0) {
+      fetchAll();
     }
+
+    const interval = setInterval(fetchAll, 30000);
+    return () => clearInterval(interval);
   }, [
-    projects.length,
     setProjects,
-    consoleId,
     setDomains,
-    domains,
+    consoleId,
     user,
     loading,
+    domains.length,
+    projects.length,
   ]);
 
+  // Fetch notifications, poll every 10 seconds
   useEffect(() => {
-    // Only fetch if myProfile exists and role is not "inactive"
+    if (loading || user?.role === "inactive") {
+      return;
+    }
+
+    async function fetchNotifications() {
+      setContentLoading(true);
+      try {
+        const data = await fetch(`${NOTI_API_ENDPOINT}/${consoleId}/all`, {
+          credentials: "include",
+        });
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch notifications: ${data.status}`);
+        }
+
+        const response = await data.json();
+        if (Array.isArray(response?.notifications)) {
+          setNotifications(
+            response.notifications.map((noti: NotificationType) => noti),
+          );
+        } else {
+          setNotifications([]);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+        setNotifications([]);
+      } finally {
+        setContentLoading(false);
+      }
+    }
+
+    if (notifications.length == 0) {
+      fetchNotifications();
+    }
+
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+  }, [setNotifications, consoleId, user, loading, notifications.length]);
+
+  // Fetch key details only once, even if the response is empty
+  useEffect(() => {
     if (loading || user?.role === "inactive") {
       return;
     }
@@ -202,9 +260,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
               remaining,
               roles,
             });
+          } else {
+            removeKey();
           }
         } catch (error) {
           console.error("Error fetching projects:", error);
+          removeKey();
         } finally {
           setContentLoading(false);
         }
@@ -214,7 +275,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     if (!key) {
       fetchKeyDetails();
     }
-  }, [key, setKey, consoleId, projects, user, loading]);
+  }, [key, setKey, consoleId, projects, user, loading, removeKey]);
 
   const value = {
     contentLoading,

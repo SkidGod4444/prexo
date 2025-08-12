@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { createTogetherAI } from "@ai-sdk/togetherai";
-// import { createOpenRouter } from '@openrouter/ai-sdk-provider'
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import {
   NoSuchToolError,
   InvalidToolArgumentsError,
@@ -21,9 +21,9 @@ const togetherai = createTogetherAI({
   apiKey: process.env.TOGETHER_API_KEY!,
 });
 
-// const openrouter = createOpenRouter({
-//   apiKey: process.env.OPENROUTER_API_KEY!,
-// });
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY!,
+});
 
 ai.post("/stream", async (c) => {
   const { messages } = await c.req.json();
@@ -39,8 +39,8 @@ ai.post("/stream", async (c) => {
   });
 
   const result = streamText({
-    model: togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"),
-    // model: openrouter("deepseek/deepseek-chat-v3-0324:free"),
+    // model: togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"),
+    model: openrouter("deepseek/deepseek-chat-v3-0324:free"),
     system: systemPrompt(),
     messages: filteredMessages,
     maxSteps: 5,

@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useReadLocalStorage } from "usehooks-ts";
-import { useRouter } from "next/navigation";
 import { useContent } from "@/context/store.context";
 import { useMyProfileStore, useProjectsStore } from "@prexo/store";
 
@@ -42,8 +41,8 @@ export default function DeleteProject({ name }: { name: string }) {
   const id = useId();
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
-  const router = useRouter();
   const { projects } = useProjectsStore();
   const { myProfile } = useMyProfileStore();
   const { hardReload } = useContent();
@@ -109,8 +108,8 @@ export default function DeleteProject({ name }: { name: string }) {
           return data.result.map((key: { id: string }) => key.id);
         }
         return [];
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
+        console.log(err);
         throw new Error("Failed to fetch API keys.");
       }
     };
@@ -172,7 +171,7 @@ export default function DeleteProject({ name }: { name: string }) {
           toast.info("No API keys to delete.");
         }
 
-        // Step 4: Delete the project
+        // Step 3: Delete the project
         toast.promise(deleteProject(), {
           loading: "Deleting project...",
           success: () => {
@@ -181,6 +180,7 @@ export default function DeleteProject({ name }: { name: string }) {
           },
           error: (err) => {
             setIsLoading(false);
+            setIsOpen(false);
             console.error("Error while deleting project!", err);
             return "Error deleting project!";
           },
@@ -191,11 +191,13 @@ export default function DeleteProject({ name }: { name: string }) {
       {
         loading: "Processing deletion...",
         success: (data) => {
-          router.refresh();
+          setIsOpen(false);
+          setTimeout(() => window.location.reload(), 1000);
           return `${data.name} deleted successfully!`;
         },
         error: (err) => {
           setIsLoading(false);
+          setIsOpen(false);
           console.error("Error during deletion process!", err);
           return "Error during deletion process!";
         },
@@ -209,7 +211,7 @@ export default function DeleteProject({ name }: { name: string }) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           size="sm"

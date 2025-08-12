@@ -16,5 +16,8 @@
         "@prexo/mail": "workspace:*",
         "@prexo/db": "workspace:*"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@better-auth/cli": "^1.3.5",
+        "zod": "^4"
+    }
 }

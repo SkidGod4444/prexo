@@ -4,10 +4,10 @@ import {
   ApiKeyStore,
   DomainStore,
   MyProfileStore,
+  NotificationsStore,
   ProjectStore,
   UserStore,
 } from "../types";
-import { KeyType } from "@prexo/types";
 
 const useUsersStore = create<UserStore>()(
   persist(
@@ -56,6 +56,24 @@ const useProjectsStore = create<ProjectStore>()(
   ),
 );
 
+const useNotificationsStore = create<NotificationsStore>()(
+  persist(
+    (set) => ({
+      notifications: [],
+      addNotifications: (noty) =>
+        set((state) => ({ notifications: [...state.notifications, noty] })),
+      removeNotification: (notyId) =>
+        set((state) => ({
+          notifications: state.notifications.filter((p) => p.id !== notyId),
+        })),
+      setNotifications: (notifications) => set({ notifications }),
+    }),
+    {
+      name: "@prexo-#notifications",
+    },
+  ),
+);
+
 const useDomainsStore = create<DomainStore>()(
   persist(
     (set) => ({
@@ -99,4 +117,5 @@ export {
   useProjectsStore,
   useApiKeyStore,
   useDomainsStore,
+  useNotificationsStore,
 };

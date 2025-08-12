@@ -76,7 +76,7 @@ export default function ApiKeySettings() {
   );
   useEffect(() => {
     if (apiKey.length > 0 && !isOpen && !isOpen2) {
-      router.refresh();
+      window.location.reload();
     }
   }, [apiKey.length, router, isOpen, isOpen2]);
 

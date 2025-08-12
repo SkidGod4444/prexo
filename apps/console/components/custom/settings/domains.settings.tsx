@@ -18,7 +18,6 @@ import { useDomainsStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";
 import { DomainType } from "@prexo/types";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const endpoint =
   process.env.NODE_ENV == "development"
@@ -50,7 +49,6 @@ function DomainCardSkeleton() {
 
 export default function DomainsSettings() {
   const isMobile = useIsMobile();
-  const router = useRouter();
   const id = useId();
   const { domains, setDomains } = useDomainsStore();
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
@@ -86,7 +84,8 @@ export default function DomainsSettings() {
   }, [isMobile]);
 
   const handleAddDomain = () => {
-    const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]{1,63}\.)+[a-zA-Z]{2,}$/;
+    const domainRegex =
+      /^(?!-)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
 
     if (!inputValue || !domainRegex.test(inputValue.trim())) {
       toast.error(
@@ -126,7 +125,7 @@ export default function DomainsSettings() {
           setIsOpen(false);
           setIsLoading(false);
           setDomains([]);
-          router.refresh();
+          window.location.reload();
           return `${data.name} added successfully!`;
         },
         error: (err) => {

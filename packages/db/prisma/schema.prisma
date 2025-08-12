@@ -17,6 +17,8 @@ model User {
   createdAt     DateTime
   updatedAt     DateTime
   role          String
+  hashKey       String?
+  lang          String?
   sessions      Session[]
   accounts      Account[]
   passkeys      Passkey[]
@@ -94,6 +96,7 @@ model Project {
   description   String?
   domains       Domain[]
   notifications Notifications[]
+  environments  Environments[]
   createdAt     DateTime
   updatedAt     DateTime
   userId        String
@@ -131,4 +134,17 @@ model Notifications {
   updatedAt DateTime @updatedAt
 
   @@map("notifications")
+}
+
+model Environments {
+  id          String   @id @default(uuid())
+  projectId   String
+  environment String?
+  name        String
+  value       String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("environments")
 }

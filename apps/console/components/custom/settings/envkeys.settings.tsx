@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import SectionLabel from "../section.label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,8 @@ import {
   DatabaseZap,
   CircleQuestionMark,
   Logs,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -60,6 +62,12 @@ export default function EnvKeysSettings() {
     },
   ];
 
+  // Sensitive value state and show/hide state
+  const [envValue1, setEnvValue1] = useState("");
+  const [envValue2, setEnvValue2] = useState("");
+  const [showValue1, setShowValue1] = useState(false);
+  const [showValue2, setShowValue2] = useState(false);
+
   function DBDorpdown() {
     const selected = dbOptions.find((opt) => opt.key === selectedDB);
 
@@ -100,7 +108,7 @@ export default function EnvKeysSettings() {
           {dbOptions.map((opt) => (
             <DropdownMenuItem
               key={opt.key}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer ${
+              className={`flex items-center gap-3 px-3 py-2 my-0.5 rounded-md hover:bg-accent transition-colors cursor-pointer ${
                 selectedDB === opt.key ? "bg-accent" : ""
               }`}
               onSelect={() => setSelectedDB(opt.key as "redis" | "vector")}
@@ -116,6 +124,68 @@ export default function EnvKeysSettings() {
       </DropdownMenu>
     );
   }
+
+  // Helper for sensitive input with eye button
+  function SensitiveInput({
+    id,
+    value,
+    onChange,
+    show,
+    setShow,
+    placeholder,
+    className,
+  }: {
+    id: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    show: boolean;
+    setShow: (v: boolean) => void;
+    placeholder?: string;
+    className?: string;
+  }) {
+    // Use a ref to keep the input focused after value change
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    return (
+      <div className={`relative ${className ?? ""}`}>
+        <Input
+          id={id}
+          ref={inputRef}
+          type={show ? "text" : "password"}
+          value={value}
+          onChange={(e) => {
+            onChange(e);
+            // Optionally, re-focus input after value change
+            inputRef.current?.focus();
+          }}
+          placeholder={placeholder}
+          autoComplete="off"
+          className="pr-10"
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={() => {
+            setShow(!show);
+            // After toggling show/hide, re-focus the input
+            setTimeout(() => {
+              inputRef.current?.focus();
+              // Move cursor to end
+              if (inputRef.current) {
+                const len = inputRef.current.value.length;
+                inputRef.current.setSelectionRange(len, len);
+              }
+            }, 0);
+          }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+          aria-label={show ? "Hide value" : "Show value"}
+        >
+          {show ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-start justify-start h-full w-full overflow-hidden">
       <SectionLabel
@@ -141,8 +211,23 @@ export default function EnvKeysSettings() {
               <Label htmlFor="env-value" className="mb-2">
                 Value
               </Label>
-              <Input id="env-value" placeholder="Enter value" />
-              <Input id="env-value2" placeholder="Enter key" className="mt-2" />
+              <SensitiveInput
+                id="env-value"
+                value={envValue1}
+                onChange={(e) => setEnvValue1(e.target.value)}
+                show={showValue1}
+                setShow={setShowValue1}
+                placeholder="Enter value"
+              />
+              <SensitiveInput
+                id="env-value2"
+                value={envValue2}
+                onChange={(e) => setEnvValue2(e.target.value)}
+                show={showValue2}
+                setShow={setShowValue2}
+                placeholder="Enter key"
+                className="mt-2"
+              />
             </div>
           </div>
         </CardContent>

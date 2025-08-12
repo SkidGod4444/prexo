@@ -90,11 +90,13 @@ export default function NewFallBack() {
       if (res.ok) {
         console.log("Updated user role: ", res);
         hardReload();
-        setTimeout(() => router.push("/dashboard"), 100);
+        setTimeout(() => router.push("/dashboard"), 500);
       }
     } catch (err) {
       console.error("Failed to set user as inactive", err);
     }
+
+    setTimeout(() => router.push("/dashboard"), 100);
   };
 
   const handleOnSubmit = () => {
