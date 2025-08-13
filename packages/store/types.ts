@@ -4,6 +4,7 @@ import {
   KeyType,
   DomainType,
   NotificationType,
+  EnvType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -47,6 +48,13 @@ type DomainStore = {
   setDomains: (domains: DomainType[]) => void;
 };
 
+type EnvStore = {
+  envs: EnvType[];
+  addEnvs: (env: EnvType) => void;
+  removeEnvs: (envId: string) => void;
+  setEnvs: (envs: EnvType[]) => void;
+};
+
 export type {
   UserStore,
   MyProfileStore,
@@ -54,4 +62,5 @@ export type {
   ApiKeyStore,
   DomainStore,
   NotificationsStore,
+  EnvStore,
 };

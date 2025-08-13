@@ -29,7 +29,7 @@ project.post("/create", async (c) => {
   return c.json({ project: newProject }, 201);
 });
 
-project.post("/delete", async (c) => {
+project.delete("/delete", async (c) => {
   const { id } = await c.req.json();
   if (!id) {
     return c.json({ message: "Project id is required" }, 400);

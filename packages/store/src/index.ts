@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import {
   ApiKeyStore,
   DomainStore,
+  EnvStore,
   MyProfileStore,
   NotificationsStore,
   ProjectStore,
@@ -92,6 +93,23 @@ const useDomainsStore = create<DomainStore>()(
   ),
 );
 
+const useEnvsStore = create<EnvStore>()(
+  persist(
+    (set) => ({
+      envs: [],
+      addEnvs: (env) => set((state) => ({ envs: [...state.envs, env] })),
+      removeEnvs: (envId) =>
+        set((state) => ({
+          envs: state.envs.filter((p) => p.id !== envId),
+        })),
+      setEnvs: (envs) => set({ envs }),
+    }),
+    {
+      name: "@prexo-#environments",
+    },
+  ),
+);
+
 const useMyProfileStore = create<MyProfileStore>()(
   persist(
     (set) => ({
@@ -118,4 +136,5 @@ export {
   useApiKeyStore,
   useDomainsStore,
   useNotificationsStore,
+  useEnvsStore,
 };

@@ -12,12 +12,12 @@ import configs from "../routes/sdk/configs";
 import aiSdk from "../routes/sdk/ai";
 import extractor from "../routes/sdk/extractor";
 import context from "../routes/sdk/context";
-import hist from "../routes/history";
 import cntxt from "../routes/context";
 import playgroundAi from "../routes/playground/ai";
 import notifications from "../routes/notifications";
 import domain from "../routes/domain";
 import envs from "../routes/environments";
+import file from "../routes/file";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -54,8 +54,8 @@ app.route("/domain", domain);
 app.route("/envs", envs);
 app.route("/notification", notifications);
 app.route("/api", api);
-app.route("/history", hist);
 app.route("/context", cntxt);
+app.route("/file", file);
 
 // SDK Routes
 app.route("/sdk/configs", configs);

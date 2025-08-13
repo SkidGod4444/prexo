@@ -1,5 +1,4 @@
 import { checkUser } from "@/checks/check.user";
-import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 
@@ -20,6 +19,9 @@ notifications.post("/create", async (c) => {
       icon,
       url,
       desc: description || null,
+      project: {
+        connect: { id: projectId },
+      },
     },
   });
   if (!notify) {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SectionLabel from "../section.label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useEnvsStore } from "@prexo/store";
+import { EnvType } from "@prexo/types";
 
 export default function EnvKeysSettings() {
   const [selectedDB, setSelectedDB] = useState<"" | "redis" | "vector">(
@@ -63,10 +65,24 @@ export default function EnvKeysSettings() {
   ];
 
   // Sensitive value state and show/hide state
+  const { envs } = useEnvsStore();
   const [envValue1, setEnvValue1] = useState("");
   const [envValue2, setEnvValue2] = useState("");
   const [showValue1, setShowValue1] = useState(false);
   const [showValue2, setShowValue2] = useState(false);
+
+  // When envs or selectedDB changes, update the values if present in envs
+  useEffect(() => {
+    if (Array.isArray(envs) && envs.length > 0) {
+      const found1 = envs.find((env: EnvType) => env.name === key1);
+      const found2 = envs.find((env: EnvType) => env.name === key2);
+      setEnvValue1(found1?.value ?? "");
+      setEnvValue2(found2?.value ?? "");
+    } else {
+      setEnvValue1("");
+      setEnvValue2("");
+    }
+  }, [envs, key1, key2]);
 
   function DBDorpdown() {
     const selected = dbOptions.find((opt) => opt.key === selectedDB);

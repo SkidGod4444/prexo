@@ -1,11 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import {
   useApiKeyStore,
   useDomainsStore,
+  useEnvsStore,
   useNotificationsStore,
   useProjectsStore,
 } from "@prexo/store";
-import { DomainType, NotificationType, ProjectType } from "@prexo/types";
+import {
+  DomainType,
+  EnvType,
+  NotificationType,
+  ProjectType,
+} from "@prexo/types";
 import {
   createContext,
   useContext,
@@ -36,12 +43,12 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
-
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const { user, loading } = useAuth();
   const { projects, setProjects } = useProjectsStore();
   const { notifications, setNotifications } = useNotificationsStore();
   const { domains, setDomains } = useDomainsStore();
+  const { envs, setEnvs } = useEnvsStore();
   const { key, removeKey, setKey } = useApiKeyStore();
 
   // Hard reload function: empties all stores and optionally localStorage
@@ -49,11 +56,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     setProjects([]);
     setDomains([]);
     removeKey();
+    setEnvs([]);
     setNotifications([]);
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("@prexo-#consoleId");
     }
-  }, [setProjects, setDomains, removeKey, setNotifications]);
+  }, [setProjects, setDomains, removeKey, setNotifications, setEnvs]);
 
   // Listen for global hard reload event
   useEffect(() => {
@@ -80,6 +88,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     process.env.NODE_ENV == "development"
       ? "http://localhost:3001/v1/notification"
       : "https://api.prexoai.xyz/v1/notification";
+
+  const ENVS_API_ENDPOINT =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/envs"
+      : "https://api.prexoai.xyz/v1/envs";
 
   function getKeyApiEndpoint(keyId: string) {
     return process.env.NODE_ENV == "development"
@@ -201,13 +214,53 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchEnvs() {
+      setContentLoading(true);
+      try {
+        const data = await fetch(`${ENVS_API_ENDPOINT}/${consoleId}/all`, {
+          credentials: "include",
+        });
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch envs: ${data.status}`);
+        }
+
+        const response = await data.json();
+        if (Array.isArray(response?.environments)) {
+          setEnvs(response.environments.map((env: EnvType) => env));
+        } else {
+          setEnvs([]);
+        }
+      } catch (error) {
+        console.error("Error fetching envs:", error);
+        setEnvs([]);
+      } finally {
+        setContentLoading(false);
+      }
+    }
+
     if (notifications.length == 0) {
       fetchNotifications();
     }
 
-    const interval = setInterval(fetchNotifications, 10000);
+    if (envs.length == 0) {
+      fetchEnvs();
+    }
+
+    const interval = setInterval(() => {
+      fetchNotifications();
+      fetchEnvs();
+    }, 10000);
     return () => clearInterval(interval);
-  }, [setNotifications, consoleId, user, loading, notifications.length]);
+  }, [
+    setNotifications,
+    consoleId,
+    user,
+    loading,
+    notifications.length,
+    envs.length,
+    setEnvs,
+  ]);
 
   // Fetch key details only once, even if the response is empty
   useEffect(() => {

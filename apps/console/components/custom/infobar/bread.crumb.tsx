@@ -12,10 +12,7 @@ function getPageDescription(page: string): string {
   if (page.includes("dashboard")) {
     return "A detailed overview of your metrics, usage, customers and more";
   }
-  if (page.includes("history")) {
-    return "View and manage agent's chat histories";
-  }
-  if (page.includes("context")) {
+  if (page.includes("memory")) {
     return "View and manage agent's memory context";
   }
   if (page.includes("playground")) {

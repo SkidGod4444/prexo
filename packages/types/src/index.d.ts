@@ -34,6 +34,16 @@ type NotificationType = {
   updatedAt: Date | string;
 };
 
+type EnvType = {
+  id: string;
+  projectId: string;
+  environment?: string | null;
+  name: string;
+  value: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
 type ProjectType = {
   id: string;
   name: string;
@@ -78,4 +88,5 @@ export type {
   KeyType,
   NotificationType,
   DomainType,
+  EnvType,
 };

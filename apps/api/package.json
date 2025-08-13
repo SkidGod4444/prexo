@@ -23,7 +23,8 @@
     "hono": "^4.8.2",
     "next": "^15.4.5",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "uploadthing": "^7.7.3"
   },
   "devDependencies": {
     "@types/node": "^20",

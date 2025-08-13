@@ -120,7 +120,7 @@ export default function DeleteProject({ name }: { name: string }) {
       await Promise.all(
         keyIds.map(async (keyId) => {
           const res = await fetch(`${API_ENDPOINT}/delete`, {
-            method: "POST",
+            method: "DELETE",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ keyId }),

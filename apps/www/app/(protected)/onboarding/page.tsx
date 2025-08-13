@@ -27,7 +27,15 @@ function OnboardingInner() {
     }
   }, [router, redirectUrl, myProfile]);
 
-  return null;
+  if (!myProfile) {
+    router.replace("/auth");
+  }
+
+  return (
+    <div className="flex items-center justify-center h-screen w-full">
+      Authenticating please wait...
+    </div>
+  );
 }
 
 export default function Onboarding() {

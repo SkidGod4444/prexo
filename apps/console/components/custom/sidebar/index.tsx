@@ -5,8 +5,6 @@ import {
   BrainCircuit,
   FlaskConical,
   BookMarked,
-  DatabaseBackup,
-  DatabaseZap,
   MessageCircleDashed,
   Video,
   GitCompareArrows,
@@ -40,8 +38,17 @@ import Link from "next/link";
 import { useAuth } from "@/context/auth.context";
 import { NavSecondary } from "./nav.secondary";
 
+// Define a type for menu items that may have subItems
+type MenuItem = {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  isDisabled?: boolean;
+  subItems?: MenuItem[];
+};
+
 // Menu items.
-const items = [
+const items: MenuItem[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -79,23 +86,11 @@ const navSecondary = [
   },
 ];
 // Playground items.
-const IntelItems = [
+const IntelItems: MenuItem[] = [
   {
     title: "Memory",
-    url: "#",
+    url: "/memory",
     icon: BrainCircuit,
-    subItems: [
-      {
-        title: "History",
-        url: "/memory/history",
-        icon: DatabaseBackup,
-      },
-      {
-        title: "Context",
-        url: "/memory/context",
-        icon: DatabaseZap,
-      },
-    ],
   },
   // {
   //   title: "Commerce",
@@ -172,17 +167,17 @@ export function AppSidebar() {
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
-                  {item.subItems?.length ? (
+                  {Array.isArray(item.subItems) && item.subItems.length > 0 ? (
                     <SidebarMenuSub>
-                      {item.subItems.map((item) => (
-                        <SidebarMenuSubItem key={item.title}>
+                      {item.subItems.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
                             asChild
-                            isActive={path.includes(item.url)}
+                            isActive={path.includes(subItem.url)}
                           >
-                            <Link href={item.url}>
-                              <item.icon className="text-muted-foreground" />
-                              <span>{item.title}</span>
+                            <Link href={subItem.url}>
+                              <subItem.icon className="text-muted-foreground" />
+                              <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
