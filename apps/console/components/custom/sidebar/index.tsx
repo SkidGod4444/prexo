@@ -33,10 +33,9 @@ import {
 import { usePathname } from "next/navigation";
 import { NavUser } from "./nav.user";
 import Logo from "../logo";
-import QuickActionButton from "./quick.actions";
 import Link from "next/link";
-import { useAuth } from "@/context/auth.context";
 import { NavSecondary } from "./nav.secondary";
+import { useMyProfileStore } from "@prexo/store";
 
 // Define a type for menu items that may have subItems
 type MenuItem = {
@@ -119,7 +118,7 @@ const IntelItems: MenuItem[] = [
 export function AppSidebar() {
   const path = usePathname();
   const { state } = useSidebar();
-  const { user, loading } = useAuth();
+  const { myProfile } = useMyProfileStore();
 
   return (
     <Sidebar collapsible="icon">
@@ -137,7 +136,7 @@ export function AppSidebar() {
                     asChild
                     tooltip={item.title}
                     isActive={path.includes(item.url)}
-                    className={`border ${item.isDisabled && "bg-black hover:bg-black border-dashed"}`}
+                    className={`${item.isDisabled && "bg-black hover:bg-black border-dashed"}`}
                   >
                     <Link href={item.url}>
                       <item.icon className="text-muted-foreground" />
@@ -158,9 +157,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    isActive={
-                      path.split("/").pop() === item.url.replace(/^\//, "")
-                    }
+                    isActive={path.includes(item.url)}
                   >
                     <Link href={item.url}>
                       <item.icon className="text-muted-foreground" />
@@ -192,8 +189,7 @@ export function AppSidebar() {
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <QuickActionButton collapse={state} />
-        {user && !loading && <NavUser user={user} />}
+        <NavUser user={myProfile!} />
       </SidebarFooter>
     </Sidebar>
   );
