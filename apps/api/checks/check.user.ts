@@ -1,20 +1,24 @@
 import { auth } from "@prexo/auth";
 import { Context, Next } from "hono";
-import { NextResponse } from "next/server";
 
 export const checkUser = async (c: Context, next: Next) => {
   try {
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
     if (session && session.user) {
       c.set("session", session);
+      c.set("user", session.user);
       return await next();
     }
     console.log("Access Denied!");
-    return NextResponse.json(
-      { message: "Authentication error occurred" },
-      { status: 401 },
+    return c.json(
+      { message: "You are not authorized!" },
+      401
     );
   } catch (error) {
     console.log("Error while checking user", error);
+    return c.json(
+      { message: "An error occurred. Please contact us at connect.saidev@gmail.com." },
+      401
+    );
   }
 };

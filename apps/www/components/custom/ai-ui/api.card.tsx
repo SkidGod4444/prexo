@@ -64,6 +64,7 @@ export default function ApiCardAiUi({
         ],
       });
     } catch (error) {
+      setLoading(false);
       console.error("Error creating API key:", error);
     }
   };

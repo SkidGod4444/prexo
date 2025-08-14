@@ -7,25 +7,36 @@ const envs = new Hono();
 envs.use(checkUser);
 
 envs.post("/create", async (c) => {
-  const { name, value, projectId } = await c.req.json();
-  if (!name || !projectId || !value) {
-    return c.json({ message: "Name, Value and ProjectId are required" }, 400);
-  }
+  try {
+    const { name, value, projectId } = await c.req.json();
+    if (!name || !projectId || !value) {
+      return c.json({ message: "Name, Value and ProjectId are required" }, 400);
+    }
 
-  const newEnvs = await prisma.environments.create({
-    data: {
-      name: name,
-      value: value,
-      project: {
-        connect: { id: projectId },
+    const newEnvs = await prisma.environments.create({
+      data: {
+        name,
+        value,
+        project: {
+          connect: { id: projectId },
+        },
       },
-    },
-  });
-  if (!newEnvs) {
+    });
+    if (!newEnvs) {
+      return c.json({ message: "Failed to create env" }, 500);
+    }
+    // Avoid logging secret values
+    console.log("Created new env:", {
+      id: newEnvs.id,
+      name: newEnvs.name,
+      projectId: newEnvs.projectId,
+      createdAt: newEnvs.createdAt,
+    });
+    return c.json({ environments: newEnvs }, 201);
+  } catch (error) {
+    console.error("Error creating env:", error);
     return c.json({ message: "Failed to create env" }, 500);
   }
-  console.log("Created new env:", newEnvs);
-  return c.json({ environments: newEnvs }, 201);
 });
 
 envs.get("/:projectId/all", async (c) => {
