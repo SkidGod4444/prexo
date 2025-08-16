@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import React from "react";
 import Notifications from "./notifications";
-import { useApiKeyStore } from "@prexo/store";
+import { useApiKeyStore, useContainersStore } from "@prexo/store";
 
 function getPageDescription(page: string): string {
   if (page.includes("settings")) {
@@ -11,6 +11,9 @@ function getPageDescription(page: string): string {
   }
   if (page.includes("dashboard")) {
     return "A detailed overview of your metrics, usage, customers and more";
+  }
+  if (page.includes("container")) {
+    return "View and manage agent's memory containers";
   }
   if (page.includes("memory")) {
     return "View and manage agent's memory context";
@@ -24,6 +27,7 @@ function getPageDescription(page: string): string {
 export default function InfobarBreadCrumb() {
   const page = usePathname();
   const { key } = useApiKeyStore();
+  const { containers } = useContainersStore();
 
   if (!key) {
     return;
@@ -36,6 +40,17 @@ export default function InfobarBreadCrumb() {
           <h2 className="text-2xl md:text-4xl font-uxum font-bold capitalize">
             {(() => {
               const segments = page.replace(/^\/+/, "").split("/");
+              // Check if the path is /container/:id
+              if (
+                segments.length >= 2 &&
+                segments[segments.length - 2] === "container"
+              ) {
+                const containerId = segments[segments.length - 1];
+                const container = containers.find(
+                  (c) => c.id === containerId || c.key === containerId
+                );
+                return container ? container.name : "Container";
+              }
               return segments.length > 1
                 ? segments[segments.length - 1]
                 : segments[0];

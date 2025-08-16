@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   ApiKeyStore,
+  ContainerStore,
   DomainStore,
   EnvStore,
   MyProfileStore,
@@ -97,8 +98,8 @@ const useEnvsStore = create<EnvStore>()(
   persist(
     (set) => ({
       envs: [],
-      addEnvs: (env) => set((state) => ({ envs: [...state.envs, env] })),
-      removeEnvs: (envId) =>
+      addEnv: (env) => set((state) => ({ envs: [...state.envs, env] })),
+      removeEnv: (envId) =>
         set((state) => ({
           envs: state.envs.filter((p) => p.id !== envId),
         })),
@@ -106,6 +107,24 @@ const useEnvsStore = create<EnvStore>()(
     }),
     {
       name: "@prexo-#environments",
+    },
+  ),
+);
+
+const useContainersStore = create<ContainerStore>()(
+  persist(
+    (set) => ({
+      containers: [],
+      addContainer: (container) =>
+        set((state) => ({ containers: [...state.containers, container] })),
+      removeContainer: (containerId) =>
+        set((state) => ({
+          containers: state.containers.filter((p) => p.id !== containerId),
+        })),
+      setContainers: (containers) => set({ containers }),
+    }),
+    {
+      name: "@prexo-#containers",
     },
   ),
 );
@@ -137,4 +156,5 @@ export {
   useDomainsStore,
   useNotificationsStore,
   useEnvsStore,
+  useContainersStore,
 };

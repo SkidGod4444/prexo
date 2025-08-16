@@ -5,6 +5,7 @@ import {
   DomainType,
   NotificationType,
   EnvType,
+  ContainerType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -50,9 +51,16 @@ type DomainStore = {
 
 type EnvStore = {
   envs: EnvType[];
-  addEnvs: (env: EnvType) => void;
-  removeEnvs: (envId: string) => void;
+  addEnv: (env: EnvType) => void;
+  removeEnv: (envId: string) => void;
   setEnvs: (envs: EnvType[]) => void;
+};
+
+type ContainerStore = {
+  containers: ContainerType[];
+  addContainer: (env: ContainerType) => void;
+  removeContainer: (envId: string) => void;
+  setContainers: (envs: ContainerType[]) => void;
 };
 
 export type {
@@ -63,4 +71,5 @@ export type {
   DomainStore,
   NotificationsStore,
   EnvStore,
+  ContainerStore,
 };

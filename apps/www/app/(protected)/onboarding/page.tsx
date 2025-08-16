@@ -9,26 +9,29 @@ function OnboardingInner() {
   const redirectUrl = searchParams.get("redirect");
   const { myProfile } = useMyProfileStore();
 
-useEffect(() => {
-  // Redirect unauthenticated users
-  if (!myProfile) {
-    router.replace("/auth");
-    return;
-  }
+  useEffect(() => {
+    // Redirect unauthenticated users
+    if (!myProfile) {
+      router.replace("/auth");
+      return;
+    }
 
-  // New users start onboarding
-  if (myProfile.role === "user") {
-    router.replace(`/onboarding/${myProfile.id}`);
-    return;
-  }
+    // New users start onboarding
+    if (myProfile.role === "user") {
+      router.replace(`/onboarding/${myProfile.id}`);
+      return;
+    }
 
-  // Otherwise honor a safe, same-origin redirect param
-  if (redirectUrl?.startsWith("/") && !redirectUrl.startsWith("//") && redirectUrl[1] !== "/") {
-    router.replace(redirectUrl);
-    return;
-  }
-}, [router, redirectUrl, myProfile]);
-
+    // Otherwise honor a safe, same-origin redirect param
+    if (
+      redirectUrl?.startsWith("/") &&
+      !redirectUrl.startsWith("//") &&
+      redirectUrl[1] !== "/"
+    ) {
+      router.replace(redirectUrl);
+      return;
+    }
+  }, [router, redirectUrl, myProfile]);
 
   return (
     <div className="flex items-center justify-center h-screen w-full">

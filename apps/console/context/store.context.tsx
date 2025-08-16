@@ -2,12 +2,14 @@
 "use client";
 import {
   useApiKeyStore,
+  useContainersStore,
   useDomainsStore,
   useEnvsStore,
   useNotificationsStore,
   useProjectsStore,
 } from "@prexo/store";
 import {
+  ContainerType,
   DomainType,
   EnvType,
   NotificationType,
@@ -50,6 +52,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const { domains, setDomains } = useDomainsStore();
   const { envs, setEnvs } = useEnvsStore();
   const { key, removeKey, setKey } = useApiKeyStore();
+  const { containers, setContainers } = useContainersStore();
 
   // Hard reload function: empties all stores and optionally localStorage
   const hardReload = useCallback(() => {
@@ -58,6 +61,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     removeKey();
     setEnvs([]);
     setNotifications([]);
+    setContainers([]);
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("@prexo-#consoleId");
     }
@@ -93,6 +97,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     process.env.NODE_ENV == "development"
       ? "http://localhost:3001/v1/envs"
       : "https://api.prexoai.xyz/v1/envs";
+
+  const CONTAINERS_API_ENDPOINT =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/container"
+      : "https://api.prexoai.xyz/v1/container";
 
   function getKeyApiEndpoint(keyId: string) {
     return process.env.NODE_ENV == "development"
@@ -214,6 +223,34 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchContainers() {
+      setContentLoading(true);
+      try {
+        const data = await fetch(
+          `${CONTAINERS_API_ENDPOINT}/${consoleId}/all`,
+          {
+            credentials: "include",
+          },
+        );
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch containers: ${data.status}`);
+        }
+
+        const response = await data.json();
+        if (Array.isArray(response?.containers)) {
+          setContainers(response.containers.map((cont: ContainerType) => cont));
+        } else {
+          setContainers([]);
+        }
+      } catch (error) {
+        console.error("Error fetching containers:", error);
+        setContainers([]);
+      } finally {
+        setContentLoading(false);
+      }
+    }
+
     async function fetchEnvs() {
       setContentLoading(true);
       try {
@@ -247,10 +284,15 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       fetchEnvs();
     }
 
+    if (containers.length == 0) {
+      fetchContainers();
+    }
+
     const interval = setInterval(() => {
       fetchNotifications();
       fetchEnvs();
-    }, 10000);
+      fetchContainers();
+    }, 30000);
     return () => clearInterval(interval);
   }, [
     setNotifications,

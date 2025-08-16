@@ -10,15 +10,15 @@ export const checkUser = async (c: Context, next: Next) => {
       return await next();
     }
     console.log("Access Denied!");
-    return c.json(
-      { message: "You are not authorized!" },
-      401
-    );
+    return c.json({ message: "You are not authorized!" }, 401);
   } catch (error) {
     console.log("Error while checking user", error);
     return c.json(
-      { message: "An error occurred. Please contact us at connect.saidev@gmail.com." },
-      401
+      {
+        message:
+          "An error occurred. Please contact us at connect.saidev@gmail.com.",
+      },
+      401,
     );
   }
 };

@@ -3,6 +3,8 @@ type UserType = {
   name: string;
   email: string;
   role?: string | null;
+  hashKey?: string | null;
+  lang?: string | null;
   emailVerified: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -40,6 +42,19 @@ type EnvType = {
   environment?: string | null;
   name: string;
   value: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
+type ContainerType = {
+  id: string;
+  key: string;
+  name: string;
+  description?: string | null;
+  resources?: number | null;
+  filesId: string[];
+  projectId: string;
+  status?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 };
@@ -89,4 +104,5 @@ export type {
   NotificationType,
   DomainType,
   EnvType,
+  ContainerType,
 };

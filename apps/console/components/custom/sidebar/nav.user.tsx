@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -19,17 +18,18 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/auth.context";
-import { UserType } from "@prexo/types";
 import { authClient } from "@prexo/auth/client";
 import { useMyProfileStore } from "@prexo/store";
 import PlansDialog from "./plans.dialog";
 
-export function NavUser({ user }: { user: UserType }) {
+export function NavUser() {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
   const { myProfile } = useMyProfileStore();
   const isPremium = myProfile?.role === "pro";
-
+  if (!myProfile) {
+    return
+  }
   const handleBiling = async () => {
     const res = await authClient.customer.portal();
     console.log(res);
@@ -45,9 +45,9 @@ export function NavUser({ user }: { user: UserType }) {
               className="data-[state=open]:bg-sidebar-accent cursor-pointer data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.image!} alt={user.name} />
+                <AvatarImage src={myProfile.image!} alt={myProfile.name} />
                 <AvatarFallback className="rounded-lg">
-                  {user.name
+                  {myProfile.name
                     .split(" ")
                     .map((n) => n[0])
                     .join("")
@@ -55,8 +55,8 @@ export function NavUser({ user }: { user: UserType }) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{myProfile.name}</span>
+                <span className="truncate text-xs">{myProfile.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -70,9 +70,9 @@ export function NavUser({ user }: { user: UserType }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image!} alt={user.name} />
+                  <AvatarImage src={myProfile.image!} alt={myProfile.name} />
                   <AvatarFallback className="rounded-lg">
-                    {user.name
+                    {myProfile.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -80,8 +80,8 @@ export function NavUser({ user }: { user: UserType }) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{myProfile.name}</span>
+                  <span className="truncate text-xs">{myProfile.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

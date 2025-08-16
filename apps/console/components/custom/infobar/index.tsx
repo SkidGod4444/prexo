@@ -125,7 +125,7 @@ export default function Infobar() {
         setValue(data.project.id);
         // Close the dialog after successful creation
         setOpenDialog(false);
-        setTimeout(() => window.location.reload(), 1000);
+        setTimeout(() => window.location.reload(), 200);
         return { name: data.project.name };
       })(),
       {
@@ -229,7 +229,7 @@ export default function Infobar() {
 
                                 setTimeout(
                                   () => window.location.reload(),
-                                  1000,
+                                  200,
                                 );
                               }
                               setOpenPopover2(false);
@@ -328,7 +328,7 @@ export default function Infobar() {
               </Dialog>
             </BreadcrumbItem>
             {pathname.length > 0 &&
-              pathname.map((segment, idx) => (
+              pathname.slice(0, 2).map((segment, idx) => (
                 <React.Fragment key={idx}>
                   <BreadcrumbSeparator>
                     <Slash className="h-4 w-4" />

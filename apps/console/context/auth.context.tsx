@@ -15,6 +15,7 @@ import {
   ReactNode,
 } from "react";
 import { useLocalStorage } from "usehooks-ts";
+import { generateHashKeyHex } from "@prexo/crypt";
 
 interface AuthContextType {
   user: UserType | null;
@@ -22,6 +23,11 @@ interface AuthContextType {
   setUser: (user: UserType | null) => void;
   logout: () => Promise<void>;
 }
+
+const user_endpoint =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/user"
+      : "https://api.prexoai.xyz/v1/user";
 
 const landingPage =
   process.env.NODE_ENV === "production"
@@ -47,13 +53,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const session = await authClient.getSession();
         // Defensive: ensure session.data and session.data.user are defined
         const sessionUser = session?.data?.user ?? null;
+        
         if (sessionUser) {
           setUser(sessionUser);
+          console.log(sessionUser)
           // Defensive: ensure myProfile is defined and has id
           if (myProfile && myProfile.id === sessionUser.id) {
             return;
           }
           addMyProfile(sessionUser);
+
+          if (myProfile && (!myProfile.hashKey || myProfile.hashKey.length === 0)) {
+            const hashKey = generateHashKeyHex();
+            try {
+              const data = await fetch(`${user_endpoint}/update`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ hashKey }),
+              });
+
+              if (!data.ok) {
+                throw new Error(`Failed to update user hashKey: ${data.status}`);
+              }
+
+              const resp = await data.json();
+
+              if(resp.user) {
+                addMyProfile(resp.user);
+                setUser(resp.user);
+              }
+              console.log("hashKey generated and updated for user!");
+            } catch (error) {
+              console.error("Error updating user hashKey:", error);
+            }
+          }
           console.log("User fetched:", sessionUser);
         } else {
           setUser(null);

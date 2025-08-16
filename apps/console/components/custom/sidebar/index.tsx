@@ -35,7 +35,6 @@ import { NavUser } from "./nav.user";
 import Logo from "../logo";
 import Link from "next/link";
 import { NavSecondary } from "./nav.secondary";
-import { useMyProfileStore } from "@prexo/store";
 
 // Define a type for menu items that may have subItems
 type MenuItem = {
@@ -118,7 +117,6 @@ const IntelItems: MenuItem[] = [
 export function AppSidebar() {
   const path = usePathname();
   const { state } = useSidebar();
-  const { myProfile } = useMyProfileStore();
 
   return (
     <Sidebar collapsible="icon">
@@ -189,7 +187,7 @@ export function AppSidebar() {
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={myProfile!} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

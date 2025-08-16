@@ -11,6 +11,20 @@ function decode(buffer: Uint8Array): string {
   return new TextDecoder().decode(buffer);
 }
 
+export function generateHashKeyHex(): string {
+  const key = crypto.getRandomValues(new Uint8Array(32));
+  return Buffer.from(key).toString("hex"); // store in DB
+}
+
+export function getHashKey(storedKeyHex: string): Uint8Array {
+  return new Uint8Array(Buffer.from(storedKeyHex, "hex"));
+}
+
+export function generateHashSalt(): Uint8Array {
+  const salt = crypto.getRandomValues(new Uint8Array(16)); // 128-bit salt
+  return salt;
+}
+
 export async function deriveKey(
   password: string,
   salt: Uint8Array,

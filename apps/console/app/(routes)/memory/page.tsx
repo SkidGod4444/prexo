@@ -1,13 +1,12 @@
-
 import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
-import ContainerCard from "@/components/custom/memory/container.card";
+import ContainersTable from "@/components/custom/memory/containers.table";
 import React from "react";
 
 export default function MemoryPage() {
   return (
     <div className="flex flex-col overflow-hidden">
       <InfobarBreadCrumb />
-      <ContainerCard/>
+      <ContainersTable />
     </div>
   );
 }

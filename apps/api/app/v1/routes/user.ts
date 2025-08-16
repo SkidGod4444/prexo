@@ -70,4 +70,33 @@ user.post("/inactive", async (c) => {
   return c.json({ user }, 200);
 });
 
+user.post("/update", async (c) => {
+  const { fields } = await c.req.json();
+  const data = await auth.api.getSession({
+    headers: c.req.raw.headers,
+  });
+
+  if (!data) {
+    return c.json(
+      {
+        message: "Oops! seems like your session is expired",
+        status: 400,
+      },
+      400,
+    );
+  }
+  if (!fields || typeof fields !== "object" || Array.isArray(fields)) {
+    return c.json({ message: "Fields object is required", status: 400 }, 400);
+  }
+  const user = await prisma.user.update({
+    where: {
+      id: data.user.id,
+    },
+    data: {
+      ...fields,
+    },
+  });
+  return c.json({ user }, 200);
+});
+
 export default user;

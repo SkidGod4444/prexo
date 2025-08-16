@@ -18,6 +18,7 @@ import notifications from "../routes/notifications";
 import domain from "../routes/domain";
 import envs from "../routes/environments";
 import file from "../routes/file";
+import containers from "../routes/containers";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -55,6 +56,7 @@ app.route("/envs", envs);
 app.route("/notification", notifications);
 app.route("/api", api);
 app.route("/context", cntxt);
+app.route("/container", containers);
 app.route("/file", file);
 
 // SDK Routes

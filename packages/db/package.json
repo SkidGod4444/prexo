@@ -10,7 +10,7 @@
         "db:validate": "prisma validate",
         "db:format": "prisma format",
         "db:generate": "prisma generate --accelerate",
-        "db:push": "prisma db push --skip-generate",
+        "db:push": "prisma db push",
         "db:migrate": "pnpm db:validate && prisma migrate dev"
     },
     "dependencies": {

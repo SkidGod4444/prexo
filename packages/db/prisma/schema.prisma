@@ -93,17 +93,18 @@ model Passkey {
 model Project {
   id            String          @id @default(uuid())
   name          String
+  userId        String
   description   String?
+  memoId        String?
+  keyId         String?         @unique
   domains       Domain[]
   notifications Notifications[]
   environments  Environments[]
   files         Files[]
+  containers    Containers[]
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime
   updatedAt     DateTime
-  userId        String
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  memoId        String?
-  keyId         String?         @unique
 
   @@map("project")
 }
@@ -165,4 +166,20 @@ model Files {
   updatedAt   DateTime @updatedAt
 
   @@map("files")
+}
+
+model Containers {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  name        String
+  description String?
+  resources   Int?     @default(0)
+  filesId     String[]
+  projectId   String
+  status      String?  @default("active")
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("containers")
 }
