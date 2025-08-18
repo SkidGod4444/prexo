@@ -1,10 +1,9 @@
-import { Prisma, prisma } from "@prexo/db";
+import { prisma, PrismaClientKnownRequestError } from "@prexo/db";
 
 export function generateContainerKey(): string {
   const randomDigits = Math.floor(10000 + Math.random() * 90000);
   return `con_${randomDigits}`;
 }
-
 
 export async function invalidateCache(tags: string[]) {
   try {
@@ -13,8 +12,8 @@ export async function invalidateCache(tags: string[]) {
     });
   } catch (e: any) {
     if (
-      typeof Prisma !== "undefined" &&
-      e instanceof Prisma.PrismaClientKnownRequestError
+      typeof PrismaClientKnownRequestError !== "undefined" &&
+      e instanceof PrismaClientKnownRequestError
     ) {
       if (e.code === "P6003") {
         console.log(
