@@ -305,10 +305,10 @@
         "@prexo/mail": "workspace:*",
         "@prexo/polar": "workspace:*",
         "@prexo/utils": "workspace:*",
-        "better-auth": "^1.3.6",
+        "better-auth": "^1.3.6-beta.1",
       },
       "devDependencies": {
-        "@better-auth/cli": "^1.3.6",
+        "@better-auth/cli": "^1.3.6-beta.1",
         "zod": "^4",
       },
     },
