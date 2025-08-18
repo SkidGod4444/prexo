@@ -11,6 +11,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  telemetry: { enabled: false },
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       console.log("Auth hook called for path:", ctx.path);

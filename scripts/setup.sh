@@ -4,9 +4,9 @@ echo "UPSTASH_VECTOR_REST_URL=ADD_YOUR_KEY" >> ./.env
 echo "UPSTASH_VECTOR_REST_TOKEN=ADD_YOUR_KEY" >> ./.env
 echo "TOGETHER_API_KEY=ADD_YOUR_KEY" >> ./.env
 echo "OPENAI_API_KEY=ADD_YOUR_KEY" >> ./.env
-echo "# add your prod database direct url and accelerated url here" >> ./.env
-echo "DATABASE_URL=ADD_YOUR_KEY" >> ./.env
-echo "DIRECT_DATABASE_URL=ADD_YOUR_KEY" >> ./.env
+echo "# it will point to dev env by default." >> ./.env
+echo "DATABASE_URL=${DEV_DATABASE_URL}" >> ./.env
+echo "DIRECT_DATABASE_URL=${DEV_DIRECT_DATABASE_URL}" >> ./.env
 echo "# add your local database direct url and db url here" >> ./.env
 echo "DEV_DATABASE_URL=ADD_YOUR_KEY" >> ./.env
 echo "DEV_DIRECT_DATABASE_URL=ADD_YOUR_KEY" >> ./.env
