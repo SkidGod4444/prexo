@@ -314,7 +314,7 @@ export default function ContainersTable() {
                   </TableCell>
                   <TableCell className="py-2.5 font-medium">
                     <p
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:underline"
                       onClick={() => handleOnClick(item.key)}
                     >
                       {item.name}

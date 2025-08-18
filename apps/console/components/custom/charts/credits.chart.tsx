@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { JetBrains_Mono } from "next/font/google";
+// import { cn } from "@/lib/utils";
+// import { JetBrains_Mono } from "next/font/google";
 import { useMotionValueEvent, useSpring } from "framer-motion";
 
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+// const jetBrainsMono = JetBrains_Mono({
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"],
+// });
 
 const CHART_MARGIN = 35;
 
@@ -84,17 +84,20 @@ export function CreditsUsageChart() {
     <Card className="bg-transparent border-none">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <span
+          {/* <span
             className={cn(jetBrainsMono.className, "text-2xl tracking-tighter")}
           >
             ${maxValueIndex.value}
+          </span> */}
+          <span className="text-2xl">
+          Credits Usage
           </span>
           <Badge variant="secondary">
             <TrendingUp className="h-4 w-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>
-        <CardDescription>vs. last quarter</CardDescription>
+        <CardDescription>vs. last month</CardDescription>
       </CardHeader>
       <CardContent className="p-2">
         <AnimatePresence mode="wait">

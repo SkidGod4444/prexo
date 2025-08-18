@@ -310,7 +310,7 @@ export default function CtxFileUploader() {
               </Button>
             </div>
           </div>
-          <div className="bg-background overflow-hidden rounded-md border">
+          <div className="bg-background overflow-hidden rounded-2xl border">
             <Table>
               <TableHeader className="text-xs">
                 <TableRow className="bg-muted/50">
