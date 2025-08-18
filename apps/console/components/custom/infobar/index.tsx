@@ -153,6 +153,7 @@ export default function Infobar() {
   }, []);
 
   useEffect(() => {
+
     // If there are no projects, or a value is already selected, do nothing
     if (!projects || projects.length === 0 || value) return;
 
@@ -166,7 +167,7 @@ export default function Infobar() {
 
     // Cleanup timeout if component unmounts or dependencies change
     return () => clearTimeout(timeoutId);
-  }, [projects, value, setValue]);
+  }, [projects, value, setValue, hardReload]);
 
   return (
     <nav

@@ -38,6 +38,11 @@ containers.get("/:projectId/all", async (c) => {
     const containers = await prisma.containers.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 30,
+        swr: 30,
+        tags: ["findMany_containers"]
+      },
     });
     return c.json({ containers }, 200);
   } catch (error) {

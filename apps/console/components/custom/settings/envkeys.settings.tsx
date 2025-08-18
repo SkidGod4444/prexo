@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import SectionLabel from "../section.label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,29 +27,34 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEnvsStore } from "@prexo/store";
+import { useEnvsStore, useMyProfileStore } from "@prexo/store";
 import { EnvType } from "@prexo/types";
+import { encrypt, decrypt, getHashKey } from "@prexo/crypt";
+import { useReadLocalStorage } from "usehooks-ts";
+import { toast } from "sonner";
+
+interface EncryptedData {
+  initialVector: string;
+  encrypted: string;
+}
+
+function isEncryptedData(val: unknown): val is EncryptedData {
+  return (
+    typeof val === "object" &&
+    val !== null &&
+    "initialVector" in val &&
+    "encrypted" in val
+  );
+}
 
 export default function EnvKeysSettings() {
-  const [selectedDB, setSelectedDB] = useState<"" | "redis" | "vector">(
-    "redis",
-  );
+  const { myProfile } = useMyProfileStore();
+  const consoleId = useReadLocalStorage("@prexo-#consoleId");
+  const hashKey = getHashKey(myProfile?.hashKey ?? "");
 
-  const key1 =
-    selectedDB === "redis"
-      ? "UPSTASH_REDIS_REST_URL"
-      : "UPSTASH_VECTOR_REST_URL";
-  const key2 =
-    selectedDB === "redis"
-      ? "UPSTASH_REDIS_REST_TOKEN"
-      : "UPSTASH_VECTOR_REST_TOKEN";
+  const [selectedDB, setSelectedDB] = useState<"redis" | "vector">("redis");
 
-  const dbOptions: {
-    key: "" | "redis" | "vector";
-    icon: React.ElementType;
-    label: string;
-    desc: string;
-  }[] = [
+  const dbOptions = [
     {
       key: "redis",
       icon: DatabaseBackup,
@@ -64,29 +69,189 @@ export default function EnvKeysSettings() {
     },
   ];
 
-  // Sensitive value state and show/hide state
+  const key1 =
+    selectedDB === "redis"
+      ? "UPSTASH_REDIS_REST_URL"
+      : "UPSTASH_VECTOR_REST_URL";
+  const key2 =
+    selectedDB === "redis"
+      ? "UPSTASH_REDIS_REST_TOKEN"
+      : "UPSTASH_VECTOR_REST_TOKEN";
+
   const { envs } = useEnvsStore();
-  const [envValue1, setEnvValue1] = useState("");
-  const [envValue2, setEnvValue2] = useState("");
+
+  // --- New model: keep raw strings for the inputs and (optional) existing encrypted values ---
+  const [existingEnc1, setExistingEnc1] = useState<EncryptedData | null>(null);
+  const [existingEnc2, setExistingEnc2] = useState<EncryptedData | null>(null);
+  const [rawValue1, setRawValue1] = useState<string>("");
+  const [rawValue2, setRawValue2] = useState<string>("");
+  const [dirty1, setDirty1] = useState<boolean>(false);
+  const [dirty2, setDirty2] = useState<boolean>(false);
+
+  // Show/hide states
   const [showValue1, setShowValue1] = useState(false);
   const [showValue2, setShowValue2] = useState(false);
 
-  // When envs or selectedDB changes, update the values if present in envs
+  const [isLoading, setIsLoading] = useState(false);
+
+  const ENVS_API_ENDPOINT =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3001/v1/envs"
+      : "https://api.prexoai.xyz/v1/envs";
+
+  // Load envs from store whenever envs or selectedDB keys change
   useEffect(() => {
-    if (Array.isArray(envs) && envs.length > 0) {
+    if (Array.isArray(envs)) {
       const found1 = envs.find((env: EnvType) => env.name === key1);
       const found2 = envs.find((env: EnvType) => env.name === key2);
-      setEnvValue1(found1?.value ?? "");
-      setEnvValue2(found2?.value ?? "");
+
+      const v1 = found1?.value as unknown;
+      const v2 = found2?.value as unknown;
+
+      if (isEncryptedData(v1)) {
+        setExistingEnc1(v1);
+        setRawValue1("");
+      } else if (typeof v1 === "string" && v1) {
+        setExistingEnc1(null);
+        setRawValue1(v1);
+      } else {
+        setExistingEnc1(null);
+        setRawValue1("");
+      }
+
+      if (isEncryptedData(v2)) {
+        setExistingEnc2(v2);
+        setRawValue2("");
+      } else if (typeof v2 === "string" && v2) {
+        setExistingEnc2(null);
+        setRawValue2(v2);
+      } else {
+        setExistingEnc2(null);
+        setRawValue2("");
+      }
     } else {
-      setEnvValue1("");
-      setEnvValue2("");
+      setExistingEnc1(null);
+      setExistingEnc2(null);
+      setRawValue1("");
+      setRawValue2("");
     }
+
+    // Reset UI state when envs change
+    setShowValue1(false);
+    setShowValue2(false);
+    setDirty1(false);
+    setDirty2(false);
   }, [envs, key1, key2]);
 
-  function DBDorpdown() {
-    const selected = dbOptions.find((opt) => opt.key === selectedDB);
+  // Decrypt on demand when user reveals a masked value
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      if (showValue1 && existingEnc1 && !rawValue1) {
+        try {
+          const plain = await decrypt(existingEnc1, hashKey);
+          if (!ignore) {
+            setRawValue1(plain);
+            // not marking dirty here – just revealed
+          }
+        } catch {
+          if (!ignore) setRawValue1("");
+        }
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, [showValue1, existingEnc1, rawValue1, hashKey]);
 
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      if (showValue2 && existingEnc2 && !rawValue2) {
+        try {
+          const plain = await decrypt(existingEnc2, hashKey);
+          if (!ignore) {
+            setRawValue2(plain);
+          }
+        } catch {
+          if (!ignore) setRawValue2("");
+        }
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, [showValue2, existingEnc2, rawValue2, hashKey]);
+
+  // Save handler – keeps existing ciphertext if input wasn't changed
+  const handleOnSave = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // Resolve value1
+      let value1: EncryptedData | null = null;
+      if (dirty1) {
+        const trimmed = rawValue1.trim();
+        if (!trimmed) throw new Error(`${key1} cannot be empty`);
+        value1 = await encrypt(trimmed, hashKey);
+      } else if (existingEnc1) {
+        value1 = existingEnc1;
+      } else if (rawValue1.trim()) {
+        value1 = await encrypt(rawValue1.trim(), hashKey);
+      } else {
+        throw new Error(`${key1} is required`);
+      }
+
+      // Resolve value2
+      let value2: EncryptedData | null = null;
+      if (dirty2) {
+        const trimmed = rawValue2.trim();
+        if (!trimmed) throw new Error(`${key2} cannot be empty`);
+        value2 = await encrypt(trimmed, hashKey);
+      } else if (existingEnc2) {
+        value2 = existingEnc2;
+      } else if (rawValue2.trim()) {
+        value2 = await encrypt(rawValue2.trim(), hashKey);
+      } else {
+        throw new Error(`${key2} is required`);
+      }
+
+      const url = `${ENVS_API_ENDPOINT}/create`;
+      const payloads = [
+        { name: key1, value: value1, projectId: consoleId },
+        { name: key2, value: value2, projectId: consoleId },
+      ];
+
+      await toast.promise(
+        (async () => {
+          for (const body of payloads) {
+            if (!body.projectId) throw new Error("Missing projectId");
+            const res = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify(body),
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.message || "Failed to save environment variable");
+            }
+          }
+        })(),
+        {
+          loading: "Saving environment variables...",
+          success: "Environment variables saved successfully!",
+          error: (err: { message?: string }) =>
+            err?.message || "Failed to save environment variables",
+        }
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dirty1, dirty2, rawValue1, rawValue2, existingEnc1, existingEnc2, hashKey, ENVS_API_ENDPOINT, key1, key2, consoleId]);
+
+  // Dropdown for DB selection
+  function DBDropdown() {
+    const selected = dbOptions.find((opt) => opt.key === selectedDB);
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -141,26 +306,53 @@ export default function EnvKeysSettings() {
     );
   }
 
-  // Helper for sensitive input with eye button
+  // Input for sensitive values (refactored)
   function SensitiveInput({
     id,
-    value,
-    onChange,
+    rawValue,
+    setRawValue,
     show,
     setShow,
     placeholder,
     className,
+    hasEncrypted,
+    markDirty,
   }: {
     id: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    rawValue: string;
+    setRawValue: (v: string) => void;
     show: boolean;
     setShow: (v: boolean) => void;
     placeholder?: string;
     className?: string;
+    hasEncrypted: boolean; // there is an encrypted value in DB we haven't revealed/edited yet
+    markDirty: () => void;
   }) {
-    // Use a ref to keep the input focused after value change
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const masked = hasEncrypted && !show && !rawValue;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const next = e.target.value;
+      // If user starts typing while masked, treat it as replacing the secret
+      if (masked) {
+        setShow(true);
+      }
+      setRawValue(next);
+      markDirty();
+    };
+
+    const handleToggleShow = () => {
+      const next = !show;
+      setShow(next);
+      setTimeout(() => {
+        inputRef.current?.focus();
+        if (inputRef.current) {
+          const len = inputRef.current.value.length;
+          inputRef.current.setSelectionRange(len, len);
+        }
+      }, 0);
+    };
 
     return (
       <div className={`relative ${className ?? ""}`}>
@@ -168,12 +360,8 @@ export default function EnvKeysSettings() {
           id={id}
           ref={inputRef}
           type={show ? "text" : "password"}
-          value={value}
-          onChange={(e) => {
-            onChange(e);
-            // Optionally, re-focus input after value change
-            inputRef.current?.focus();
-          }}
+          value={masked ? "••••••••••" : (rawValue ?? "")}
+          onChange={handleChange}
           placeholder={placeholder}
           autoComplete="off"
           className="pr-10"
@@ -181,19 +369,8 @@ export default function EnvKeysSettings() {
         <button
           type="button"
           tabIndex={-1}
-          onClick={() => {
-            setShow(!show);
-            // After toggling show/hide, re-focus the input
-            setTimeout(() => {
-              inputRef.current?.focus();
-              // Move cursor to end
-              if (inputRef.current) {
-                const len = inputRef.current.value.length;
-                inputRef.current.setSelectionRange(len, len);
-              }
-            }, 0);
-          }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+          onClick={handleToggleShow}
+          className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
           aria-label={show ? "Hide value" : "Show value"}
         >
           {show ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -213,7 +390,7 @@ export default function EnvKeysSettings() {
           <Badge variant={"outline"} className="mb-2">
             Sensitive
           </Badge>
-          <DBDorpdown />
+          <DBDropdown />
           <Separator className="my-4" />
           <div className="flex flex-col md:flex-row gap-2">
             <div className="flex-1 flex-col">
@@ -229,20 +406,24 @@ export default function EnvKeysSettings() {
               </Label>
               <SensitiveInput
                 id="env-value"
-                value={envValue1}
-                onChange={(e) => setEnvValue1(e.target.value)}
+                rawValue={rawValue1}
+                setRawValue={setRawValue1}
                 show={showValue1}
                 setShow={setShowValue1}
                 placeholder="Enter value"
+                hasEncrypted={!!existingEnc1}
+                markDirty={() => setDirty1(true)}
               />
               <SensitiveInput
                 id="env-value2"
-                value={envValue2}
-                onChange={(e) => setEnvValue2(e.target.value)}
+                rawValue={rawValue2}
+                setRawValue={setRawValue2}
                 show={showValue2}
                 setShow={setShowValue2}
                 placeholder="Enter key"
                 className="mt-2"
+                hasEncrypted={!!existingEnc2}
+                markDirty={() => setDirty2(true)}
               />
             </div>
           </div>
@@ -268,7 +449,9 @@ export default function EnvKeysSettings() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Button size={"sm"}>Save</Button>
+          <Button size={"sm"} onClick={handleOnSave} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save"}
+          </Button>
         </CardFooter>
       </Card>
     </div>

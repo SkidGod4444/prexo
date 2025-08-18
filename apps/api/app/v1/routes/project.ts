@@ -1,4 +1,5 @@
 import { checkUser } from "@/checks/check.user";
+import { invalidateCache } from "@/lib/utils";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
@@ -84,6 +85,7 @@ project.post("/update", async (c) => {
       where: { id },
       data: fields,
     });
+    await invalidateCache(["findMany_projects"]);
     return c.json({ project: updatedProject }, 200);
   } catch (error) {
     console.error("Failed to update project:", error);
@@ -112,6 +114,11 @@ project.get("/all", async (c) => {
     const projects = await prisma.project.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+        tags: ["findMany_projects"]
+      },
     });
     return c.json({ projects }, 200);
   } catch (error) {

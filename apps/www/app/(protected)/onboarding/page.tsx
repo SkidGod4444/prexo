@@ -3,6 +3,11 @@ import { useMyProfileStore } from "@prexo/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, Suspense } from "react";
 
+const appDomain =
+  process.env.NODE_ENV === "production"
+    ? "https://console.prexoai.xyz"
+    : "http://localhost:3002";
+
 function OnboardingInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,6 +24,11 @@ function OnboardingInner() {
     // New users start onboarding
     if (myProfile.role === "user") {
       router.replace(`/onboarding/${myProfile.id}`);
+      return;
+    }
+
+    if (myProfile.role === "onboarded") {
+      router.replace(appDomain);
       return;
     }
 

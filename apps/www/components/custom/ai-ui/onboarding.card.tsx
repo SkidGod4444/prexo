@@ -13,11 +13,18 @@ import { useMyProfileStore } from "@prexo/store";
 import { completeOnboardingAction } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
+
 type OnboardingCardAiUiProps = {
   addToolResult: (result: { toolCallId: string; result: string }) => void;
   append: (message: UIMessage) => void;
   callId: string;
 };
+
+const appDomain =
+  process.env.NODE_ENV === "production"
+    ? "https://console.prexoai.xyz"
+    : "http://localhost:3002";
+
 export default function OnboardingCardAiUi({
   addToolResult,
   append,
@@ -59,7 +66,7 @@ export default function OnboardingCardAiUi({
       });
       setLoadingComp(false);
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push(appDomain);
       }, 1500);
     } catch (error) {
       console.error("Error completing onboarding process:", error);

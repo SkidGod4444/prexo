@@ -1,10 +1,11 @@
-import { APIError, betterAuth } from "better-auth";
+import { betterAuth } from "better-auth";
 import { prisma } from "@prexo/db";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware, haveIBeenPwned } from "better-auth/plugins";
 import { polar, checkout, portal, usage } from "@polar-sh/better-auth";
 import { polarClient } from "@prexo/polar";
 import { sendWelcomeMail } from "@prexo/mail";
+import { generateHashKeyHex } from "@prexo/crypt";
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   database: prismaAdapter(prisma, {
@@ -62,7 +63,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
           products: [
             {
               productId: "40aaafdf-3ebc-44fe-b11b-883e610a363b",
-              slug: "Prexo-Pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Prexo-Pro
+              slug: "Prexo-Pro",
             },
           ],
           successUrl: "/success?checkout_id={CHECKOUT_ID}",
@@ -145,7 +146,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       hashKey: {
         type: "string",
         required: false,
-        input: false,
+        defaultValue: generateHashKeyHex()
       },
       lang: {
         type: "string",

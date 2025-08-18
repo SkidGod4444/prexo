@@ -11,14 +11,17 @@
         "db:format": "prisma format",
         "db:generate": "prisma generate --accelerate",
         "db:push": "prisma db push",
-        "db:migrate": "pnpm db:validate && prisma migrate dev"
+        "db:migrate": "bun db:validate && prisma migrate dev",
+        "db:dev": "prisma dev --name prexo_db",
+        "db:kill": "prisma dev stop prexo_db",
+        "db:rm": "prisma dev rm prexo_db"
     },
     "dependencies": {
         "@prexo/utils": "workspace:*",
-        "@prisma/client": "^6.10.1",
+        "@prisma/client": "^6.14.0",
         "@prisma/extension-accelerate": "^2.0.1",
         "drizzle-orm": "^0.44.2",
         "postgres": "^3.4.7",
-        "prisma": "^6.10.1"
+        "prisma": "^6.14.0"
     }
 }

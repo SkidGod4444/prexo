@@ -36,6 +36,11 @@ domain.post("/all", async (c) => {
     const domains = await prisma.domain.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+        tags: ["findMany_domains"]
+      },
     });
     return c.json({ domains }, 200);
   } catch (error) {

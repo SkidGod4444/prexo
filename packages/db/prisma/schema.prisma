@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
+  url       = env("DEV_DATABASE_URL")
+  directUrl = env("DEV_DIRECT_DATABASE_URL")
 }
 
 model User {
@@ -143,7 +143,7 @@ model Environments {
   projectId   String
   environment String?
   name        String
-  value       String
+  value       Json
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -12,14 +12,12 @@ envs.post("/create", async (c) => {
     if (!name || !projectId || !value) {
       return c.json({ message: "Name, Value and ProjectId are required" }, 400);
     }
-
+    
     const newEnvs = await prisma.environments.create({
       data: {
         name,
         value,
-        project: {
-          connect: { id: projectId },
-        },
+        projectId
       },
     });
     if (!newEnvs) {
@@ -48,6 +46,11 @@ envs.get("/:projectId/all", async (c) => {
     const environments = await prisma.environments.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 30,
+        swr: 30,
+        tags: ["findMany_envs"]
+      },
     });
     return c.json({ environments }, 200);
   } catch (error) {

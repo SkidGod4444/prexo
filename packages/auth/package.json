@@ -10,14 +10,14 @@
         "./client": "./src/client.ts"
     },
     "dependencies": {
-        "better-auth": "^1.2.8",
-        "@prexo/utils": "workspace:*",
-        "@prexo/polar": "workspace:*",
+        "@prexo/db": "workspace:*",
         "@prexo/mail": "workspace:*",
-        "@prexo/db": "workspace:*"
+        "@prexo/polar": "workspace:*",
+        "@prexo/utils": "workspace:*",
+        "better-auth": "^1.3.6"
     },
     "devDependencies": {
-        "@better-auth/cli": "^1.3.5",
+        "@better-auth/cli": "^1.3.6",
         "zod": "^4"
     }
 }

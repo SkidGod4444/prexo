@@ -49,6 +49,14 @@
       "cache": false
     },
 
+    "db:dev": {
+      "cache": false
+    },
+
+    "db:kill": {
+      "cache": false
+    },
+
     "scanner": {
       "cache": false
     },

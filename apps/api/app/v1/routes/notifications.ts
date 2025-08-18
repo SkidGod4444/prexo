@@ -1,4 +1,5 @@
 import { checkUser } from "@/checks/check.user";
+import { invalidateCache } from "@/lib/utils";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 
@@ -40,6 +41,11 @@ notifications.get("/:projectId/all", async (c) => {
     const notifications = await prisma.notifications.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 30,
+        swr: 30,
+        tags: ["findMany_notifications"]
+      },
     });
     return c.json({ notifications }, 200);
   } catch (error) {
@@ -66,6 +72,8 @@ notifications.post("/mark-as-seen", async (c) => {
         updatedAt: new Date(),
       },
     });
+
+    await invalidateCache(["findMany_notifications"]);
 
     return c.json(
       {

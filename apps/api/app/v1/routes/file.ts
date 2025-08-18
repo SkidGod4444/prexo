@@ -5,6 +5,8 @@ import { prisma } from "@prexo/db";
 
 const file = new Hono();
 
+file.use(checkUser);
+
 export const utapi = new UTApi();
 
 file.post("/:projectId/upload", async (c) => {
@@ -42,21 +44,21 @@ file.post("/:projectId/upload", async (c) => {
     if (success.length > 0) {
       const uploadedFiles = success.map((s) => s.data);
       if (uploadedFiles.length > 0) {
-        await Promise.all(
-          uploadedFiles.map(async (fileData: any) => {
-            await prisma.files.create({
-              data: {
-                key: fileData.key,
-                name: fileData.name,
-                url: fileData.url,
+        await prisma.$transaction(  
+          uploadedFiles.map((fileData: any) =>  
+            prisma.files.create({  
+              data: {  
+                key: fileData.key,  
+                name: fileData.name,  
+                url: fileData.url,  
                 downloadUrl: fileData.ufsUrl,
-                type: fileData.type,
-                projectId: projectId,
-                size: fileData.size,
-              },
-            });
-          }),
-        );
+                type: fileData.type,  
+                projectId,  
+                size: fileData.size,  
+              },  
+            }),  
+          ),
+        )
         console.log("Files stored in DB!");
       }
     }
@@ -105,6 +107,11 @@ file.get("/:projectId/all", async (c) => {
     const files = await prisma.files.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
+      cacheStrategy: {
+        ttl: 30,
+        swr: 30,
+        tags: ["findMany_files"]
+      },
     });
     console.log(files);
     return c.json(

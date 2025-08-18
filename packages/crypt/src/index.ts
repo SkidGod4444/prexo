@@ -26,13 +26,13 @@ export function generateHashSalt(): Uint8Array {
 }
 
 export async function deriveKey(
-  password: string,
+  hashKey: string,
   salt: Uint8Array,
 ): Promise<Uint8Array> {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
-    enc.encode(password),
+    enc.encode(hashKey),
     { name: "PBKDF2" },
     false,
     ["deriveBits", "deriveKey"],
