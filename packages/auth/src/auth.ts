@@ -146,7 +146,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       hashKey: {
         type: "string",
         required: false,
-        defaultValue: generateHashKeyHex()
+        defaultValue: generateHashKeyHex(),
       },
       lang: {
         type: "string",

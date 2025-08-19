@@ -22,7 +22,7 @@ export default function Dashboard() {
           <CreditsUsageChart />
         </div>
       </div>
-      <ActivityLogsTable/>
+      <ActivityLogsTable />
     </div>
   );
 }

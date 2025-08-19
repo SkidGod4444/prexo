@@ -44,21 +44,21 @@ file.post("/:projectId/upload", async (c) => {
     if (success.length > 0) {
       const uploadedFiles = success.map((s) => s.data);
       if (uploadedFiles.length > 0) {
-        await prisma.$transaction(  
-          uploadedFiles.map((fileData: any) =>  
-            prisma.files.create({  
-              data: {  
-                key: fileData.key,  
-                name: fileData.name,  
-                url: fileData.url,  
+        await prisma.$transaction(
+          uploadedFiles.map((fileData: any) =>
+            prisma.files.create({
+              data: {
+                key: fileData.key,
+                name: fileData.name,
+                url: fileData.url,
                 downloadUrl: fileData.ufsUrl,
-                type: fileData.type,  
-                projectId,  
-                size: fileData.size,  
-              },  
-            }),  
+                type: fileData.type,
+                projectId,
+                size: fileData.size,
+              },
+            }),
           ),
-        )
+        );
         console.log("Files stored in DB!");
       }
     }
@@ -110,7 +110,7 @@ file.get("/:projectId/all", async (c) => {
       cacheStrategy: {
         ttl: 30,
         swr: 30,
-        tags: ["findMany_files"]
+        tags: ["findMany_files"],
       },
     });
     console.log(files);

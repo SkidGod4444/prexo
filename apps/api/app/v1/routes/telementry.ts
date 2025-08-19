@@ -5,13 +5,13 @@ import { prisma } from "@prexo/db";
 import { checkUser } from "@/checks/check.user";
 
 type Variables = {
-  'x-ingest-key': string
-}
+  "x-ingest-key": string;
+};
 
 const telementryEvents = new Hono<{ Variables: Variables }>();
 
 telementryEvents.post("/key", async (c) => {
-  const {domain} = await c.req.json();
+  const { domain } = await c.req.json();
   if (!domain) {
     return c.json({ message: "Domain is required" }, 400);
   }
@@ -25,7 +25,7 @@ telementryEvents.post("/key", async (c) => {
   } catch {
     hostName = domain;
   }
-  
+
   // Check if the domain exists
   const data = await prisma.domain.findFirst({
     where: { name: hostName },
@@ -38,41 +38,46 @@ telementryEvents.post("/key", async (c) => {
 
   // Return the telemetry key
   return c.json({ key: data.telementry_key });
-}
-);
+});
 
 telementryEvents.use(verifyTelementryKey());
 
 telementryEvents.post("/", async (c) => {
   const body = await c.req.json();
-  const ingId = c.get("x-ingest-key")
+  const ingId = c.get("x-ingest-key");
   console.log("Ingest ID: ", ingId);
-  if (!body || typeof body !== 'object') {
+  if (!body || typeof body !== "object") {
     return c.json({ message: "Invalid request body" }, 400);
   }
   if (!body.event) {
     return c.json({ message: "Event field is required" }, 400);
   }
-  if (!body.properties || typeof body.properties !== 'object') {
+  if (!body.properties || typeof body.properties !== "object") {
     return c.json({ message: "Properties field must be an object" }, 400);
   }
   if (!ingId) {
     return c.json({ message: "Ingestion key is required" }, 400);
   }
 
-  await cache.rpush("telemetry_events", JSON.stringify({
-    telementry_key: ingId,
-    ...body,
-    receivedAt: new Date().toISOString(),
-  }));
-})
+  await cache.rpush(
+    "telemetry_events",
+    JSON.stringify({
+      telementry_key: ingId,
+      ...body,
+      receivedAt: new Date().toISOString(),
+    }),
+  );
+});
 
 telementryEvents.post("/flush", async (c) => {
   const events: string[] = [];
   let event: string | null | undefined;
 
   // Pop all events from the cache until empty
-  while ((event = await cache.lpop("telemetry_events")) !== undefined && event !== null) {
+  while (
+    (event = await cache.lpop("telemetry_events")) !== undefined &&
+    event !== null
+  ) {
     events.push(event);
   }
 
@@ -80,19 +85,21 @@ telementryEvents.post("/flush", async (c) => {
     return c.json({ status: "No telemetry events found!" });
   }
 
-  const parsedEvents = events.map((e) => {
-    try {
-      const obj = JSON.parse(e);
-      return {
-        key: obj.telementry_key,        // map Redis key → schema key
-        event: obj.event ?? "unknown",  // ensure required field
-        properties: obj.properties ?? {}, 
-        timestamp: obj.receivedAt ? new Date(obj.receivedAt) : new Date(),
-      };
-    } catch {
-      return null;
-    }
-  }).filter((e) => e !== null);
+  const parsedEvents = events
+    .map((e) => {
+      try {
+        const obj = JSON.parse(e);
+        return {
+          key: obj.telementry_key, // map Redis key → schema key
+          event: obj.event ?? "unknown", // ensure required field
+          properties: obj.properties ?? {},
+          timestamp: obj.receivedAt ? new Date(obj.receivedAt) : new Date(),
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter((e) => e !== null);
 
   const result = await prisma.telementry.createMany({
     data: parsedEvents,

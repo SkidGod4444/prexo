@@ -41,7 +41,7 @@ containers.get("/:projectId/all", async (c) => {
       cacheStrategy: {
         ttl: 30,
         swr: 30,
-        tags: ["findMany_containers"]
+        tags: ["findMany_containers"],
       },
     });
     return c.json({ containers }, 200);

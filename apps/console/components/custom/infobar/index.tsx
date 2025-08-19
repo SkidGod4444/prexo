@@ -153,7 +153,6 @@ export default function Infobar() {
   }, []);
 
   useEffect(() => {
-
     // If there are no projects, or a value is already selected, do nothing
     if (!projects || projects.length === 0 || value) return;
 
@@ -228,10 +227,7 @@ export default function Infobar() {
                                 hardReload();
                                 setValue(currentValue);
 
-                                setTimeout(
-                                  () => window.location.reload(),
-                                  200,
-                                );
+                                setTimeout(() => window.location.reload(), 200);
                               }
                               setOpenPopover2(false);
                             }}

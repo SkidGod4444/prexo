@@ -32,7 +32,6 @@ export type TelementryEvents = {
   };
 };
 
-
 export type VectorPayload = {
   question: string | number[];
   similarityThreshold?: number;

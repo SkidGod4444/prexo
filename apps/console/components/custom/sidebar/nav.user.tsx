@@ -28,7 +28,7 @@ export function NavUser() {
   const { myProfile } = useMyProfileStore();
   const isPremium = myProfile?.role === "pro";
   if (!myProfile) {
-    return
+    return;
   }
   const handleBiling = async () => {
     const res = await authClient.customer.portal();

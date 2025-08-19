@@ -47,7 +47,7 @@ export default function InfobarBreadCrumb() {
               ) {
                 const containerId = segments[segments.length - 1];
                 const container = containers.find(
-                  (c) => c.id === containerId || c.key === containerId
+                  (c) => c.id === containerId || c.key === containerId,
                 );
                 return container ? container.name : "Container";
               }

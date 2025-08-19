@@ -89,9 +89,7 @@ export function CreditsUsageChart() {
           >
             ${maxValueIndex.value}
           </span> */}
-          <span className="text-2xl">
-          Credits Usage
-          </span>
+          <span className="text-2xl">Credits Usage</span>
           <Badge variant="secondary">
             <TrendingUp className="h-4 w-4" />
             <span>5.2%</span>

@@ -16,12 +16,10 @@ export class Telementry {
 
   constructor(options: TelementryOptions) {
     const envDisabled =
-      typeof process !== "undefined" &&
-      process.env?.DISABLE_TELEMETRY === "1";
+      typeof process !== "undefined" && process.env?.DISABLE_TELEMETRY === "1";
 
     this.enabled = options.enabled ?? !envDisabled;
-    this.endpoint =
-      options.endpoint ?? "https://api.prexo.ai/v1/telementry";
+    this.endpoint = options.endpoint ?? "https://api.prexo.ai/v1/telementry";
     this.sdkVersion = options.sdkVersion ?? "unknown";
 
     if (options.ingestionKey) {
@@ -36,7 +34,11 @@ export class Telementry {
     const keyEndpoint = "https://api.prexo.ai/v1/telementry/key";
     try {
       let domain = "";
-      if (typeof window !== "undefined" && window.location && window.location.origin) {
+      if (
+        typeof window !== "undefined" &&
+        window.location &&
+        window.location.origin
+      ) {
         domain = window.location.origin;
       }
       const res = await fetch(keyEndpoint, {
@@ -60,15 +62,24 @@ export class Telementry {
 
   private detectRuntime() {
     // Deno global detection
-    if (typeof globalThis !== "undefined" && typeof (globalThis as any).Deno !== "undefined") {
+    if (
+      typeof globalThis !== "undefined" &&
+      typeof (globalThis as any).Deno !== "undefined"
+    ) {
       return "deno";
     }
     // Bun global detection
-    if (typeof globalThis !== "undefined" && typeof (globalThis as any).Bun !== "undefined") {
+    if (
+      typeof globalThis !== "undefined" &&
+      typeof (globalThis as any).Bun !== "undefined"
+    ) {
       return "bun";
     }
     // EdgeRuntime global detection
-    if (typeof globalThis !== "undefined" && typeof (globalThis as any).EdgeRuntime !== "undefined") {
+    if (
+      typeof globalThis !== "undefined" &&
+      typeof (globalThis as any).EdgeRuntime !== "undefined"
+    ) {
       return "edge";
     }
     // Node.js detection
@@ -93,7 +104,7 @@ export class Telementry {
 
   async send<K extends keyof TelementryEvents>(
     event: K,
-    properties: TelementryEvents[K]
+    properties: TelementryEvents[K],
   ) {
     if (!this.enabled) return;
 

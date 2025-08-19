@@ -9,7 +9,6 @@ function getRandomElement(arr: string[]): string {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-
 export function generateApiKeyName(): string {
   const descriptiveWords = [
     "awesome",

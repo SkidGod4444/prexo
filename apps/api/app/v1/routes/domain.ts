@@ -28,7 +28,7 @@ domain.post("/create", async (c) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session?.user?.id) {
     return c.json({ message: "Unauthorized" }, 401);
-  } 
+  }
   const userId = session.user.id;
   const project = await prisma.project.findUnique({
     where: { id: projectId },
@@ -54,7 +54,7 @@ domain.post("/create", async (c) => {
       alias: alias,
       status: status || "Pending",
       projectId,
-      telementry_key
+      telementry_key,
     },
   });
   if (!newDomain) {
@@ -73,7 +73,7 @@ domain.post("/all", async (c) => {
       cacheStrategy: {
         ttl: 60,
         swr: 60,
-        tags: ["findMany_domains"]
+        tags: ["findMany_domains"],
       },
     });
     return c.json({ domains }, 200);

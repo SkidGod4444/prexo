@@ -16,8 +16,7 @@ function extractUrls(text: string): string[] {
   return parts.filter((part) => {
     // Accept if it looks like a domain or has protocol
     return (
-      /^https?:\/\/\S+/i.test(part) ||
-      /^[\w-]+\.[\w.-]+(\/\S*)?$/i.test(part)
+      /^https?:\/\/\S+/i.test(part) || /^[\w-]+\.[\w.-]+(\/\S*)?$/i.test(part)
     );
   });
 }
@@ -74,10 +73,13 @@ export default function CtxWebpagesCard() {
           ? {
               ...w,
               url: cleanValue,
-              error: cleanValue && !isValidUrl(cleanValue) ? "Invalid URL" : undefined,
+              error:
+                cleanValue && !isValidUrl(cleanValue)
+                  ? "Invalid URL"
+                  : undefined,
             }
-          : w
-      )
+          : w,
+      ),
     );
   };
 
@@ -106,7 +108,7 @@ export default function CtxWebpagesCard() {
         handleAddMultipleWebpages(urls);
       }
     },
-    [handleAddMultipleWebpages]
+    [handleAddMultipleWebpages],
   );
 
   return (
@@ -132,7 +134,9 @@ export default function CtxWebpagesCard() {
               Supported: pdf, csv, sites, llm.mdx, llm.txt
             </span>
             <p className="text-xs text-muted-foreground mt-2">
-              <span className="font-medium">Tip:</span> You can also <span className="font-semibold">paste links here</span> to add them automatically.
+              <span className="font-medium">Tip:</span> You can also{" "}
+              <span className="font-semibold">paste links here</span> to add
+              them automatically.
             </p>
             <Button
               variant="outline"
@@ -148,9 +152,7 @@ export default function CtxWebpagesCard() {
       ) : (
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium">
-              Links ({webpages.length})
-            </h3>
+            <h3 className="text-sm font-medium">Links ({webpages.length})</h3>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -178,18 +180,21 @@ export default function CtxWebpagesCard() {
           <div className="bg-background overflow-hidden rounded-2xl border p-2">
             <div className="flex flex-col *:not-first:mt-2">
               {webpages.map((webpage, idx) => (
-                <div key={webpage.id} className="relative group flex items-start gap-2">
+                <div
+                  key={webpage.id}
+                  className="relative group flex items-start gap-2"
+                >
                   <div className="relative flex-1">
                     <Input
                       id={webpage.id}
-                      ref={el => {
+                      ref={(el) => {
                         inputRefs.current[webpage.id] = el;
                       }}
                       className="peer ps-16"
                       placeholder="devwtf.in"
                       type="text"
                       value={webpage.url}
-                      onChange={e => handleChange(webpage.id, e.target.value)}
+                      onChange={(e) => handleChange(webpage.id, e.target.value)}
                       autoFocus={isAdding && idx === webpages.length - 1}
                     />
                     <span className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm peer-disabled:opacity-50">

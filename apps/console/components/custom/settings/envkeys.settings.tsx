@@ -233,7 +233,9 @@ export default function EnvKeysSettings() {
             });
             if (!res.ok) {
               const err = await res.json().catch(() => ({}));
-              throw new Error(err.message || "Failed to save environment variable");
+              throw new Error(
+                err.message || "Failed to save environment variable",
+              );
             }
           }
         })(),
@@ -242,12 +244,24 @@ export default function EnvKeysSettings() {
           success: "Environment variables saved successfully!",
           error: (err: { message?: string }) =>
             err?.message || "Failed to save environment variables",
-        }
+        },
       );
     } finally {
       setIsLoading(false);
     }
-  }, [dirty1, dirty2, rawValue1, rawValue2, existingEnc1, existingEnc2, hashKey, ENVS_API_ENDPOINT, key1, key2, consoleId]);
+  }, [
+    dirty1,
+    dirty2,
+    rawValue1,
+    rawValue2,
+    existingEnc1,
+    existingEnc2,
+    hashKey,
+    ENVS_API_ENDPOINT,
+    key1,
+    key2,
+    consoleId,
+  ]);
 
   // Dropdown for DB selection
   function DBDropdown() {

@@ -44,7 +44,7 @@ notifications.get("/:projectId/all", async (c) => {
       cacheStrategy: {
         ttl: 30,
         swr: 30,
-        tags: ["findMany_notifications"]
+        tags: ["findMany_notifications"],
       },
     });
     return c.json({ notifications }, 200);

@@ -47,10 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const session = await authClient.getSession();
         // Defensive: ensure session.data and session.data.user are defined
         const sessionUser = session?.data?.user ?? null;
-        
+
         if (sessionUser) {
           setUser(sessionUser);
-          console.log(sessionUser)
+          console.log(sessionUser);
           // Defensive: ensure myProfile is defined and has id
           if (myProfile && myProfile.id === sessionUser.id) {
             return;
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await authClient.signOut();
       setUser(null);
       if (myProfile && myProfile.id) {
-        removeMyProfile(myProfile.id)
+        removeMyProfile(myProfile.id);
         console.log("User profile removed on logout:", myProfile.id);
       }
       router.push(landingPage);

@@ -13,7 +13,6 @@ import { useMyProfileStore } from "@prexo/store";
 import { completeOnboardingAction } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
-
 type OnboardingCardAiUiProps = {
   addToolResult: (result: { toolCallId: string; result: string }) => void;
   append: (message: UIMessage) => void;

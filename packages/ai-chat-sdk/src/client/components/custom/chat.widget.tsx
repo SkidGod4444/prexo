@@ -75,7 +75,6 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   vector,
   RAGDisabled = false,
 }) => {
-
   const telementryEvents = new Telementry({
     sdkVersion: "1.0.0-beta.1",
     enabled: telementry?.enabled ?? true,
@@ -120,7 +119,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     const msg = "You can only add max 3 suggested actions!";
     telementryEvents.send("error", {
       code: "SUGGESTED_ACTIONS_LIMIT_EXCEEDED",
-      message: msg
+      message: msg,
     });
     console.error(msg);
     throw new Error(msg);
@@ -145,14 +144,14 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       context: cleanCntxt, // always use the latest context
       RAGDisabled: RAGDisabled,
     },
-    async onFinish(message, {usage, finishReason}) {
+    async onFinish(message, { usage, finishReason }) {
       telementryEvents.send("agent_onFinish", {
         sessionId,
         sessionTTL,
         RAGDisabled,
         usage,
-        finishReason
-      })
+        finishReason,
+      });
       await history.addMessage({
         message: {
           id: message.id,
@@ -166,7 +165,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     onError(error) {
       telementryEvents.send("agent_onError", {
         code: "AGENT_CALL_ERROR_OCCURED",
-        error
+        error,
       });
       console.log("ERROR OCCURED: ", error);
     },

@@ -11,7 +11,7 @@ export async function invalidateCache(tags: string[]) {
   } catch (e: any) {
     if (e && typeof e === "object" && "code" in e && e.code === "P6003") {
       console.log(
-        "The cache invalidation rate limit has been reached. Please try again later."
+        "The cache invalidation rate limit has been reached. Please try again later.",
       );
     }
     throw e;

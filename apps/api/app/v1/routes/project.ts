@@ -117,7 +117,7 @@ project.get("/all", async (c) => {
       cacheStrategy: {
         ttl: 60,
         swr: 60,
-        tags: ["findMany_projects"]
+        tags: ["findMany_projects"],
       },
     });
     return c.json({ projects }, 200);

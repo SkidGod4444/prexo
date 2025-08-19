@@ -89,9 +89,7 @@ export function ApiCallsChart() {
           >
             ${maxValueIndex.value}
           </span> */}
-          <span className="text-2xl">
-          API Calls
-          </span>
+          <span className="text-2xl">API Calls</span>
           <Badge variant="secondary">
             <TrendingUp className="h-4 w-4" />
             <span>5.2%</span>
