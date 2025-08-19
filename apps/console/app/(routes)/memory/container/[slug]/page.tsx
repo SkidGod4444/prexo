@@ -8,7 +8,7 @@ import CtxWebpagesCard from "@/components/custom/memory/ctx.webp.card";
 
 export default function MemoryPage() {
   return (
-    <div className="flex flex-col overflow-hidden mb-20">
+    <div className="flex flex-col overflow-hidden mb-10">
       <InfobarBreadCrumb />
       <div className="flex flex-col gap-5">
       <Card className="p-2 gap-5">

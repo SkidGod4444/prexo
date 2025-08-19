@@ -19,6 +19,7 @@ import domain from "../routes/domain";
 import envs from "../routes/environments";
 import file from "../routes/file";
 import containers from "../routes/containers";
+import telementryEvents from "../routes/telementry";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -58,6 +59,7 @@ app.route("/api", api);
 app.route("/context", cntxt);
 app.route("/container", containers);
 app.route("/file", file);
+app.route("/telementry", telementryEvents);
 
 // SDK Routes
 app.route("/sdk/configs", configs);

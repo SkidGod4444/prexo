@@ -1,8 +1,8 @@
+import { computeCost } from "@/lib/compute.cal";
 import { verifyApi } from "@prexo/keys";
 import { UnkeyConfig } from "@unkey/hono";
 import { MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { computeCost } from "./compute.cal";
 
 export function verifyApiKey(
   config: UnkeyConfig,

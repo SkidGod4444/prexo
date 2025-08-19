@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { UnkeyContext } from "@unkey/hono";
-import { verifyApiKey } from "@/lib/middleware";
+import { verifyApiKey } from "@/checks/check.api";
 
 const configs = new Hono<{ Variables: { verifyApiKey: UnkeyContext } }>();
 

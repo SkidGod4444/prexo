@@ -2,25 +2,59 @@ import { checkUser } from "@/checks/check.user";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
+import { generateTelemetryKey } from "@prexo/crypt/utils";
 
 const domain = new Hono();
 
 domain.use(checkUser);
-// @_TODO_ check project ownership
+
 domain.post("/create", async (c) => {
   const { name, alias, status, projectId } = await c.req.json();
   if (!name || !projectId) {
     return c.json({ message: "Name and ProjectId are required" }, 400);
   }
+  // Check if the domain already exists
+  const existingDomain = await prisma.domain.findFirst({
+    where: {
+      name: name,
+    },
+    select: { id: true },
+  });
+  if (existingDomain) {
+    return c.json({ message: "Domain already exists", existingDomain }, 409);
+  }
+  console.log("No existing domain found, proceeding to create a new one");
+  // Create the new domain
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session?.user?.id) {
+    return c.json({ message: "Unauthorized" }, 401);
+  } 
+  const userId = session.user.id;
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { userId: true },
+  });
+  if (!project) {
+    return c.json({ message: "Project not found" }, 404);
+  }
+  if (project.userId !== userId) {
+    return c.json({ message: "Forbidden" }, 403);
+  }
+  console.log("User is authorized to create a domain for this project");
+  // Create the domain
+  const telementry_key = await generateTelemetryKey(name);
+  if (!telementry_key) {
+    return c.json({ message: "Failed to generate telemetry key" }, 500);
+  }
+  console.log("Generated telemetry key:", telementry_key);
 
   const newDomain = await prisma.domain.create({
     data: {
       name: name,
       alias: alias,
       status: status || "Pending",
-      project: {
-        connect: { id: projectId },
-      },
+      projectId,
+      telementry_key
     },
   });
   if (!newDomain) {

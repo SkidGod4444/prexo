@@ -127,7 +127,10 @@ export default function CtxWebpagesCard() {
             >
               <LinkIcon className="size-4 opacity-60" />
             </div>
-            <p className="mb-1.5 text-sm font-medium">Add supported links</p>
+            <p className="text-sm font-medium">Add supported links</p>
+            <span className="text-sm text-muted-foreground">
+              Supported: pdf, csv, sites, llm.mdx, llm.txt
+            </span>
             <p className="text-xs text-muted-foreground mt-2">
               <span className="font-medium">Tip:</span> You can also <span className="font-semibold">paste links here</span> to add them automatically.
             </p>

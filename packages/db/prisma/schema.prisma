@@ -110,17 +110,30 @@ model Project {
 }
 
 model Domain {
-  id        String   @id @default(uuid())
-  name      String // full domain e.g. "www.xyz.com"
-  alias     String // subdomain/alias
-  status    String // e.g. "Invalid", "Pending", "Active"
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
-  hash      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String      @id @default(uuid())
+  name             String // full domain e.g. "www.xyz.com"
+  alias            String // subdomain/alias
+  status           String // e.g. "Invalid", "Pending", "Active"
+  projectId        String
+  telementry_key   String      @unique
+  telemetry_events Telementry[]
+  project          Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   @@map("domain")
+}
+
+model Telementry {
+  id         String   @id @default(cuid())
+  key        String
+  event      String
+  properties Json
+  revoked    Boolean  @default(false)
+  timestamp  DateTime @default(now())
+  domain     Domain   @relation(fields: [key], references: [telementry_key])
+
+  @@map("telementry")
 }
 
 model Notifications {

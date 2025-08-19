@@ -20,6 +20,7 @@ interface GlobalChatConfig {
     lastSeen: Date;
   };
   placeholder?: string;
+  telementry?: { enabled: boolean };
   botName?: string;
   width?: number | string;
   height?: number | string;

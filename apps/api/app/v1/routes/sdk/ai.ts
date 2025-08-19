@@ -7,7 +7,7 @@ import {
   streamText,
   ToolExecutionError,
 } from "ai";
-import { verifyApiKey } from "@/lib/middleware";
+import { verifyApiKey } from "@/checks/check.api";
 
 import {
   BodyParameters,

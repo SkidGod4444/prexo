@@ -1,6 +1,38 @@
 import type { Message } from "ai";
 import type { QueryMode } from "@upstash/vector";
 
+export type TelementryEvents = {
+  agent_onFinish: {
+    llmModel?: string;
+    latencyMs?: number;
+    RAGDisabled?: boolean;
+    sessionId?: string;
+    sessionTTL?: number;
+    usage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+    finishReason?: string;
+  };
+  agent_onError: {
+    code: string;
+    error: Error;
+  };
+  error: {
+    code: string;
+    message?: string;
+  };
+  api_call: {
+    latencyMs: number;
+    endpoint: string;
+  };
+  custom_event: {
+    [key: string]: any; // fallback for user-defined
+  };
+};
+
+
 export type VectorPayload = {
   question: string | number[];
   similarityThreshold?: number;

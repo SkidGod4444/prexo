@@ -76,6 +76,7 @@ type DomainType = {
   name: string;
   alias?: string;
   status: "Valid" | "Invalid" | "Pending";
+  telementry_key: string;
 };
 interface PCards {
   isYearly?: boolean;

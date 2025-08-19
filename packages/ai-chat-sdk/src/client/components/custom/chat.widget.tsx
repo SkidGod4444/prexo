@@ -18,10 +18,12 @@ import type {
 import { getHistoryClient } from "../../../services/history/client";
 import type { Message as MessageT } from "ai";
 import { getContextClient } from "../../../services/context/client";
+import { Telementry } from "../../../services/telementry/client";
 
 export interface PrexoAiChatBotProps {
   apiKey: string;
   suggestedActions?: SuggestedActionsT[];
+  telementry?: { enabled: boolean };
   sessionId?: string;
   sessionTTL?: number;
   onClose?: () => void;
@@ -56,6 +58,7 @@ function combineContextData(contextArr: VectorContextResult[]): string {
 
 export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   apiKey,
+  telementry = { enabled: true },
   suggestedActions,
   sessionId,
   sessionTTL,
@@ -72,6 +75,12 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   vector,
   RAGDisabled = false,
 }) => {
+
+  const telementryEvents = new Telementry({
+    sdkVersion: "1.0.0-beta.1",
+    enabled: telementry?.enabled ?? true,
+  });
+
   // State and refs
   const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);
   const [loading, setLoading] = useState(false);
@@ -96,6 +105,10 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
 
   // Error checks
   if (apiKey && apiKey.length === 0) {
+    telementryEvents.send("error", {
+      code: "API_KEY_MISSING",
+      message: "API key is required for PrexoAiChatBot to function properly",
+    });
     console.error(
       "API key is required for PrexoAiChatBot to function properly",
     );
@@ -104,8 +117,13 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     );
   }
   if (suggestedActions && suggestedActions.length > 3) {
-    console.error("You can only add max 3 suggested actions!");
-    throw new Error("You can only add max 3 suggested actions!");
+    const msg = "You can only add max 3 suggested actions!";
+    telementryEvents.send("error", {
+      code: "SUGGESTED_ACTIONS_LIMIT_EXCEEDED",
+      message: msg
+    });
+    console.error(msg);
+    throw new Error(msg);
   }
 
   // useChat hook
@@ -127,7 +145,14 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       context: cleanCntxt, // always use the latest context
       RAGDisabled: RAGDisabled,
     },
-    async onFinish(message) {
+    async onFinish(message, {usage, finishReason}) {
+      telementryEvents.send("agent_onFinish", {
+        sessionId,
+        sessionTTL,
+        RAGDisabled,
+        usage,
+        finishReason
+      })
       await history.addMessage({
         message: {
           id: message.id,
@@ -139,6 +164,10 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       });
     },
     onError(error) {
+      telementryEvents.send("agent_onError", {
+        code: "AGENT_CALL_ERROR_OCCURED",
+        error
+      });
       console.log("ERROR OCCURED: ", error);
     },
   });

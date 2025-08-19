@@ -1,4 +1,5 @@
 "use client";
+import ActivityLogsTable from "@/components/custom/activity.logs.table";
 import { ApiCallsChart } from "@/components/custom/charts/apicalls.chart";
 import { CreditsUsageChart } from "@/components/custom/charts/credits.chart";
 import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
@@ -21,6 +22,7 @@ export default function Dashboard() {
           <CreditsUsageChart />
         </div>
       </div>
+      <ActivityLogsTable/>
     </div>
   );
 }
