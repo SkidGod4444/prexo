@@ -12,6 +12,7 @@ import { useChat, type UseChatHelpers } from "@ai-sdk/react";
 import { BASE_API_ENDPOINT } from "../../../lib/utils";
 import { SuggestedActions } from "./suggested.actions";
 import type {
+  AIModelsFreeTierId,
   SuggestedActionsT,
   VectorContextResult,
 } from "../../../../src/lib/types";
@@ -23,6 +24,7 @@ import { Telementry } from "../../../services/telementry/client";
 export interface PrexoAiChatBotProps {
   apiKey: string;
   suggestedActions?: SuggestedActionsT[];
+  model?: AIModelsFreeTierId;
   telementry?: { enabled: boolean };
   sessionId?: string;
   sessionTTL?: number;
@@ -59,6 +61,7 @@ function combineContextData(contextArr: VectorContextResult[]): string {
 export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   apiKey,
   telementry = { enabled: true },
+  model = "openai/gpt-oss-20b:free",
   suggestedActions,
   sessionId,
   sessionTTL,
@@ -84,32 +87,35 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   });
 
   // State and refs
-  const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);
+  const [isOpen, setIsOpen] = useLocalStorage(
+    "@prexo-chat-bot-#isOpen",
+    false
+  );
   const [loading, setLoading] = useState(false);
   const [convo, setConvo] = useState<MessageT[]>([]);
   const [cntxt, setCntxt] = useLocalStorage<VectorContextResult[]>(
     "@prexo-chat-bot-#cntxt",
-    [],
+    []
   );
   const [cleanCntxt, setCleanCntxt] = useLocalStorage<string>(
     "@prexo-chat-bot-#cleanCntxt",
-    "",
+    ""
   );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isMinimized, setIsMinimized] = useLocalStorage(
     "@prexo-chat-bot-#isMinimized",
-    false,
+    false
   );
   const history = getHistoryClient({ redis });
   const context = getContextClient({ vector, apiKey });
   const [historyFetched, setHistoryFetched] = useState(false);
   const [isActive, setIsActive] = useLocalStorage(
     "@prexo-chat-bot-#isActive",
-    false,
+    false
   );
   const DOMAIN_API_ENDPOINT =
-    process.env.NODE_ENV == "development"
+    process.env.NODE_ENV === "development"
       ? "http://localhost:3001/v1/domain"
       : "https://api.prexoai.xyz/v1/domain";
 
@@ -143,7 +149,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               sessionTTL,
             });
             console.log(
-              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
             );
           }
           return;
@@ -160,7 +166,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               sessionTTL,
             });
             console.log(
-              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
             );
           }
         }
@@ -173,7 +179,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
             sessionTTL,
           });
           console.log(
-            "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+            "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
           );
         }
       }
@@ -190,16 +196,16 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   }, []);
 
   // Error checks
-  if (apiKey && apiKey.length === 0) {
+  if (!apiKey || apiKey.length === 0) {
     telementryEvents.send("error", {
       code: "API_KEY_MISSING",
       message: "API key is required for PrexoAiChatBot to function properly",
     });
     console.error(
-      "API key is required for PrexoAiChatBot to function properly",
+      "API key is required for PrexoAiChatBot to function properly"
     );
     throw new Error(
-      "API key is required for PrexoAiChatBot to function properly",
+      "API key is required for PrexoAiChatBot to function properly"
     );
   }
   if (suggestedActions && suggestedActions.length > 3) {
@@ -225,6 +231,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      "x-model-id": model,
     },
     body: {
       history: convo,
@@ -285,7 +292,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
           context: combinedContext, // always use the latest context
           RAGDisabled: RAGDisabled,
         },
-      },
+      }
     );
   };
 
@@ -369,7 +376,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
         console.log("History is set!");
       });
     }
-  }, [input]);
+  }, [input, convo.length, historyFetched, history, sessionId]);
 
   const isTyping = status === "submitted";
   const isSreaming = status === "streaming";
@@ -422,8 +429,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       height: isMinimized
         ? "60px"
         : typeof height === "number"
-          ? `${height}px`
-          : height,
+        ? `${height}px`
+        : height,
     };
   };
   const formatTime = (date: Date) => {
@@ -442,7 +449,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               alt="Chat bot avatar"
               onError={(e) => {
                 console.error("Failed to load image:", e);
-                e.currentTarget.style.display = "none";
+                (e.currentTarget as HTMLImageElement).style.display = "none";
               }}
             />
           </button>
@@ -452,7 +459,11 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       {/* Chat Widget */}
       {isOpen && (
         <div
-          className={`chat-widget ${theme} ${isMinimized ? "minimized" : ""} ${isOpen && position === "bottom-right" ? "open right" : "open left"} ${!isOpen && "close"} ${getPositionClasses()} ${className}`}
+          className={`chat-widget ${theme} ${isMinimized ? "minimized" : ""} ${
+            isOpen && position === "bottom-right"
+              ? "open right"
+              : "open left"
+          } ${!isOpen ? "close" : ""} ${getPositionClasses()} ${className}`}
           style={getWidgetStyle()}
         >
           <div className="chat-header">
@@ -477,7 +488,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                   alt="Chat bot avatar"
                   onError={(e) => {
                     console.error("Failed to load image:", e);
-                    e.currentTarget.style.display = "none";
+                    (e.currentTarget as HTMLImageElement).style.display =
+                      "none";
                   }}
                 />
                 <div className="flex flex-col">
@@ -522,7 +534,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                         alt="Chat bot avatar"
                         onError={(e) => {
                           console.error("Failed to load image:", e);
-                          e.currentTarget.style.display = "none";
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
                         }}
                       />
                     </div>
@@ -543,7 +556,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                         alt="Chat bot avatar"
                         onError={(e) => {
                           console.error("Failed to load image:", e);
-                          e.currentTarget.style.display = "none";
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
                         }}
                       />
                     </div>
@@ -576,7 +590,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                   </div>
                 )}
 
-                {messages.map((message) => (
+{messages.map((message) => (
                   <Message key={message.id} message={message} />
                 ))}
 

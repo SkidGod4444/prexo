@@ -1,3 +1,5 @@
+import type { AIModelsFreeTierId } from "../lib/types";
+
 export { PrexoAiChatBot } from "./components/custom/chat.widget";
 export type { PrexoAiChatBotProps } from "./components/custom/chat.widget";
 
@@ -19,6 +21,7 @@ interface GlobalChatConfig {
     pfp: string | "../../logo.png";
     lastSeen: Date;
   };
+  model?: AIModelsFreeTierId;
   placeholder?: string;
   telementry?: { enabled: boolean };
   botName?: string;

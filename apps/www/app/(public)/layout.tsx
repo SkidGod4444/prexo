@@ -30,6 +30,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       <PrexoAiChatBot
         sessionId="009"
         apiKey={apiKey!}
+        model={"mistralai/mistral-small-3.2-24b-instruct:free"}
         suggestedActions={suggestedActions}
         {...(redisUrl &&
           redisToken && { redis: { url: redisUrl, token: redisToken } })}

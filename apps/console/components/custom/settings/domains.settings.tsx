@@ -1,4 +1,4 @@
-import React, { useId, useState, useEffect } from "react";
+import React, { useId, useState } from "react";
 import SectionLabel from "../section.label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,33 +57,37 @@ export default function DomainsSettings() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isMobile) return;
+  const handleOnRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch(`${endpoint}/all`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ projectId: consoleId }),
+      });
 
-    let isMounted = true;
-    let timeoutId: NodeJS.Timeout;
-    let intervalId: NodeJS.Timeout;
+      if (!res.ok) {
+        throw new Error(`Failed to fetch domains: ${res.status}`);
+      }
 
-    const startCycle = () => {
-      if (!isMounted) return;
-      setIsRefreshing(true);
-      timeoutId = setTimeout(() => {
-        if (!isMounted) return;
-        setIsRefreshing(false);
-        intervalId = setTimeout(startCycle, 5000); // wait 5s before next cycle
-      }, 3000); // true for 3000ms
-    };
+      const response = await res.json();
+      if (Array.isArray(response?.domains)) {
+        setDomains(response.domains.map((domain: DomainType) => domain));
+      } else {
+        setDomains([]);
+      }
+    } catch (error) {
+      console.error("Error fetching domains:", error);
+      setDomains([]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
-    startCycle();
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
-      clearTimeout(intervalId);
-    };
-  }, [isMobile]);
-
-  const handleAddDomain = () => {
+  const handleAddDomain = async () => {
     const domainRegex =
       /^(?!-)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
 
@@ -92,6 +96,36 @@ export default function DomainsSettings() {
         "Please enter a valid domain name (e.g., example.com or sub.example.com)",
       );
       return;
+    }
+
+    // If a domain already exists, mark it as Invalid before adding the new one
+    if (domains && domains.length > 0) {
+      setIsLoading(true);
+      try {
+        // Mark all existing domains as Invalid
+        await Promise.all(
+          domains.map(async (domain) => {
+            const res = await fetch(`${endpoint}/delete`, {
+              method: "DELETE",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: domain.id,
+              }),
+            });
+            if (!res.ok) {
+              throw new Error("Failed to delete the domain.");
+            }
+          })
+        );
+      } catch (err) {
+        console.error("Error marking existing domains as Invalid:", err);
+        setIsLoading(false);
+        toast.error("Failed to delete the domain..");
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -146,7 +180,10 @@ export default function DomainsSettings() {
         />
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size={"sm"} className={isMobile ? "w-full mt-5" : ""}>
+            <Button
+              size={"sm"}
+              className={isMobile ? "w-full mt-5" : ""}
+            >
               Add Domain
             </Button>
           </DialogTrigger>
@@ -176,7 +213,7 @@ export default function DomainsSettings() {
                 />
               </div>
             </div>
-            <Button onClick={handleAddDomain}>
+            <Button onClick={handleAddDomain} disabled={isLoading}>
               {isLoading ? "Adding Domain..." : "Add Domain"}
             </Button>
           </DialogContent>
@@ -241,6 +278,7 @@ export default function DomainsSettings() {
                     variant={"outline"}
                     size={"sm"}
                     disabled={isRefreshing}
+                    onClick={handleOnRefresh}
                   >
                     {isRefreshing ? "Refreshing..." : "Refresh"}
                   </Button>

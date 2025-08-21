@@ -42,6 +42,7 @@ app.use(
       "Authorization",
       "x-ingest-key",
       "x-telementry-key",
+      "x-model-id",
     ],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -49,7 +50,7 @@ app.use(
   }),
 );
 
-app.use(logger());
+// app.use(logger());
 
 // Import routes
 app.route("/health", health);

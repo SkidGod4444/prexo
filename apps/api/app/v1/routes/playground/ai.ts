@@ -1,6 +1,4 @@
 import { Hono } from "hono";
-import { createTogetherAI } from "@ai-sdk/togetherai";
-// import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import {
   NoSuchToolError,
   InvalidToolArgumentsError,
@@ -9,23 +7,28 @@ import {
 } from "ai";
 import { playgroundPrompt } from "@/lib/constants";
 import { checkUser } from "@/checks/check.user";
+import { prexoai } from "@/lib/utils";
+import { createTogetherAI } from "@ai-sdk/togetherai";
+import { AIModelsFreeTierId } from "@prexo/types";
 
 const playgroundAi = new Hono();
 
 playgroundAi.use(checkUser);
 
+const togetherai = createTogetherAI({ apiKey: process.env.TOGETHERAI_API_KEY! });
+
 export const maxDuration = 30;
-
-const togetherai = createTogetherAI({
-  apiKey: process.env.TOGETHER_API_KEY!,
-});
-
-// const openrouter = createOpenRouter({
-//   apiKey: process.env.OPENROUTER_API_KEY!,
-// });
 
 playgroundAi.post("/stream", async (c) => {
   const { messages } = await c.req.json();
+  const modelId = c.req.header("x-model-id");
+    if (!modelId) {
+      return c.json(
+        { error: "Missing model id" },
+        400
+      );
+    }
+    const LLM_MODEL: AIModelsFreeTierId = modelId as AIModelsFreeTierId;
   const filteredMessages = messages.map((msg: any) => {
     if (!msg.parts) return msg;
     return {
@@ -38,13 +41,12 @@ playgroundAi.post("/stream", async (c) => {
   });
 
   const result = streamText({
-    model: togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"),
-    // model: openrouter("deepseek/deepseek-chat-v3-0324:free"),
+    model: prexoai(LLM_MODEL),
     system: playgroundPrompt,
     messages: filteredMessages,
     maxSteps: 5,
     onStepFinish: (step) => {
-      // console.log("Step finished:", step);
+      console.log("Step finished:", step);
     },
   });
 

@@ -2,9 +2,16 @@ import React from "react";
 import ChatInput from "./input";
 import { useChat } from "@ai-sdk/react";
 import { Messages } from "./messages";
-// import AiBanner from "@/components/ai.banner";
+import { useReadLocalStorage } from "usehooks-ts";
+import { AIModelsFreeTierId } from "@prexo/types";
+// import { useApiKeyStore } from "@prexo/store";
+// import {getApiKey} from "@prexo/keys";
 
 export default function ChatPanel({ chatId }: { chatId: string }) {
+  const model = useReadLocalStorage<AIModelsFreeTierId>("@prexo-#selectedAiModel");
+  // const {key} = useApiKeyStore();
+  const apiKey = '';
+
   const BASE_API_URL =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3001/v1"
@@ -14,6 +21,11 @@ export default function ChatPanel({ chatId }: { chatId: string }) {
 
   const { messages, input, setInput, handleSubmit, status } = useChat({
     api: url,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "x-model-id": model ?? "mistralai/mistral-small-3.2-24b-instruct:free",
+    },
     onFinish: (message, { usage, finishReason }) => {
       console.log("Finished streaming message:", message);
       console.log("Token usage:", usage);
