@@ -68,8 +68,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   theme,
   placeholder = "Type your message...",
   className = "",
-  width = 350,
-  height = 500,
+  width = 400,
+  height = 650,
   position = "bottom-right",
   redis,
   vector,
@@ -78,6 +78,9 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   const telementryEvents = new Telementry({
     sdkVersion: "1.0.0-beta.1",
     enabled: telementry?.enabled ?? true,
+    ...(process.env.NODE_ENV === "development"
+      ? { endpoint: "http://localhost:3001/v1/telementry" }
+      : {}),
   });
 
   // State and refs
@@ -101,6 +104,90 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   const history = getHistoryClient({ redis });
   const context = getContextClient({ vector, apiKey });
   const [historyFetched, setHistoryFetched] = useState(false);
+  const [isActive, setIsActive] = useLocalStorage(
+    "@prexo-chat-bot-#isActive",
+    false,
+  );
+  const DOMAIN_API_ENDPOINT =
+    process.env.NODE_ENV == "development"
+      ? "http://localhost:3001/v1/domain"
+      : "https://api.prexoai.xyz/v1/domain";
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+    let isUnmounted = false;
+
+    const fetchDomainStatus = async () => {
+      try {
+        let domainName = window.location.hostname;
+        if (
+          typeof process !== "undefined" &&
+          process.env &&
+          process.env.NODE_ENV === "development"
+        ) {
+          domainName = "devwtf.in";
+        }
+        const res = await fetch(`${DOMAIN_API_ENDPOINT}/status`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ domain: domainName }),
+        });
+        if (!res.ok) {
+          if (!isUnmounted) {
+            setIsActive(false);
+            telementryEvents.send("chat_widget_activated", {
+              value: false,
+              sessionId,
+              sessionTTL,
+            });
+            console.log(
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+            );
+          }
+          return;
+        }
+        const data = await res.json();
+        if (!isUnmounted) {
+          if (data.status === "Valid") {
+            setIsActive(true);
+          } else {
+            setIsActive(false);
+            telementryEvents.send("chat_widget_activated", {
+              value: false,
+              sessionId,
+              sessionTTL,
+            });
+            console.log(
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+            );
+          }
+        }
+      } catch (err) {
+        if (!isUnmounted) {
+          setIsActive(false);
+          telementryEvents.send("chat_widget_activated", {
+            value: false,
+            sessionId,
+            sessionTTL,
+          });
+          console.log(
+            "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
+          );
+        }
+      }
+    };
+
+    fetchDomainStatus();
+    intervalId = setInterval(fetchDomainStatus, 30000);
+
+    return () => {
+      isUnmounted = true;
+      if (intervalId) clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Error checks
   if (apiKey && apiKey.length === 0) {
@@ -229,11 +316,24 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   // Clear input after message is submitted
   useEffect(() => {
     if (status === "submitted") {
+      telementryEvents.send("user_message_sent", {
+        sessionId,
+        sessionTTL,
+        content: input,
+      });
       setInput("");
     }
     if (RAGDisabled && cntxt.length > 0 && cleanCntxt.length > 0) {
       setCleanCntxt("");
       setCntxt([]);
+    }
+    if (status === "error") {
+      telementryEvents.send("user_message_error", {
+        code: "MESSAGE_SUBMISSION_ERROR",
+        sessionId,
+        sessionTTL,
+        content: input,
+      });
     }
   }, [
     status,
@@ -272,6 +372,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   }, [input]);
 
   const isTyping = status === "submitted";
+  const isSreaming = status === "streaming";
 
   // Scroll to bottom on new messages
   const scrollToBottom = useCallback(() => {
@@ -279,14 +380,18 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping, scrollToBottom]);
+    if (messages.length > 0 || isSreaming) {
+      scrollToBottom();
+    }
+  }, [messages, isSreaming, scrollToBottom]);
 
   // Widget controls
   const handleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
+
   const handleClose = async () => {
     await history.deleteMessages({ sessionId: sessionId! });
     setIsOpen(false);
@@ -408,7 +513,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
           {!isMinimized && (
             <>
               <div className="chat-messages" ref={messagesContainerRef}>
-                {messages.length === 0 && (
+                {messages.length === 0 && isActive && (
                   <div className="message bot">
                     <div className="bot-avatar">
                       <img
@@ -429,6 +534,48 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                   </div>
                 )}
 
+                {!isActive && (
+                  <div className="message bot">
+                    <div className="bot-avatar">
+                      <img
+                        src="../../logo.png"
+                        className="w-10 h-10 rounded-lg object-cover invert"
+                        alt="Chat bot avatar"
+                        onError={(e) => {
+                          console.error("Failed to load image:", e);
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="message-content">
+                        <div className="message-bubble">
+                          <p>Seems like this domain is not activated yet!</p>
+                        </div>
+                      </div>
+                      <div className="message-content">
+                        <div className="message-bubble">
+                          <p>
+                            Please log in to{" "}
+                            <a
+                              href="https://console.prexoai.xyz"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                color: "#2563eb",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              console.prexoai.xyz
+                            </a>{" "}
+                            and configure this domain.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {messages.map((message) => (
                   <Message key={message.id} message={message} />
                 ))}
@@ -438,6 +585,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               </div>
 
               {messages.length === 0 &&
+                isActive &&
                 suggestedActions &&
                 suggestedActions.length < 3 && (
                   <div className="p-2">
@@ -460,6 +608,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                 sessionTTL={sessionTTL}
                 isLoading={loading}
                 history={history}
+                isDisabled={!isActive}
               />
             </>
           )}

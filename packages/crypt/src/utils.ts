@@ -12,8 +12,8 @@ export async function generateTelemetryKey(domain: string): Promise<string> {
     .join("")
     .slice(0, 12);
 
-  // Generate random bytes
-  const randomBytes = new Uint8Array(16);
+  // Generate random bytes (8 bytes = 16 hex chars)
+  const randomBytes = new Uint8Array(8);
   crypto.getRandomValues(randomBytes);
   const randomPart = Array.from(randomBytes)
     .map((b) => b.toString(16).padStart(2, "0"))

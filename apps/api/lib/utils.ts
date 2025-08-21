@@ -1,8 +1,8 @@
 import { prisma } from "@prexo/db";
 
 export function generateContainerKey(): string {
-  const randomDigits = Math.floor(10000 + Math.random() * 90000);
-  return `con_${randomDigits}`;
+  const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
+  return `con_${id}`;
 }
 
 export async function invalidateCache(tags: string[]) {

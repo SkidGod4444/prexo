@@ -19,6 +19,23 @@ export type TelementryEvents = {
     code: string;
     error: Error;
   };
+  user_message_sent: {
+    content: string;
+    sessionId?: string;
+    sessionTTL?: number;
+  };
+  user_message_error: {
+    content: string;
+    sessionId?: string;
+    sessionTTL?: number;
+    code: string;
+  };
+  chat_widget_activated: {
+    sessionId?: string;
+    sessionTTL?: number;
+    widgetId?: string;
+    value: boolean;
+  };
   error: {
     code: string;
     message?: string;

@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { verifyTelementryKey } from "@/checks/check.telementry";
 import { cache } from "@prexo/cache";
 import { prisma } from "@prexo/db";
-import { checkUser } from "@/checks/check.user";
 
 type Variables = {
   "x-ingest-key": string;
@@ -29,23 +28,37 @@ telementryEvents.post("/key", async (c) => {
   // Check if the domain exists
   const data = await prisma.domain.findFirst({
     where: { name: hostName },
-    select: { telementry_key: true },
+    select: { telementry_key: true, id: true, status: true },
   });
 
   if (!data) {
     return c.json({ message: "Domain not found" }, 404);
   }
 
+  if (data.status !== "Valid" && data.status === "Pending") {
+    console.log("Domain is not active, updating status to Active:", hostName);
+    await prisma.domain.update({
+      where: { id: data.id },
+      data: { status: "Valid" },
+    });
+    data.status = "Valid";
+  }
+  console.log("Found telemetry key for domain:", hostName);
   // Return the telemetry key
-  return c.json({ key: data.telementry_key });
+  return c.json(
+    { key: data.telementry_key, id: data.id, status: data.status },
+    200,
+  );
 });
 
 telementryEvents.use(verifyTelementryKey());
 
 telementryEvents.post("/", async (c) => {
   const body = await c.req.json();
-  const ingId = c.get("x-ingest-key");
-  console.log("Ingest ID: ", ingId);
+  const telementry_key =
+    c.req.header("x-ingest-key") || c.req.header("x-telementry-key");
+
+  console.log("Ingest ID: ", telementry_key);
   if (!body || typeof body !== "object") {
     return c.json({ message: "Invalid request body" }, 400);
   }
@@ -55,18 +68,20 @@ telementryEvents.post("/", async (c) => {
   if (!body.properties || typeof body.properties !== "object") {
     return c.json({ message: "Properties field must be an object" }, 400);
   }
-  if (!ingId) {
+  if (!telementry_key) {
     return c.json({ message: "Ingestion key is required" }, 400);
   }
 
   await cache.rpush(
-    "telemetry_events",
+    "telementry_events",
     JSON.stringify({
-      telementry_key: ingId,
+      telementry_key,
       ...body,
       receivedAt: new Date().toISOString(),
     }),
   );
+
+  return c.json({ status: "success" }, 200);
 });
 
 telementryEvents.post("/flush", async (c) => {
@@ -75,14 +90,14 @@ telementryEvents.post("/flush", async (c) => {
 
   // Pop all events from the cache until empty
   while (
-    (event = await cache.lpop("telemetry_events")) !== undefined &&
+    (event = await cache.lpop("telementry_events")) !== undefined &&
     event !== null
   ) {
     events.push(event);
   }
 
   if (events.length === 0) {
-    return c.json({ status: "No telemetry events found!" });
+    return c.json({ status: "No telementry events found!" });
   }
 
   const parsedEvents = events

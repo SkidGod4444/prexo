@@ -15,7 +15,7 @@ export function verifyTelementryKey(): MiddlewareHandler {
     if (!keyRecord) {
       throw new HTTPException(401, { message: "Invalid ingestion key" });
     }
-    c.set("x-ingest-key", telementry_key);
-    await next();
+
+    return await next();
   };
 }

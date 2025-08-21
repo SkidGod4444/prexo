@@ -6,6 +6,38 @@ import { generateTelemetryKey } from "@prexo/crypt/utils";
 
 const domain = new Hono();
 
+domain.post("/status", async (c) => {
+  const { domain } = await c.req.json();
+  if (!domain) {
+    return c.json({ message: "Domain is required" }, 400);
+  }
+  // Extract host from the domain URL (e.g., "https://app.prexo.com" -> "app.prexo.com")
+  let hostName: string;
+  try {
+    hostName = new URL(domain).host;
+    if (hostName.startsWith("www.")) {
+      hostName = hostName.slice(4);
+    }
+  } catch {
+    hostName = domain;
+  }
+
+  try {
+    const dom = await prisma.domain.findFirst({
+      where: { name: hostName },
+      select: { status: true },
+    });
+    if (!dom) {
+      return c.json({ message: "Not found" }, 404);
+    }
+
+    return c.json({ status: dom.status }, 200);
+  } catch (error) {
+    console.error("Error fetching domain status:", error);
+    return c.json({ message: "Failed to fetch domain status" }, 500);
+  }
+});
+
 domain.use(checkUser);
 
 domain.post("/create", async (c) => {
