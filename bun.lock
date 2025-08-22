@@ -96,6 +96,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@hookform/resolvers": "^5.2.0",
+        "@prexo/assets": "workspace:*",
         "@prexo/auth": "workspace:*",
         "@prexo/crypt": "workspace:*",
         "@prexo/flags": "workspace:*",
@@ -303,6 +304,10 @@
         "typescript": "^5",
       },
     },
+    "packages/assets": {
+      "name": "@prexo/assets",
+      "version": "0.1.1-beta.1",
+    },
     "packages/auth": {
       "name": "@prexo/auth",
       "version": "0.0.0",
@@ -433,6 +438,9 @@
     "packages/utils": {
       "name": "@prexo/utils",
       "version": "0.0.1",
+      "peerDependencies": {
+        "@prexo/assets": "workspace:*",
+      },
     },
   },
   "packages": {
@@ -905,6 +913,8 @@
     "@preact/signals-core": ["@preact/signals-core@1.11.0", "", {}, "sha512-jglbibeWHuFRzEWVFY/TT7wB1PppJxmcSfUHcK+2J9vBRtiooMfw6tAPttojNYrrpdGViqAYCbPpmWYlMm+eMQ=="],
 
     "@prexo/ai-chat-sdk": ["@prexo/ai-chat-sdk@workspace:packages/ai-chat-sdk"],
+
+    "@prexo/assets": ["@prexo/assets@workspace:packages/assets"],
 
     "@prexo/auth": ["@prexo/auth@workspace:packages/auth"],
 

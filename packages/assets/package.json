@@ -1,0 +1,9 @@
+{
+  "name": "@prexo/assets",
+  "version": "0.1.1-beta.1",
+  "description": "Assets management for Prexo AI apps.",
+  "private": false,
+  "exports": {
+        "./icons": "./icons/index.ts"
+    }
+}
