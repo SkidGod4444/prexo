@@ -7,11 +7,14 @@ import {
   listApiKeys,
   verifyApi,
 } from "@prexo/keys";
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
+import { auditLogs } from "@/middleware/audit.logs";
 
 const api = new Hono();
 
+
 api.use(checkUser);
+api.use(auditLogs);
 
 api.post("/create", async (c) => {
   const { name, projectId, expires } = await c.req.json();

@@ -80,6 +80,30 @@ type DomainType = {
   status: "Valid" | "Invalid" | "Pending";
   telementry_key: string;
 };
+
+type AuditLogType = {
+  id: string;
+  time: Date | string;
+  actor: string;
+  action: string;
+  endpoint: string;
+  credits?: number | null;
+  projectId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
+type UsageLogType = {
+  id: string;
+  year?: number | null;
+  month?: number | null;
+  api_calls?: number | null;
+  credits_used?: number | null;
+  projectId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
 interface PCards {
   isYearly?: boolean;
   isUserAuthenticated?: boolean;
@@ -125,4 +149,6 @@ export type {
   ContainerType,
   AIModelsFreeTierId,
   AIModelsFreeTier,
+  AuditLogType,
+  UsageLogType,
 };

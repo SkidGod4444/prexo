@@ -1,4 +1,5 @@
 "use server";
+
 import { DiscordEmbedBuilder, GetLogs } from "getlogs-sdk";
 const webhookUrl = process.env.LOGS_WEBHOOK_URL!;
 if (!webhookUrl) {

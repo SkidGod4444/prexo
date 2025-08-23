@@ -1,12 +1,14 @@
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { invalidateCache } from "@/lib/utils";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
+import { auditLogs } from "@/middleware/audit.logs";
 
 const project = new Hono();
 
 project.use(checkUser);
+project.use(auditLogs);
 
 project.post("/create", async (c) => {
   const { name, userId, description } = await c.req.json();

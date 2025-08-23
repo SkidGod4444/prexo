@@ -2,18 +2,22 @@
 "use client";
 import {
   useApiKeyStore,
+  useAuditLogsStore,
   useContainersStore,
   useDomainsStore,
   useEnvsStore,
   useNotificationsStore,
   useProjectsStore,
+  useUsageLogsStore,
 } from "@prexo/store";
 import {
+  AuditLogType,
   ContainerType,
   DomainType,
   EnvType,
   NotificationType,
   ProjectType,
+  UsageLogType,
 } from "@prexo/types";
 import {
   createContext,
@@ -53,6 +57,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const { envs, setEnvs } = useEnvsStore();
   const { key, removeKey, setKey } = useApiKeyStore();
   const { containers, setContainers } = useContainersStore();
+  const { auditLogs, setAuditLogs } = useAuditLogsStore();
+  const { usageLogs, setUsageLogs } = useUsageLogsStore();
 
   // Hard reload function: empties all stores and optionally localStorage
   const hardReload = useCallback(() => {
@@ -82,6 +88,11 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     process.env.NODE_ENV == "development"
       ? "http://localhost:3001/v1/project/all"
       : "https://api.prexoai.xyz/v1/project/all";
+
+      const LOGGER_API_ENDPOINT =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3001/v1/logger"
+        : "https://api.prexoai.xyz/v1/logger";
 
   const DOMAINS_API_ENDPOINT =
     process.env.NODE_ENV == "development"
@@ -120,6 +131,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       try {
         const data = await fetch(PROJECTS_API_ENDPOINT, {
           credentials: "include",
+          headers: {
+            "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
+          },
         });
 
         if (!data.ok) {
@@ -148,6 +163,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
           },
           body: JSON.stringify({ projectId: consoleId }),
         });
@@ -201,6 +218,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       try {
         const data = await fetch(`${NOTI_API_ENDPOINT}/${consoleId}/all`, {
           credentials: "include",
+          headers: {
+            "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
+          },
         });
 
         if (!data.ok) {
@@ -230,6 +251,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           `${CONTAINERS_API_ENDPOINT}/${consoleId}/all`,
           {
             credentials: "include",
+            headers: {
+              "x-project-id": String(consoleId || ""),
+              "x-polling-req": "true", // Indicate this is a polling request
+            },
           },
         );
 
@@ -251,11 +276,60 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchLogs() {
+      setContentLoading(true);
+      try {
+        const data = await fetch(
+          `${LOGGER_API_ENDPOINT}/${consoleId}/all`,
+          {
+            credentials: "include",
+            headers: {
+              "x-project-id": String(consoleId || ""),
+              "x-polling-req": "true", // Indicate this is a polling request
+            },
+          },
+        );
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch logs: ${data.status}`);
+        }
+
+        const response = await data.json();
+        console.log("Logger API response:", response);
+        
+        if (Array.isArray(response?.auditLogs)) {
+          console.log("Setting audit logs:", response.auditLogs);
+          setAuditLogs(response.auditLogs.map((audit: AuditLogType) => audit));
+        } else {
+          console.log("No audit logs array found, setting empty array");
+          setAuditLogs([]);
+        }
+        
+        if (Array.isArray(response?.usageLogs)) {
+          console.log("Setting usage logs:", response.usageLogs);
+          setUsageLogs(response.usageLogs.map((usage: UsageLogType) => usage));
+        } else {
+          console.log("No usage logs array found, setting empty array");
+          setUsageLogs([]);
+        }
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+        setAuditLogs([]);
+        setUsageLogs([]);
+      } finally {
+        setContentLoading(false);
+      }
+    }
+
     async function fetchEnvs() {
       setContentLoading(true);
       try {
         const data = await fetch(`${ENVS_API_ENDPOINT}/${consoleId}/all`, {
           credentials: "include",
+          headers: {
+            "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
+          },
         });
 
         if (!data.ok) {
@@ -288,20 +362,32 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       fetchContainers();
     }
 
+    if (auditLogs.length == 0 || usageLogs.length == 0) {
+      console.log("Fetching logs because arrays are empty");
+      fetchLogs();
+    }
+
     const interval = setInterval(() => {
       fetchNotifications();
       fetchEnvs();
       fetchContainers();
+      fetchLogs();
     }, 30000);
     return () => clearInterval(interval);
   }, [
     setNotifications,
+    setEnvs,
+    setContainers,
+    setAuditLogs,
+    setUsageLogs,
     consoleId,
     user,
     loading,
     notifications.length,
     envs.length,
-    setEnvs,
+    containers.length,
+    auditLogs.length,
+    usageLogs.length,
   ]);
 
   // Fetch key details only once, even if the response is empty
@@ -323,6 +409,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         try {
           const data = await fetch(getKeyApiEndpoint(selectedProj.keyId!), {
             credentials: "include",
+            headers: {
+              "x-project-id": String(consoleId || ""),
+            },
           });
 
           if (!data.ok) {

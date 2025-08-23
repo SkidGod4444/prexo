@@ -6,7 +6,7 @@ import {
   ToolExecutionError,
 } from "ai";
 import { playgroundPrompt } from "@/lib/constants";
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { prexoai } from "@/lib/utils";
 import { createTogetherAI } from "@ai-sdk/togetherai";
 import { AIModelsFreeTierId } from "@prexo/types";

@@ -6,6 +6,8 @@ import {
   NotificationType,
   EnvType,
   ContainerType,
+  AuditLogType,
+  UsageLogType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -33,6 +35,20 @@ type ProjectStore = {
   addProject: (project: ProjectType) => void;
   removeProject: (projectId: string) => void;
   setProjects: (projects: ProjectType[]) => void;
+};
+
+type AuditLogStore = {
+  auditLogs: AuditLogType[];
+  addAuditLog: (audit: AuditLogType) => void;
+  removeAuditLog: (auditId: string) => void;
+  setAuditLogs: (audits: AuditLogType[]) => void;
+};
+
+type UsageLogStore = {
+  usageLogs: UsageLogType[];
+  addUsageLog: (usage: UsageLogType) => void;
+  removeUsageLog: (usageId: string) => void;
+  setUsageLogs: (usages: UsageLogType[]) => void;
 };
 
 type NotificationsStore = {
@@ -72,4 +88,6 @@ export type {
   NotificationsStore,
   EnvStore,
   ContainerStore,
+  AuditLogStore,
+  UsageLogStore,
 };

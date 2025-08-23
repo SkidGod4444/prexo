@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { logger } from "hono/logger";
+// import { logger } from "hono/logger";
 import { handle } from "hono/vercel";
 import health from "../routes/alive";
 import ai from "../routes/ai";
@@ -20,6 +20,7 @@ import envs from "../routes/environments";
 import file from "../routes/file";
 import containers from "../routes/containers";
 import telementryEvents from "../routes/telementry";
+import auditLogs from "../routes/logger";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -43,6 +44,8 @@ app.use(
       "x-ingest-key",
       "x-telementry-key",
       "x-model-id",
+      "x-project-id",
+      "x-polling-req",
     ],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -66,6 +69,7 @@ app.route("/context", cntxt);
 app.route("/container", containers);
 app.route("/file", file);
 app.route("/telementry", telementryEvents);
+app.route("/logger", auditLogs);
 
 // SDK Routes
 app.route("/sdk/configs", configs);

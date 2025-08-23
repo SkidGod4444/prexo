@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./api": "./src/api.ts"
   },
   "dependencies": {
     "@unkey/api": "^0.36.0",

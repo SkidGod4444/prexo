@@ -16,7 +16,7 @@ export const checkUser = async (c: Context, next: Next) => {
     return c.json(
       {
         message:
-          "An error occurred. Please contact us at connect.saidev@gmail.com.",
+          "An error occurred. Please contact us at connect.saidev@gmail.com",
       },
       401,
     );

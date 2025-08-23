@@ -2,12 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   ApiKeyStore,
+  AuditLogStore,
   ContainerStore,
   DomainStore,
   EnvStore,
   MyProfileStore,
   NotificationsStore,
   ProjectStore,
+  UsageLogStore,
   UserStore,
 } from "../types";
 
@@ -129,6 +131,42 @@ const useContainersStore = create<ContainerStore>()(
   ),
 );
 
+const useAuditLogsStore = create<AuditLogStore>()(
+  persist(
+    (set) => ({
+      auditLogs: [],
+      addAuditLog: (audit) =>
+        set((state) => ({ auditLogs: [...state.auditLogs, audit] })),
+      removeAuditLog: (auditId) =>
+        set((state) => ({
+          auditLogs: state.auditLogs.filter((p) => p.id !== auditId),
+        })),
+      setAuditLogs: (auditLogs) => set({ auditLogs }),
+    }),
+    {
+      name: "@prexo-#auditLogs",
+    },
+  ),
+);
+
+const useUsageLogsStore = create<UsageLogStore>()(
+  persist(
+    (set) => ({
+      usageLogs: [],
+      addUsageLog: (usage) =>
+        set((state) => ({ usageLogs: [...state.usageLogs, usage] })),
+      removeUsageLog: (usageId) =>
+        set((state) => ({
+          usageLogs: state.usageLogs.filter((p) => p.id !== usageId),
+        })),
+      setUsageLogs: (usageLogs) => set({ usageLogs }),
+    }),
+    {
+      name: "@prexo-#usageLogs",
+    },
+  ),
+);
+
 const useMyProfileStore = create<MyProfileStore>()(
   persist(
     (set) => ({
@@ -157,4 +195,6 @@ export {
   useNotificationsStore,
   useEnvsStore,
   useContainersStore,
+  useAuditLogsStore,
+  useUsageLogsStore
 };

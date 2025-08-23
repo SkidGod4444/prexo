@@ -1,4 +1,4 @@
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { invalidateCache } from "@/lib/utils";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";

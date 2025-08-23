@@ -7,7 +7,7 @@ import {
 } from "ai";
 import { systemPrompt } from "@/lib/constants";
 import { z } from "zod";
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { prexoai } from "@/lib/utils";
 
 const ai = new Hono();

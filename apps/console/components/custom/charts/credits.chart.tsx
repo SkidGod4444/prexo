@@ -13,57 +13,77 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-// import { cn } from "@/lib/utils";
-// import { JetBrains_Mono } from "next/font/google";
 import { useMotionValueEvent, useSpring } from "framer-motion";
-
-// const jetBrainsMono = JetBrains_Mono({
-//   subsets: ["latin"],
-//   weight: ["400", "500", "600", "700"],
-// });
+import { UsageLogType } from "@prexo/types";
 
 const CHART_MARGIN = 35;
 
-const chartData = [
-  { month: "January", desktop: 342 },
-  { month: "February", desktop: 676 },
-  { month: "March", desktop: 512 },
-  { month: "April", desktop: 629 },
-  { month: "May", desktop: 458 },
-  { month: "June", desktop: 781 },
-  { month: "July", desktop: 394 },
-  { month: "August", desktop: 924 },
-  { month: "September", desktop: 647 },
-  { month: "October", desktop: 532 },
-  { month: "November", desktop: 803 },
-  { month: "December", desktop: 271 },
+// Month names for display
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
+// Function to transform usageLogs into chart data for credits
+const transformUsageLogsToChartData = (logs: UsageLogType[]) => {
+  // Initialize all months with 0 credits
+  const monthlyData = monthNames.map((month, index) => ({
+    month,
+    credits: 0,
+    monthNumber: index + 1
+  }));
+
+  // Fill in actual data from usageLogs
+  logs.forEach(log => {
+    if (log.month && log.credits_used) {
+      const monthIndex = log.month - 1; // month is 1-based, array is 0-based
+      if (monthIndex >= 0 && monthIndex < 12) {
+        monthlyData[monthIndex].credits = Number(log.credits_used);
+      }
+    }
+  });
+
+  return monthlyData;
+};
+
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  credits: {
+    label: "Credits",
     color: "var(--secondary-foreground)",
   },
 } satisfies ChartConfig;
 
-export function CreditsUsageChart() {
+export function CreditsUsageChart({usageLogs}: { usageLogs: UsageLogType[] }) {
   const [activeIndex, setActiveIndex] = React.useState<number | undefined>(
     undefined,
   );
 
+  // Transform usageLogs to chart data
+  const chartData = React.useMemo(() => {
+    if (!usageLogs || usageLogs.length === 0) {
+      // Return empty data if no logs
+      return monthNames.map((month, index) => ({
+        month,
+        credits: 0,
+        monthNumber: index + 1
+      }));
+    }
+    return transformUsageLogsToChartData(usageLogs);
+  }, [usageLogs]);
+
   const maxValueIndex = React.useMemo(() => {
     // if user is moving mouse over bar then set value to the bar value
     if (activeIndex !== undefined) {
-      return { index: activeIndex, value: chartData[activeIndex].desktop };
+      return { index: activeIndex, value: chartData[activeIndex].credits };
     }
     // if no active index then set value to max value
     return chartData.reduce(
-      (max, data, index) => {
-        return data.desktop > max.value ? { index, value: data.desktop } : max;
+      (max: { index: number; value: number }, data: { month: string; credits: number }, index: number) => {
+        return data.credits > max.value ? { index, value: data.credits } : max;
       },
       { index: 0, value: 0 },
     );
-  }, [activeIndex]);
+  }, [activeIndex, chartData]);
 
   const maxValueIndexSpring = useSpring(maxValueIndex.value, {
     stiffness: 100,
@@ -73,7 +93,7 @@ export function CreditsUsageChart() {
   const [springyValue, setSpringyValue] = React.useState(maxValueIndex.value);
 
   useMotionValueEvent(maxValueIndexSpring, "change", (latest) => {
-    setSpringyValue(Number(latest.toFixed(0)));
+    setSpringyValue(Number(Number(latest).toFixed(0)));
   });
 
   React.useEffect(() => {
@@ -84,18 +104,13 @@ export function CreditsUsageChart() {
     <Card className="bg-transparent border-none">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          {/* <span
-            className={cn(jetBrainsMono.className, "text-2xl tracking-tighter")}
-          >
-            ${maxValueIndex.value}
-          </span> */}
           <span className="text-2xl">Credits Usage</span>
           <Badge variant="secondary">
             <TrendingUp className="h-4 w-4" />
-            <span>5.2%</span>
+            <span>{chartData.reduce((total, month) => total + month.credits, 0)}</span>
           </Badge>
         </CardTitle>
-        <CardDescription>vs. last month</CardDescription>
+        <CardDescription>Total credits used this year</CardDescription>
       </CardHeader>
       <CardContent className="p-2">
         <AnimatePresence mode="wait">
@@ -115,7 +130,7 @@ export function CreditsUsageChart() {
                 axisLine={false}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
+              <Bar dataKey="credits" fill="var(--color-primary)" radius={4} className="cursor-pointer">
                 {chartData.map((_, index) => (
                   <Cell
                     className="duration-200"

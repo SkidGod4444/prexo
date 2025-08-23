@@ -1,4 +1,4 @@
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { Hono } from "hono";
 
 const cntxt = new Hono();

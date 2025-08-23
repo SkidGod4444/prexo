@@ -102,6 +102,8 @@ model Project {
   environments  Environments[]
   files         Files[]
   containers    Containers[]
+  auditLogs     AuditLogs[]
+  usageLogs     UsageLogs[]
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime
   updatedAt     DateTime
@@ -110,16 +112,16 @@ model Project {
 }
 
 model Domain {
-  id               String      @id @default(uuid())
+  id               String       @id @default(uuid())
   name             String // full domain e.g. "www.xyz.com"
   alias            String // subdomain/alias
   status           String // e.g. "Invalid", "Pending", "Active"
   projectId        String
-  telementry_key   String      @unique
+  telementry_key   String       @unique
   telemetry_events Telementry[]
-  project          Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  project          Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   @@map("domain")
 }
@@ -195,4 +197,33 @@ model Containers {
   updatedAt   DateTime @updatedAt
 
   @@map("containers")
+}
+
+model AuditLogs {
+  id        String   @id @default(uuid())
+  time      DateTime
+  actor     String
+  action    String
+  endpoint  String
+  credits   Int?
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("auditLogs")
+}
+
+model UsageLogs {
+  id           String   @id @default(uuid())
+  year         Int?
+  month        Int?
+  api_calls    Int?
+  credits_used Decimal?
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("usageLogs")
 }

@@ -1,4 +1,4 @@
-import { verifyApiKey } from "@/checks/check.api";
+import { verifyApiKey } from "@/middleware/check.api";
 import { VectorDB } from "@prexo/ai-chat-sdk/context";
 import { Index } from "@upstash/vector";
 import { Hono } from "hono";

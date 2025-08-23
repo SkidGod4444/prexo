@@ -1,11 +1,13 @@
 import { Hono } from "hono";
 import { UTApi } from "uploadthing/server";
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { prisma } from "@prexo/db";
+import { auditLogs } from "@/middleware/audit.logs";
 
 const file = new Hono();
 
 file.use(checkUser);
+file.use(auditLogs);
 
 export const utapi = new UTApi();
 

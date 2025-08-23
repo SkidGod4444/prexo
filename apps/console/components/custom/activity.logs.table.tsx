@@ -13,154 +13,12 @@ import {
 } from "@/components/ui/table";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-const allActivityData = [
-  {
-    time: "Aug 17 14:28:48",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 17 14:28:48",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 17 14:06:24",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 17 14:06:24",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 12 20:22:28",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "DELETE",
-    endpoint: "/api/keys/delete",
-    credits: 3,
-  },
-  {
-    time: "Aug 12 10:22:20",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 12 10:22:20",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 12 10:20:06",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 12 10:20:06",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 11 01:20:14",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 11 01:20:14",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  // Additional items for pagination demo
-  {
-    time: "Aug 09 08:02:51",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "DELETE",
-    endpoint: "/api/keys/delete",
-    credits: 3,
-  },
-  {
-    time: "Aug 09 08:02:51",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "DELETE",
-    endpoint: "/api/keys/delete",
-    credits: 3,
-  },
-  {
-    time: "Aug 09 08:02:50",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "DELETE",
-    endpoint: "/api/keys/delete",
-    credits: 3,
-  },
-  {
-    time: "Aug 03 12:27:52",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 03 12:27:52",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Aug 03 12:25:05",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-  {
-    time: "Aug 03 12:25:05",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Jul 31 11:27:03",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "OTHER",
-    endpoint: "/api/auth/connect-role",
-    credits: 2,
-  },
-  {
-    time: "Jul 31 11:27:03",
-    actor: "key_4L8Leffafc52ehYA",
-    action: "CREATE",
-    endpoint: "/api/keys/create",
-    credits: 5,
-  },
-];
+import { useAuditLogsStore } from "@prexo/store";
+import { useReadLocalStorage } from "usehooks-ts";
 
 function getActionBadgeVariant(action: string) {
   switch (action) {
-    case "CREATE":
+    case "GET":
       return "default";
     case "DELETE":
       return "destructive";
@@ -172,11 +30,13 @@ function getActionBadgeVariant(action: string) {
 }
 
 export default function ActivityLogsTable() {
-  const [visibleItems, setVisibleItems] = useState(10);
+  const [visibleItems, setVisibleItems] = useState(50);
+  const consoleId = useReadLocalStorage("@prexo-#consoleId");
+  const { auditLogs } = useAuditLogsStore();
   const [hovered, setHovered] = useState(false);
   const [barHovered, setBarHovered] = useState(false);
   const isMobile = useIsMobile();
-  const totalItems = allActivityData.length;
+  const totalItems = auditLogs.length;
   const hasMore = visibleItems < totalItems;
 
   // For mobile: only set hovered to true on first touch, and never set to false on touchend (so it doesn't flicker)
@@ -225,14 +85,14 @@ export default function ActivityLogsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {allActivityData.slice(0, visibleItems).map((row, index) => (
+                {auditLogs.slice(0, visibleItems).map((row, index) => (
                   <TableRow key={index}>
                     <TableCell className="font-mono text-sm">
-                      {row.time}
+                      {new Date(row.time).toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4">🔑</div>
+                        <div className="w-4 h-4">{row.actor === 'USER' ? '👤' : '🔑'}</div>
                         <span className="font-mono text-sm">{row.actor}</span>
                       </div>
                     </TableCell>
@@ -245,7 +105,17 @@ export default function ActivityLogsTable() {
                       </Badge>
                     </TableCell>
                     <TableCell className="font-mono text-sm">
-                      {row.endpoint}
+                      {(() => {
+                        // Remove the consoleId from the endpoint if present
+                        if (!row.endpoint || !consoleId) return row.endpoint;
+                        // Match /something/:consoleId/...
+                        const regex = new RegExp(`(/v1/[^/]+/)${consoleId}(/|$)`);
+                        if (regex.test(row.endpoint)) {
+                          // Remove the consoleId segment
+                          return row.endpoint.replace(regex, "$1");
+                        }
+                        return row.endpoint;
+                      })()}
                     </TableCell>
                     <TableCell className="text-sm font-medium">
                       {row.credits}

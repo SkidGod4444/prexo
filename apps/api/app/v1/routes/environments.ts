@@ -1,10 +1,12 @@
-import { checkUser } from "@/checks/check.user";
+import { auditLogs } from "@/middleware/audit.logs";
+import { checkUser } from "@/middleware/check.user";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 
 const envs = new Hono();
 
 envs.use(checkUser);
+envs.use(auditLogs);
 
 envs.post("/create", async (c) => {
   try {

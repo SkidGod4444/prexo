@@ -1,4 +1,5 @@
-import { checkUser } from "@/checks/check.user";
+import { auditLogs } from "@/middleware/audit.logs";
+import { checkUser } from "@/middleware/check.user";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { UserType } from "@prexo/types";
@@ -7,6 +8,7 @@ import { Hono } from "hono";
 const user = new Hono();
 
 user.use(checkUser);
+user.use(auditLogs);
 
 user.get("/self", async (c) => {
   const currentUser = await auth.api.getSession({

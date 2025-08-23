@@ -48,6 +48,7 @@ export default function Logo({
         height={height ?? 50}
         width={width ?? 40}
         alt={alt ?? "logo"}
+        className="invert transition-all duration-300 ease-in-out dark:invert-0"
       />
       {!isCollapsed && isTextVisible && (
         <span className="text-2xl font-uxum font-bold p-2">{displayText}</span>

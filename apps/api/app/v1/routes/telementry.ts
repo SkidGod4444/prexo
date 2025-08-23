@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { verifyTelementryKey } from "@/checks/check.telementry";
 import { cache } from "@prexo/cache";
 import { prisma } from "@prexo/db";
+import { checkTelementry } from "@/middleware/check.telementry";
 
 type Variables = {
   "x-ingest-key": string;
@@ -51,7 +51,7 @@ telementryEvents.post("/key", async (c) => {
   );
 });
 
-telementryEvents.use(verifyTelementryKey());
+telementryEvents.use(checkTelementry);
 
 telementryEvents.post("/", async (c) => {
   const body = await c.req.json();

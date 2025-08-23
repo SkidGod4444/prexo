@@ -1,12 +1,14 @@
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { generateContainerKey } from "@/lib/utils";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
+import { auditLogs } from "@/middleware/audit.logs";
 
 const containers = new Hono();
 
 containers.use(checkUser);
+containers.use(auditLogs);
 
 containers.post("/create", async (c) => {
   const { name, description, projectId } = await c.req.json();

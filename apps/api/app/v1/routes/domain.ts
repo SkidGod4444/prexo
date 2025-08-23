@@ -1,10 +1,13 @@
-import { checkUser } from "@/checks/check.user";
+import { checkUser } from "@/middleware/check.user";
 import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 import { generateTelemetryKey } from "@prexo/crypt/utils";
+import { auditLogs } from "@/middleware/audit.logs";
 
 const domain = new Hono();
+
+domain.use(auditLogs);
 
 domain.post("/status", async (c) => {
   const { domain } = await c.req.json();
