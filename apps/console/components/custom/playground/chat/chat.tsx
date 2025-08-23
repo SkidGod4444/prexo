@@ -8,9 +8,11 @@ import { AIModelsFreeTierId } from "@prexo/types";
 // import {getApiKey} from "@prexo/keys";
 
 export default function ChatPanel({ chatId }: { chatId: string }) {
-  const model = useReadLocalStorage<AIModelsFreeTierId>("@prexo-#selectedAiModel");
+  const model = useReadLocalStorage<AIModelsFreeTierId>(
+    "@prexo-#selectedAiModel",
+  );
   // const {key} = useApiKeyStore();
-  const apiKey = '';
+  const apiKey = "";
 
   const BASE_API_URL =
     process.env.NODE_ENV === "development"

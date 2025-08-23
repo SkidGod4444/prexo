@@ -1,4 +1,3 @@
-
 /**
  * Fetches the SVG URL for a given icon name from the SVGL API.
  * @param {string} iconName - The name of the icon to search for.

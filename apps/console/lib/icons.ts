@@ -1,4 +1,3 @@
-
 /**
  * Fetches the SVG URL for a given icon name from the SVGL API.
  * @param {string} iconName - The name of the icon to search for.
@@ -14,7 +13,9 @@ export async function getIconSvgUrl(iconName: string): Promise<string | null> {
     const data = await response.json();
 
     if (Array.isArray(data) && data.length > 0) {
-      const match = data.find((item) => item.title.toLowerCase() === iconName.toLowerCase());
+      const match = data.find(
+        (item) => item.title.toLowerCase() === iconName.toLowerCase(),
+      );
       console.log("Matching icon:", match);
       if (match) {
         if (typeof match.route === "string") {

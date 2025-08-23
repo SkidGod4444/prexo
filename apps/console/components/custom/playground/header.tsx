@@ -22,61 +22,83 @@ interface ProviderLogo {
 }
 
 export default function ChatHeader() {
-  const [providerLogos, setProviderLogos] = useLocalStorage<ProviderLogo[]>('@prexo-#providerLogos', []);
+  const [providerLogos, setProviderLogos] = useLocalStorage<ProviderLogo[]>(
+    "@prexo-#providerLogos",
+    [],
+  );
 
   // Find the OpenAI OSS model id for default selection
   const openAiOssModel = AI_MODELS_FREE_TIER.find(
-    (model) => model.id === "mistralai/mistral-small-3.2-24b-instruct:free"
+    (model) => model.id === "mistralai/mistral-small-3.2-24b-instruct:free",
   );
 
-  const defaultModelId = openAiOssModel ? openAiOssModel.id : AI_MODELS_FREE_TIER[0].id;
+  const defaultModelId = openAiOssModel
+    ? openAiOssModel.id
+    : AI_MODELS_FREE_TIER[0].id;
 
-  const [selectedModel, setSelectedModel] = useLocalStorage<AIModelsFreeTierId>("@prexo-#selectedAiModel", defaultModelId);
-  const selectedModelData = AI_MODELS_FREE_TIER.find(model => model.id === selectedModel);
+  const [selectedModel, setSelectedModel] = useLocalStorage<AIModelsFreeTierId>(
+    "@prexo-#selectedAiModel",
+    defaultModelId,
+  );
+  const selectedModelData = AI_MODELS_FREE_TIER.find(
+    (model) => model.id === selectedModel,
+  );
 
   // Get unique providers and fetch their SVG logos
   useEffect(() => {
-    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const sleep = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
 
     const fetchProviderLogos = async () => {
       // Check if logos are already stored in localStorage
-      const storedLogos = localStorage.getItem('@prexo-#providerLogos');
-      const storedTimestamp = localStorage.getItem('@prexo-#providerLogosTimestamp');
-      
+      const storedLogos = localStorage.getItem("@prexo-#providerLogos");
+      const storedTimestamp = localStorage.getItem(
+        "@prexo-#providerLogosTimestamp",
+      );
+
       // Check if stored data is less than 24 hours old
-      const isStoredDataValid = storedLogos && storedTimestamp && 
-        (Date.now() - parseInt(storedTimestamp)) < 24 * 60 * 60 * 1000;
-      
+      const isStoredDataValid =
+        storedLogos &&
+        storedTimestamp &&
+        Date.now() - parseInt(storedTimestamp) < 24 * 60 * 60 * 1000;
+
       if (isStoredDataValid) {
         try {
           const parsedLogos = JSON.parse(storedLogos);
           setProviderLogos(parsedLogos);
           return;
         } catch (error) {
-          console.warn('Failed to parse stored logos, fetching fresh data', error);
+          console.warn(
+            "Failed to parse stored logos, fetching fresh data",
+            error,
+          );
         }
       }
-      
+
       // Fetch fresh data if no valid stored data exists
-      const uniqueProviders = [...new Set(AI_MODELS_FREE_TIER.map(model => model.provider))];
-      
+      const uniqueProviders = [
+        ...new Set(AI_MODELS_FREE_TIER.map((model) => model.provider)),
+      ];
+
       const logos: ProviderLogo[] = [];
       for (const provider of uniqueProviders) {
         const svgLogo = await getIconSvgUrl(provider);
         logos.push({ provider, svgLogo });
         await sleep(1500); // Wait for 500ms after each fetch
       }
-      
+
       // Store in localStorage with timestamp
-      localStorage.setItem('@prexo-#providerLogos', JSON.stringify(logos));
-      localStorage.setItem('@prexo-#providerLogosTimestamp', Date.now().toString());
-      
+      localStorage.setItem("@prexo-#providerLogos", JSON.stringify(logos));
+      localStorage.setItem(
+        "@prexo-#providerLogosTimestamp",
+        Date.now().toString(),
+      );
+
       setProviderLogos(logos);
     };
 
     fetchProviderLogos();
   }, [setProviderLogos]);
-  
 
   return (
     <header className="mt-2 z-50">
@@ -85,14 +107,18 @@ export default function ChatHeader() {
         <div>
           <Select
             value={selectedModel}
-            onValueChange={(value: AIModelsFreeTierId) => setSelectedModel(value)}
+            onValueChange={(value: AIModelsFreeTierId) =>
+              setSelectedModel(value)
+            }
             aria-label="Select AI model"
           >
             <SelectTrigger className="cursor-pointer [&>svg]:text-muted-foreground/80 **:data-desc:hidden [&>svg]:shrink-0">
               <Avatar className="bg-white p-1 w-7 h-7">
-                <AvatarImage 
+                <AvatarImage
                   src={(() => {
-                    const providerLogo = providerLogos.find(logo => logo.provider === selectedModelData?.provider);
+                    const providerLogo = providerLogos.find(
+                      (logo) => logo.provider === selectedModelData?.provider,
+                    );
                     return providerLogo?.svgLogo || undefined;
                   })()}
                   alt="Provider logo"
@@ -111,7 +137,11 @@ export default function ChatHeader() {
               <SelectGroup>
                 <SelectLabel className="ps-2">Available Models</SelectLabel>
                 {AI_MODELS_FREE_TIER.map((model) => (
-                  <SelectItem value={model.id} key={model.id} className="cursor-pointer">
+                  <SelectItem
+                    value={model.id}
+                    key={model.id}
+                    className="cursor-pointer"
+                  >
                     <div>
                       <div>{model.name}</div>
                       <span

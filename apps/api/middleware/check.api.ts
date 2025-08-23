@@ -12,8 +12,7 @@ export function verifyApiKey(
   timeFrame?: number,
 ): MiddlewareHandler {
   return async (c, next) => {
-    const projectID =
-      c.req.header("x-project-id")
+    const projectID = c.req.header("x-project-id");
     const key = config.getKey
       ? config.getKey(c)
       : (c.req.header("Authorization")?.replace("Bearer ", "") ?? null);
@@ -52,7 +51,7 @@ export function verifyApiKey(
       return config.handleInvalidKey(c, res.result);
     }
 
-    if(res.result && projectID) {
+    if (res.result && projectID) {
       const audits = await createAuditLog({
         time: new Date().toISOString(),
         actor: res.result.keyId!,
@@ -62,7 +61,7 @@ export function verifyApiKey(
         projectId: projectID,
       });
       console.info("Audit log created:", audits);
-    
+
       const usage = await createUsageLog({
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,

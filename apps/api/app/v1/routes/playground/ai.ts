@@ -15,20 +15,19 @@ const playgroundAi = new Hono();
 
 playgroundAi.use(checkUser);
 
-const togetherai = createTogetherAI({ apiKey: process.env.TOGETHERAI_API_KEY! });
+const togetherai = createTogetherAI({
+  apiKey: process.env.TOGETHERAI_API_KEY!,
+});
 
 export const maxDuration = 30;
 
 playgroundAi.post("/stream", async (c) => {
   const { messages } = await c.req.json();
   const modelId = c.req.header("x-model-id");
-    if (!modelId) {
-      return c.json(
-        { error: "Missing model id" },
-        400
-      );
-    }
-    const LLM_MODEL: AIModelsFreeTierId = modelId as AIModelsFreeTierId;
+  if (!modelId) {
+    return c.json({ error: "Missing model id" }, 400);
+  }
+  const LLM_MODEL: AIModelsFreeTierId = modelId as AIModelsFreeTierId;
   const filteredMessages = messages.map((msg: any) => {
     if (!msg.parts) return msg;
     return {

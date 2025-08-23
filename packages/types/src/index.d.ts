@@ -126,17 +126,17 @@ interface PCards {
 /**
  * String literal union of all allowed model IDs.
  * Use this type for type-safe model("") usage and editor autocomplete.
- * 
+ *
  * Example:
  *   function setModel(model: AIModelId) { ... }
  *   setModel("deepseek/deepseek-chat-v3-0324:free"); // type-safe, autocompletes
  */
-type AIModelsFreeTierId = typeof AI_MODELS_FREE_TIER[number]["id"];
+type AIModelsFreeTierId = (typeof AI_MODELS_FREE_TIER)[number]["id"];
 
 /**
  * Full model object type for free tier models.
  */
-type AIModelsFreeTier = typeof AI_MODELS_FREE_TIER[number];
+type AIModelsFreeTier = (typeof AI_MODELS_FREE_TIER)[number];
 
 export type {
   UserType,

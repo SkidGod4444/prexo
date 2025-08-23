@@ -92,7 +92,9 @@ export default function ActivityLogsTable() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4">{row.actor === 'USER' ? '👤' : '🔑'}</div>
+                        <div className="w-4 h-4">
+                          {row.actor === "USER" ? "👤" : "🔑"}
+                        </div>
                         <span className="font-mono text-sm">{row.actor}</span>
                       </div>
                     </TableCell>
@@ -109,7 +111,9 @@ export default function ActivityLogsTable() {
                         // Remove the consoleId from the endpoint if present
                         if (!row.endpoint || !consoleId) return row.endpoint;
                         // Match /something/:consoleId/...
-                        const regex = new RegExp(`(/v1/[^/]+/)${consoleId}(/|$)`);
+                        const regex = new RegExp(
+                          `(/v1/[^/]+/)${consoleId}(/|$)`,
+                        );
                         if (regex.test(row.endpoint)) {
                           // Remove the consoleId segment
                           return row.endpoint.replace(regex, "$1");

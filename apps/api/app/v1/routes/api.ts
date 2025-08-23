@@ -12,7 +12,6 @@ import { auditLogs } from "@/middleware/audit.logs";
 
 const api = new Hono();
 
-
 api.use(checkUser);
 api.use(auditLogs);
 

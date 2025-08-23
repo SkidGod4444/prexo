@@ -196,5 +196,5 @@ export {
   useEnvsStore,
   useContainersStore,
   useAuditLogsStore,
-  useUsageLogsStore
+  useUsageLogsStore,
 };

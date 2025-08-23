@@ -118,7 +118,7 @@ export default function DomainsSettings() {
             if (!res.ok) {
               throw new Error("Failed to delete the domain.");
             }
-          })
+          }),
         );
       } catch (err) {
         console.error("Error marking existing domains as Invalid:", err);
@@ -180,10 +180,7 @@ export default function DomainsSettings() {
         />
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button
-              size={"sm"}
-              className={isMobile ? "w-full mt-5" : ""}
-            >
+            <Button size={"sm"} className={isMobile ? "w-full mt-5" : ""}>
               Add Domain
             </Button>
           </DialogTrigger>

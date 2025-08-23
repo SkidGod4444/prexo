@@ -16,13 +16,22 @@ import { Badge } from "@/components/ui/badge";
 import { useMotionValueEvent, useSpring } from "framer-motion";
 import { UsageLogType } from "@prexo/types";
 
-
 const CHART_MARGIN = 35;
 
 // Month names for display
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // Function to transform usageLogs into chart data
@@ -31,11 +40,11 @@ const transformUsageLogsToChartData = (logs: UsageLogType[]) => {
   const monthlyData = monthNames.map((month, index) => ({
     month,
     apiCalls: 0,
-    monthNumber: index + 1
+    monthNumber: index + 1,
   }));
 
   // Fill in actual data from usageLogs
-  logs.forEach(log => {
+  logs.forEach((log) => {
     if (log.month && log.api_calls) {
       const monthIndex = log.month - 1; // month is 1-based, array is 0-based
       if (monthIndex >= 0 && monthIndex < 12) {
@@ -54,7 +63,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ApiCallsChart({usageLogs}: { usageLogs: UsageLogType[] }) {
+export function ApiCallsChart({ usageLogs }: { usageLogs: UsageLogType[] }) {
   const [activeIndex, setActiveIndex] = React.useState<number | undefined>(
     undefined,
   );
@@ -66,7 +75,7 @@ export function ApiCallsChart({usageLogs}: { usageLogs: UsageLogType[] }) {
       return monthNames.map((month, index) => ({
         month,
         apiCalls: 0,
-        monthNumber: index + 1
+        monthNumber: index + 1,
       }));
     }
     return transformUsageLogsToChartData(usageLogs);
@@ -79,8 +88,14 @@ export function ApiCallsChart({usageLogs}: { usageLogs: UsageLogType[] }) {
     }
     // if no active index then set value to max value
     return chartData.reduce(
-      (max: { index: number; value: number }, data: { month: string; apiCalls: number }, index: number) => {
-        return data.apiCalls > max.value ? { index, value: data.apiCalls } : max;
+      (
+        max: { index: number; value: number },
+        data: { month: string; apiCalls: number },
+        index: number,
+      ) => {
+        return data.apiCalls > max.value
+          ? { index, value: data.apiCalls }
+          : max;
       },
       { index: 0, value: 0 },
     );
@@ -108,7 +123,9 @@ export function ApiCallsChart({usageLogs}: { usageLogs: UsageLogType[] }) {
           <span className="text-2xl">API Calls</span>
           <Badge variant="secondary">
             <TrendingUp className="h-4 w-4" />
-            <span>{chartData.reduce((total, month) => total + month.apiCalls, 0)}</span>
+            <span>
+              {chartData.reduce((total, month) => total + month.apiCalls, 0)}
+            </span>
           </Badge>
         </CardTitle>
         <CardDescription>Total API calls this year</CardDescription>
@@ -131,7 +148,12 @@ export function ApiCallsChart({usageLogs}: { usageLogs: UsageLogType[] }) {
                 axisLine={false}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
-              <Bar dataKey="apiCalls" fill="var(--color-primary)" radius={4} className="cursor-pointer">
+              <Bar
+                dataKey="apiCalls"
+                fill="var(--color-primary)"
+                radius={4}
+                className="cursor-pointer"
+              >
                 {chartData.map((_, index) => (
                   <Cell
                     className="duration-200"

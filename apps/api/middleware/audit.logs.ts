@@ -5,24 +5,24 @@ import { createAuditLog } from "@prexo/logs/api";
 export const auditLogs: MiddlewareHandler = async (c, next) => {
   const projectId = c.req.header("x-project-id");
   const isPolling = c.req.header("x-polling-req") === "true";
-  
+
   if (isPolling) {
     console.log("Skipping audit log for polling request");
     return await next();
   }
-  
+
   if (!projectId) {
     throw new HTTPException(401, { message: "Missing project id" });
   }
 
   const method = c.req.method;
   const path = c.req.path;
-  
+
   // For non-polling requests, create audit logs normally
   try {
     const audits = await createAuditLog({
       time: new Date().toISOString(),
-      actor: 'USER',
+      actor: "USER",
       action: method,
       endpoint: path,
       credits: 0,
@@ -35,6 +35,3 @@ export const auditLogs: MiddlewareHandler = async (c, next) => {
 
   return await next();
 };
-
-
-

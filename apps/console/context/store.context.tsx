@@ -89,10 +89,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       ? "http://localhost:3001/v1/project/all"
       : "https://api.prexoai.xyz/v1/project/all";
 
-      const LOGGER_API_ENDPOINT =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3001/v1/logger"
-        : "https://api.prexoai.xyz/v1/logger";
+  const LOGGER_API_ENDPOINT =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3001/v1/logger"
+      : "https://api.prexoai.xyz/v1/logger";
 
   const DOMAINS_API_ENDPOINT =
     process.env.NODE_ENV == "development"
@@ -279,16 +279,13 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     async function fetchLogs() {
       setContentLoading(true);
       try {
-        const data = await fetch(
-          `${LOGGER_API_ENDPOINT}/${consoleId}/all`,
-          {
-            credentials: "include",
-            headers: {
-              "x-project-id": String(consoleId || ""),
-              "x-polling-req": "true", // Indicate this is a polling request
-            },
+        const data = await fetch(`${LOGGER_API_ENDPOINT}/${consoleId}/all`, {
+          credentials: "include",
+          headers: {
+            "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
           },
-        );
+        });
 
         if (!data.ok) {
           throw new Error(`Failed to fetch logs: ${data.status}`);
@@ -296,7 +293,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
         const response = await data.json();
         console.log("Logger API response:", response);
-        
+
         if (Array.isArray(response?.auditLogs)) {
           console.log("Setting audit logs:", response.auditLogs);
           setAuditLogs(response.auditLogs.map((audit: AuditLogType) => audit));
@@ -304,7 +301,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           console.log("No audit logs array found, setting empty array");
           setAuditLogs([]);
         }
-        
+
         if (Array.isArray(response?.usageLogs)) {
           console.log("Setting usage logs:", response.usageLogs);
           setUsageLogs(response.usageLogs.map((usage: UsageLogType) => usage));

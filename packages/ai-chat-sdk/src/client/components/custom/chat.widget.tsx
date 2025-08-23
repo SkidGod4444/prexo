@@ -87,32 +87,29 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   });
 
   // State and refs
-  const [isOpen, setIsOpen] = useLocalStorage(
-    "@prexo-chat-bot-#isOpen",
-    false
-  );
+  const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);
   const [loading, setLoading] = useState(false);
   const [convo, setConvo] = useState<MessageT[]>([]);
   const [cntxt, setCntxt] = useLocalStorage<VectorContextResult[]>(
     "@prexo-chat-bot-#cntxt",
-    []
+    [],
   );
   const [cleanCntxt, setCleanCntxt] = useLocalStorage<string>(
     "@prexo-chat-bot-#cleanCntxt",
-    ""
+    "",
   );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [isMinimized, setIsMinimized] = useLocalStorage(
     "@prexo-chat-bot-#isMinimized",
-    false
+    false,
   );
   const history = getHistoryClient({ redis });
   const context = getContextClient({ vector, apiKey });
   const [historyFetched, setHistoryFetched] = useState(false);
   const [isActive, setIsActive] = useLocalStorage(
     "@prexo-chat-bot-#isActive",
-    false
+    false,
   );
   const DOMAIN_API_ENDPOINT =
     process.env.NODE_ENV === "development"
@@ -149,7 +146,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               sessionTTL,
             });
             console.log(
-              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
             );
           }
           return;
@@ -166,7 +163,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
               sessionTTL,
             });
             console.log(
-              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
+              "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
             );
           }
         }
@@ -179,7 +176,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
             sessionTTL,
           });
           console.log(
-            "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain."
+            "PrexoAiChatBot is not active yet. Please log in to console.prexoai.xyz and configure this domain.",
           );
         }
       }
@@ -202,10 +199,10 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       message: "API key is required for PrexoAiChatBot to function properly",
     });
     console.error(
-      "API key is required for PrexoAiChatBot to function properly"
+      "API key is required for PrexoAiChatBot to function properly",
     );
     throw new Error(
-      "API key is required for PrexoAiChatBot to function properly"
+      "API key is required for PrexoAiChatBot to function properly",
     );
   }
   if (suggestedActions && suggestedActions.length > 3) {
@@ -292,7 +289,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
           context: combinedContext, // always use the latest context
           RAGDisabled: RAGDisabled,
         },
-      }
+      },
     );
   };
 
@@ -429,8 +426,8 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       height: isMinimized
         ? "60px"
         : typeof height === "number"
-        ? `${height}px`
-        : height,
+          ? `${height}px`
+          : height,
     };
   };
   const formatTime = (date: Date) => {
@@ -460,9 +457,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       {isOpen && (
         <div
           className={`chat-widget ${theme} ${isMinimized ? "minimized" : ""} ${
-            isOpen && position === "bottom-right"
-              ? "open right"
-              : "open left"
+            isOpen && position === "bottom-right" ? "open right" : "open left"
           } ${!isOpen ? "close" : ""} ${getPositionClasses()} ${className}`}
           style={getWidgetStyle()}
         >
@@ -590,7 +585,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
                   </div>
                 )}
 
-{messages.map((message) => (
+                {messages.map((message) => (
                   <Message key={message.id} message={message} />
                 ))}
 

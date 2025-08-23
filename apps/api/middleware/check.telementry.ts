@@ -2,7 +2,10 @@ import { prisma } from "@prexo/db";
 import { Context, MiddlewareHandler, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 
-export const checkTelementry: MiddlewareHandler = async (c: Context, next: Next) => {
+export const checkTelementry: MiddlewareHandler = async (
+  c: Context,
+  next: Next,
+) => {
   const telementry_key =
     c.req.header("x-ingest-key") || c.req.header("x-telementry-key");
   if (!telementry_key) {

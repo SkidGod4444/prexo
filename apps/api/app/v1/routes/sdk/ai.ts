@@ -50,15 +50,12 @@ aiSdk.use(
 aiSdk.post("/stream", async (c) => {
   const { messages, history, context, RAGDisabled }: BodyParameters =
     await c.req.json();
-    const modelId = c.req.header("x-model-id");
-    if (!modelId) {
-      return c.json(
-        { error: "Missing model id" },
-        400
-      );
-    }
-    const LLM_MODEL: AIModelsFreeTierId = modelId as AIModelsFreeTierId;
-    
+  const modelId = c.req.header("x-model-id");
+  if (!modelId) {
+    return c.json({ error: "Missing model id" }, 400);
+  }
+  const LLM_MODEL: AIModelsFreeTierId = modelId as AIModelsFreeTierId;
+
   const userQuestion = messages[messages.length - 1];
 
   const sysPrompt = RAGDisabled

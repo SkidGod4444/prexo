@@ -3,7 +3,7 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { prisma } from "@prexo/db";
 import { AIModelsFreeTierId } from "@prexo/types";
 import { AI_MODELS_FREE_TIER } from "@prexo/utils/constants";
-import { createOllama } from 'ollama-ai-provider-v2';
+import { createOllama } from "ollama-ai-provider-v2";
 
 export function generateContainerKey(): string {
   const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
@@ -26,12 +26,16 @@ export function prexoai(modelId: AIModelsFreeTierId) {
       return openrouter(model);
     }
     case "togetherai": {
-      const togetherai = createTogetherAI({ apiKey: process.env.TOGETHERAI_API_KEY! });
+      const togetherai = createTogetherAI({
+        apiKey: process.env.TOGETHERAI_API_KEY!,
+      });
       console.log(`Using TogetherAI model: ${model}`);
       return togetherai(model);
     }
     default:
-      const togetherai = createTogetherAI({ apiKey: process.env.TOGETHERAI_API_KEY! });
+      const togetherai = createTogetherAI({
+        apiKey: process.env.TOGETHERAI_API_KEY!,
+      });
       console.log(`Using default TogetherAI model!`);
       return togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free");
   }
