@@ -21,6 +21,7 @@ import file from "../routes/file";
 import containers from "../routes/containers";
 import telementryEvents from "../routes/telementry";
 import auditLogs from "../routes/logger";
+import { rateLimitHandler } from "@/middleware/ratelimit";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -54,6 +55,7 @@ app.use(
 );
 
 // app.use(logger());
+app.use("*", rateLimitHandler);
 
 // Import routes
 app.route("/health", health);
