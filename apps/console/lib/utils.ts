@@ -125,6 +125,23 @@ export function sanitizeText(text: string) {
   return text.replace("<has_function_call>", "");
 }
 
+// Helper to extract URLs from pasted text (supports multiple, newline/comma/space separated)
+export function extractUrls(text: string): string[] {
+  // Split by whitespace, comma, or newline, filter out empty
+  const parts = text
+    .split(/[\s,]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  // Only keep those that look like URLs (with or without protocol)
+  return parts.filter((part) => {
+    // Accept if it looks like a domain or has protocol
+    return (
+      /^https?:\/\/\S+/i.test(part) || /^[\w-]+\.[\w.-]+(\/\S*)?$/i.test(part)
+    );
+  });
+}
+
 export function formatDateTimeAgo(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   if (isNaN(d.getTime())) return "";

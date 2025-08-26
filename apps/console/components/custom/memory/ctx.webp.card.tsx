@@ -2,29 +2,28 @@
 import React, { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2Icon, PlusIcon, AlertCircleIcon, LinkIcon } from "lucide-react";
+import {
+  Trash2Icon,
+  PlusIcon,
+  AlertCircleIcon,
+  LinkIcon,
+  SparklesIcon,
+} from "lucide-react";
+import { extractUrls } from "@/lib/utils";
+import { useLocalStorage } from "usehooks-ts";
 
-// Helper to extract URLs from pasted text (supports multiple, newline/comma/space separated)
-function extractUrls(text: string): string[] {
-  // Split by whitespace, comma, or newline, filter out empty
-  const parts = text
-    .split(/[\s,]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  // Only keep those that look like URLs (with or without protocol)
-  return parts.filter((part) => {
-    // Accept if it looks like a domain or has protocol
-    return (
-      /^https?:\/\/\S+/i.test(part) || /^[\w-]+\.[\w.-]+(\/\S*)?$/i.test(part)
-    );
-  });
-}
-
+// TODO: Make it working
 export default function CtxWebpagesCard() {
-  const [webpages, setWebpages] = useState<
-    { id: string; url: string; error?: string }[]
-  >([]);
+  const [webpages, setWebpages] = useLocalStorage<
+    {
+      id: string;
+      url: string;
+      error?: string;
+      timestamp: number;
+      isNew: boolean;
+    }[]
+  >("@prexo-#ctxWebpages", []);
+
   const [isAdding, setIsAdding] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const pasteBoxRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +31,15 @@ export default function CtxWebpagesCard() {
   // Add a new empty input
   const handleAddWebpage = () => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    setWebpages((prev) => [...prev, { id, url: "" }]);
+    setWebpages((prev) => [
+      ...prev,
+      {
+        id,
+        url: "",
+        timestamp: Date.now(),
+        isNew: true,
+      },
+    ]);
     setIsAdding(true);
     setTimeout(() => {
       const ref = inputRefs.current[id];
@@ -41,22 +48,28 @@ export default function CtxWebpagesCard() {
   };
 
   // Add multiple links at once
-  const handleAddMultipleWebpages = useCallback((urls: string[]) => {
-    if (!urls.length) return;
-    setWebpages((prev) => [
-      ...prev,
-      ...urls.map((url) => {
-        // Remove https:// prefix if present
-        const cleanUrl = url.startsWith("https://") ? url.slice(8) : url;
-        return {
-          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-          url: cleanUrl,
-          error: cleanUrl && !isValidUrl(cleanUrl) ? "Invalid URL" : undefined,
-        };
-      }),
-    ]);
-    setIsAdding(false);
-  }, []);
+  const handleAddMultipleWebpages = useCallback(
+    (urls: string[]) => {
+      if (!urls.length) return;
+      setWebpages((prev) => [
+        ...prev,
+        ...urls.map((url) => {
+          // Remove http(s):// prefix if present
+          const cleanUrl = url.replace(/^https?:\/\//i, "");
+          const validation = isValidUrl(cleanUrl);
+          return {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            url: cleanUrl,
+            error: validation.isValid ? undefined : validation.error,
+            timestamp: Date.now(),
+            isNew: true,
+          };
+        }),
+      ]);
+      setIsAdding(false);
+    },
+    [setWebpages],
+  );
 
   // Remove a webpage input
   const handleRemoveWebpage = (id: string) => {
@@ -65,38 +78,87 @@ export default function CtxWebpagesCard() {
 
   // Update the value of a webpage input
   const handleChange = (id: string, value: string) => {
-    // Remove https:// prefix if present
-    const cleanValue = value.startsWith("https://") ? value.slice(8) : value;
+    // Remove http(s):// prefix if present
+    const cleanValue = value.replace(/^https?:\/\//i, "");
+
+    // Validate the URL
+    const validation = isValidUrl(cleanValue);
+
     setWebpages((prev) =>
       prev.map((w) =>
         w.id === id
           ? {
               ...w,
               url: cleanValue,
-              error:
-                cleanValue && !isValidUrl(cleanValue)
-                  ? "Invalid URL"
-                  : undefined,
+              error: validation.isValid ? undefined : validation.error,
             }
           : w,
       ),
     );
   };
 
-  // Simple URL validation
-  function isValidUrl(url: string) {
+  // Enhanced URL validation
+  function isValidUrl(url: string): { isValid: boolean; error?: string } {
+    if (!url.trim()) {
+      return { isValid: true }; // Empty is valid (placeholder)
+    }
+
+    // Check for common invalid characters
+    if (/[<>"{}|\\^`\[\]]/.test(url)) {
+      return { isValid: false, error: "Contains invalid characters" };
+    }
+
+    // Check for basic URL structure
+    if (!/^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]+$/.test(url)) {
+      return { isValid: false, error: "Contains invalid URL characters" };
+    }
+
+    // Check for minimum length and structure
+    if (url.length < 3) {
+      return { isValid: false, error: "URL too short" };
+    }
+
+    // Check if it looks like a domain
+    if (
+      !/^[a-zA-Z0-9\-._]+\.[a-zA-Z]{2,}/.test(url) &&
+      !/^[a-zA-Z0-9\-._]+\.[a-zA-Z0-9\-._]+\.[a-zA-Z]{2,}/.test(url)
+    ) {
+      return { isValid: false, error: "Invalid domain format" };
+    }
+
     try {
-      if (!url) return true;
       let testUrl = url;
       if (!/^https?:\/\//i.test(url)) {
         testUrl = "https://" + url;
       }
       new URL(testUrl);
-      return true;
+      return { isValid: true };
     } catch {
-      return false;
+      return { isValid: false, error: "Invalid URL format" };
     }
   }
+
+  // Get newly added links (added in the last session or marked as new)
+  const getNewLinks = useCallback(() => {
+    return webpages.filter((w) => w.isNew);
+  }, [webpages]);
+
+  // Get recently added links (added in the last 24 hours)
+  const getRecentLinks = useCallback(() => {
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    return webpages.filter((w) => w.timestamp > oneDayAgo);
+  }, [webpages]);
+
+  // Get count of new links
+  const newLinksCount = getNewLinks().length;
+
+  // Check if all URLs are valid
+  const hasInvalidUrls = webpages.some((w) => w.error);
+
+  // Get count of valid URLs
+  const validUrlsCount = webpages.filter(
+    (w) => !w.error && w.url.trim(),
+  ).length;
 
   // Handle paste event for the empty box
   const handlePaste = useCallback(
@@ -152,7 +214,21 @@ export default function CtxWebpagesCard() {
       ) : (
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium">Links ({webpages.length})</h3>
+            <h3 className="text-sm font-medium">
+              Links ({webpages.length})
+              {newLinksCount > 0 && (
+                <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-600 dark:bg-blue-600 dark:text-blue-200">
+                  <SparklesIcon className="size-3" />
+                  {newLinksCount} new
+                </span>
+              )}
+              {hasInvalidUrls && (
+                <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+                  <AlertCircleIcon className="size-3" />
+                  {webpages.filter((w) => w.error).length} invalid
+                </span>
+              )}
+            </h3>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -190,14 +266,41 @@ export default function CtxWebpagesCard() {
                       ref={(el) => {
                         inputRefs.current[webpage.id] = el;
                       }}
-                      className="peer ps-16"
+                      className={`peer ps-16 ${
+                        webpage.error
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                          : ""
+                      }`}
                       placeholder="devwtf.in"
                       type="text"
                       value={webpage.url}
                       onChange={(e) => handleChange(webpage.id, e.target.value)}
+                      onKeyDown={(e) => {
+                        // Prevent invalid characters from being typed
+                        const invalidChars = /[<>"{}|\\^`\[\]]/;
+                        if (invalidChars.test(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        // Sanitize pasted content
+                        const pastedText = e.clipboardData.getData("text");
+                        if (/[<>"{}|\\^`\[\]]/.test(pastedText)) {
+                          e.preventDefault();
+                          // Replace invalid characters with empty string
+                          const sanitizedText = pastedText.replace(
+                            /[<>"{}|\\^`\[\]]/g,
+                            "",
+                          );
+                          handleChange(webpage.id, sanitizedText);
+                        }
+                      }}
                       autoFocus={isAdding && idx === webpages.length - 1}
                     />
-                    <span className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm peer-disabled:opacity-50">
+                    <span
+                      className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm peer-disabled:opacity-50"
+                      title="Links will be treated as HTTPS by default"
+                    >
                       https://
                     </span>
                   </div>
@@ -211,7 +314,7 @@ export default function CtxWebpagesCard() {
                   >
                     <Trash2Icon className="size-4" />
                   </Button>
-                  {webpage.error && (
+                  {/* {webpage.error && (
                     <div
                       className="text-destructive flex items-center gap-1 text-xs mt-1 absolute left-0 -bottom-5"
                       role="alert"
@@ -219,7 +322,7 @@ export default function CtxWebpagesCard() {
                       <AlertCircleIcon className="size-3 shrink-0" />
                       <span>{webpage.error}</span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               ))}
             </div>
