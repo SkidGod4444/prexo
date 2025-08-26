@@ -36,7 +36,7 @@ const getRatelimitInstance = (limit: number) => ({
 export const rateLimitHandler = async (c: Context, next: Next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   const telementryKey =
-    c.req.header("x-ingest-key") || c.req.header("x-telementry-key");
+    c.req.header("x-ingest-key") || c.req.header("x-telemetry-key");
   const projectId = c.req.header("x-project-id");
   const ip = getClientIp(c);
   const userAgent = getUserAgent(c);

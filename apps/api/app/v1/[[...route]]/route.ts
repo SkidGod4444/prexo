@@ -19,7 +19,7 @@ import domain from "../routes/domain";
 import envs from "../routes/environments";
 import file from "../routes/file";
 import containers from "../routes/containers";
-import telementryEvents from "../routes/telementry";
+import telementryEvents from "../routes/telemetry";
 import auditLogs from "../routes/logger";
 import { rateLimitHandler } from "@/middleware/ratelimit";
 
@@ -43,7 +43,7 @@ app.use(
       "Content-Type",
       "Authorization",
       "x-ingest-key",
-      "x-telementry-key",
+      "x-telemetry-key",
       "x-model-id",
       "x-project-id",
       "x-polling-req",
