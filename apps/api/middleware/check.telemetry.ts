@@ -18,5 +18,6 @@ export const checkTelementry: MiddlewareHandler = async (
     throw new HTTPException(401, { message: "Invalid ingestion key" });
   }
 
+  c.set("x-ingest-key", telementry_key);
   return await next();
 };

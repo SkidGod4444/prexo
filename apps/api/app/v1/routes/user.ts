@@ -1,20 +1,17 @@
 import { auditLogs } from "@/middleware/audit.logs";
 import { checkUser } from "@/middleware/check.user";
-import { auth } from "@prexo/auth";
+import { Variables } from "@/types";
 import { prisma } from "@prexo/db";
 import { UserType } from "@prexo/types";
 import { Hono } from "hono";
 
-const user = new Hono();
+const user = new Hono<{ Variables: Variables }>();
 
 user.use(checkUser);
 user.use(auditLogs);
 
 user.get("/self", async (c) => {
-  const currentUser = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
-
+  const currentUser = c.get("user");
   if (!currentUser) {
     return c.json(
       {
@@ -29,7 +26,7 @@ user.get("/self", async (c) => {
 
   user = await prisma.user.findUnique({
     where: {
-      id: currentUser.user.id,
+      id: currentUser.id,
     },
   });
 
@@ -74,11 +71,9 @@ user.post("/inactive", async (c) => {
 
 user.post("/update", async (c) => {
   const { fields } = await c.req.json();
-  const data = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const User = c.get("user");
 
-  if (!data) {
+  if (!User) {
     return c.json(
       {
         message: "Oops! seems like your session is expired",
@@ -92,7 +87,7 @@ user.post("/update", async (c) => {
   }
   const user = await prisma.user.update({
     where: {
-      id: data.user.id,
+      id: User.id,
     },
     data: {
       ...fields,

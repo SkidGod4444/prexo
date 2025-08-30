@@ -1,10 +1,7 @@
-// import { checkUser } from "@/middleware/check.user";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 
 const auditLogs = new Hono();
-
-// auditLogs.use(checkUser);
 
 auditLogs.get("/:projectId/all", async (c) => {
   try {

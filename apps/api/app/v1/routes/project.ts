@@ -4,8 +4,9 @@ import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 import { auditLogs } from "@/middleware/audit.logs";
+import { Variables } from "@/types";
 
-const project = new Hono();
+const project = new Hono<{ Variables: Variables }>();
 
 project.use(checkUser);
 project.use(auditLogs);
@@ -96,11 +97,9 @@ project.post("/update", async (c) => {
 });
 
 project.get("/all", async (c) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-  });
+  const user = c.get("user");
 
-  if (!session) {
+  if (!user) {
     return c.json(
       {
         message: "Oops! seems like your session is expired",
@@ -110,7 +109,7 @@ project.get("/all", async (c) => {
     );
   }
 
-  const userId = session.user.id;
+  const userId = user.id;
 
   try {
     const projects = await prisma.project.findMany({

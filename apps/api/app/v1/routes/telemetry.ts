@@ -2,10 +2,7 @@ import { Hono } from "hono";
 import { cache } from "@prexo/cache";
 import { prisma } from "@prexo/db";
 import { checkTelementry } from "@/middleware/check.telemetry";
-
-type Variables = {
-  "x-ingest-key": string;
-};
+import { Variables } from "@/types";
 
 const telementryEvents = new Hono<{ Variables: Variables }>();
 
@@ -56,7 +53,7 @@ telementryEvents.use(checkTelementry);
 telementryEvents.post("/", async (c) => {
   const body = await c.req.json();
   const telementry_key =
-    c.req.header("x-ingest-key") || c.req.header("x-telemetry-key");
+    c.get("x-ingest-key"); // Extracted by the middleware
 
   console.log("Ingest ID: ", telementry_key);
   if (!body || typeof body !== "object") {
