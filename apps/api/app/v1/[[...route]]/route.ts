@@ -22,6 +22,7 @@ import containers from "../routes/containers";
 import telementryEvents from "../routes/telemetry";
 import auditLogs from "../routes/logger";
 import { rateLimitHandler } from "@/middleware/ratelimit";
+import mailer from "../routes/webhooks/mailer";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -78,6 +79,9 @@ app.route("/sdk/configs", configs);
 app.route("/sdk/ai", aiSdk);
 app.route("/sdk/extractor", extractor);
 app.route("/sdk/context", context);
+
+// Webhook Routes
+app.route("/webhook/mailer", mailer);
 
 // Playground Routes
 app.route("/playground/ai", playgroundAi);

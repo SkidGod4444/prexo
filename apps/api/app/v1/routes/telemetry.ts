@@ -52,8 +52,7 @@ telementryEvents.use(checkTelementry);
 
 telementryEvents.post("/", async (c) => {
   const body = await c.req.json();
-  const telementry_key =
-    c.get("x-ingest-key"); // Extracted by the middleware
+  const telementry_key = c.get("x-ingest-key"); // Extracted by the middleware
 
   console.log("Ingest ID: ", telementry_key);
   if (!body || typeof body !== "object") {
