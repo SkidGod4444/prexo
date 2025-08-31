@@ -35,6 +35,7 @@
     "d:build": "tsup",
     "pre-publish": "bun run prebuild && bun run d:build",
     "type-check": "tsc --noEmit",
+    "release": "release-it",
     "update-version": "node scripts/update-version.js"
   },
   "keywords": [
