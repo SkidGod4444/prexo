@@ -55,26 +55,34 @@ export const mailerConsumerJobs = schedules.task({
       console.log(`Processing group of type: ${type} with ${jobs.length} jobs`);
       // Create different email content based on webhook type
       let batchEmails;
-      
+
       switch (type) {
-        case 'customer.created':
+        case "customer.created":
           batchEmails = jobs.map((job) => ({
             from: "Saidev from Prexo AI <onboarding@updates.prexoai.xyz>",
             to: [job.data.email],
             subject: "Welcome to Prexo AI! 🎉",
-            react: PrexoWelcomeMail({ userName: JSON.parse(job.data.payload).name }),
+            react: PrexoWelcomeMail({
+              userName: JSON.parse(job.data.payload).name,
+            }),
           }));
           break;
-          
-        case 'checkout.created':
+
+        case "checkout.created":
           batchEmails = jobs.map((job) => ({
             from: "Prexo AI <sales@updates.prexoai.xyz>",
             to: [job.data.email],
             subject: "Your Checkout is Ready! 🛒",
-            react: CheckoutCreatedEmail({ userName: JSON.parse(job.data.payload).customerName, checkoutUrl: JSON.parse(job.data.payload).url, productId: JSON.parse(job.data.payload).productId, billingAddress: JSON.parse(job.data.payload).customerBillingAddress}),
+            react: CheckoutCreatedEmail({
+              userName: JSON.parse(job.data.payload).customerName,
+              checkoutUrl: JSON.parse(job.data.payload).url,
+              productId: JSON.parse(job.data.payload).productId,
+              billingAddress: JSON.parse(job.data.payload)
+                .customerBillingAddress,
+            }),
           }));
           break;
-          
+
         // case 'checkout.updated':
         //   batchEmails = jobs.map((job) => ({
         //     from: "Acme <onboarding@resend.dev>",
@@ -88,7 +96,7 @@ export const mailerConsumerJobs = schedules.task({
         //     `,
         //   }));
         //   break;
-          
+
         // case 'subscription.created':
         //   batchEmails = jobs.map((job) => ({
         //     from: "Acme <onboarding@resend.dev>",
@@ -103,7 +111,7 @@ export const mailerConsumerJobs = schedules.task({
         //     `,
         //   }));
         //   break;
-          
+
         // case 'subscription.canceled':
         //   batchEmails = jobs.map((job) => ({
         //     from: "Acme <onboarding@resend.dev>",
@@ -118,7 +126,7 @@ export const mailerConsumerJobs = schedules.task({
         //     `,
         //   }));
         //   break;
-          
+
         // case 'subscription.revoked':
         //   batchEmails = jobs.map((job) => ({
         //     from: "Acme <onboarding@resend.dev>",
@@ -133,7 +141,7 @@ export const mailerConsumerJobs = schedules.task({
         //     `,
         //   }));
         //   break;
-          
+
         // case 'order.created':
         //   batchEmails = jobs.map((job) => ({
         //     from: "Acme <onboarding@resend.dev>",
@@ -148,9 +156,11 @@ export const mailerConsumerJobs = schedules.task({
         //     `,
         //   }));
         //   break;
-          
+
         default:
-          console.log(`Unknown webhook type: ${type}, skipping email processing`);
+          console.log(
+            `Unknown webhook type: ${type}, skipping email processing`,
+          );
           // Skip processing for unknown types
           continue;
       }

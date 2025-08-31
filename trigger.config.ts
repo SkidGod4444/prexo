@@ -12,7 +12,12 @@ export default defineConfig({
       additionalPackages({
         packages: ["papaparse", "fs", "path", "@upstash/redis", "resend"],
       }),
-      additionalFiles({ files: ["triggers/lib/extract-text.ts", "triggers/lib/templates/welcome.tsx"]}),
+      additionalFiles({
+        files: [
+          "triggers/lib/extract-text.ts",
+          "triggers/lib/templates/welcome.tsx",
+        ],
+      }),
       puppeteer(),
     ],
   },
