@@ -6,11 +6,11 @@
     "requireCleanWorkingDir": true
     },
     "npm": {
-        "publish": false,
+        "publish": true,
         "versionArgs": ["--workspaces false"]
       },
     "github": {
-      "release": false,
+      "release": true,
       "tokenRef": "GITHUB_TOKEN",
       "comments": {
       "submit": false,

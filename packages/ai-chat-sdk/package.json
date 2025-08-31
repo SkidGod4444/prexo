@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-sdk",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.0",
   "description": "AI Chat Component with Persistent History",
   "exports": {
     ".": {
