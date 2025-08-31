@@ -1,56 +1,15 @@
 import { betterAuth } from "better-auth";
 import { prisma } from "@prexo/db";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { createAuthMiddleware, haveIBeenPwned } from "better-auth/plugins";
+import { haveIBeenPwned } from "better-auth/plugins";
 import { polar, checkout, portal, usage } from "@polar-sh/better-auth";
 import { polarClient } from "@prexo/polar";
-import { sendWelcomeMail } from "@prexo/mail";
 import { generateHashKeyHex } from "@prexo/crypt";
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  hooks: {
-    after: createAuthMiddleware(async (ctx) => {
-      console.log("Auth hook called for path:", ctx.path);
-
-      if (ctx.path.startsWith("/sign-up")) {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          await sendWelcomeMail(newSession.user.email, newSession.user.name);
-          console.log(`New user registered: `, newSession.user.email);
-        }
-      }
-
-      // For social sign-in, /sign-up is never called, so we need to check if this is the user's first login
-      if (ctx.path === "/sign-in/social") {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          // Check if this is the user's first login by checking createdAt === updatedAt
-          // (Assumes user object has createdAt and updatedAt fields)
-          const { createdAt, updatedAt, email, name } = newSession.user;
-          if (
-            createdAt &&
-            updatedAt &&
-            createdAt.getTime() === updatedAt.getTime()
-          ) {
-            // First time login via social
-            await sendWelcomeMail(email, name);
-            console.log(`New user registered via social: `, email);
-          } else {
-            // Existing user logging in via social
-            console.log(`Existing user logged in via social: `, email);
-          }
-        }
-      } else if (ctx.path.startsWith("/sign-in")) {
-        const newSession = ctx.context.newSession;
-        if (newSession) {
-          console.log(`New user logged in: `, newSession.user.email);
-        }
-      }
-    }),
-  },
   plugins: [
     haveIBeenPwned({
       customPasswordCompromisedMessage: "Please choose a more secure password.",

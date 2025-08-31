@@ -56,7 +56,7 @@ export default function PrexoWelcomeMail({ userName }: PrexoWelcomeMailProps) {
                 href={baseUrl}
                 className="inline-flex items-center rounded-full bg-gray-900 px-12 py-4 text-center font-bold text-sm text-white no-underline"
               >
-                Get Started
+                Go to Dashboard
               </Link>
             </Section>
           </Container>
