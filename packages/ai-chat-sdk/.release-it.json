@@ -6,7 +6,7 @@
     "requireCleanWorkingDir": true
     },
     "github": {
-      "release": true,
+      "release": false,
       "tokenRef": "GITHUB_TOKEN",
       "comments": {
       "submit": false,
