@@ -5,6 +5,10 @@
     "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}",
     "requireCleanWorkingDir": true
     },
+    "npm": {
+        "publish": false,
+        "versionArgs": ["--workspaces false"]
+      },
     "github": {
       "release": false,
       "tokenRef": "GITHUB_TOKEN",
