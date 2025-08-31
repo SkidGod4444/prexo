@@ -5,8 +5,13 @@
  * This ensures the SDK always reports the correct version without manual updates
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function updateVersion() {
   try {
@@ -42,9 +47,5 @@ function updateVersion() {
   }
 }
 
-// Run if called directly
-if (require.main === module) {
-  updateVersion();
-}
-
-module.exports = { updateVersion };
+// Run the function when script is executed directly
+updateVersion();

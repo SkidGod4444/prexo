@@ -1,5 +1,4 @@
 import { defineConfig } from 'tsup';
-import { updateVersion } from './scripts/update-version.js';
 
 export default defineConfig({
   entry: {
@@ -34,12 +33,4 @@ export default defineConfig({
   outDir: 'dist',
   target: 'es2020',
   platform: 'browser',
-  onSuccess: async () => {
-    // Update version before building
-    try {
-      updateVersion();
-    } catch (error) {
-      console.warn('Warning: Could not update version:', error.message);
-    }
-  },
 });
