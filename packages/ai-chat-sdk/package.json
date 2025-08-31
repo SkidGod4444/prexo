@@ -5,35 +5,59 @@
   "description": "AI Chat Component with Persistent History",
   "exports": {
     ".": {
-      "import": "./src/client/index.ts"
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
     },
-    "./history": {
-      "import": "./src/services/history/client.ts"
+    "./telemetry": {
+      "import": "./src/telementry/index.ts",
+      "types": "./src/telementry/index.ts"
     },
     "./context": {
-      "import": "./src/services/context/vector-db.ts"
+      "import": "./src/context/index.ts",
+      "types": "./src/context/index.ts"
+    },
+    "./history": {
+      "import": "./src/history/index.ts",
+      "types": "./src/history/index.ts"
+    },
+    "./types": {
+      "import": "./src/types.ts",
+      "types": "./src/types.ts"
     }
   },
-  "main": "./dist/client/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
+    "prebuild": "node scripts/update-version.js",
     "d:build": "tsup",
-    "postbuild": "rm -rf dist/client/styles && cpx 'src/**/*.css' dist",
-    "pre-publish": "bun run d:build && bun run postbuild",
-    "type-check": "tsc --noEmit"
+    "pre-publish": "bun run prebuild && bun run d:build",
+    "type-check": "tsc --noEmit",
+    "update-version": "node scripts/update-version.js"
   },
-  "keywords": ["react", "chat", "widget", "sdk", "typescript", "embeddable", "ai-chat-sdk", "prexo-ai", "chat-widget", "chatbot", "react-chat-widget"],
+  "keywords": [
+    "react",
+    "chat",
+    "sdk",
+    "typescript",
+    "ai-chat-sdk",
+    "prexo-ai",
+    "rag-chat-sdk",
+    "rag",
+    "vector",
+    "redis"
+  ],
   "private": false,
   "publishConfig": {
-  "access": "public"
-},
+    "access": "public"
+  },
   "author": "Saidev Dhal",
   "license": "GNU Affero General Public License v3.0",
   "licenseText": "This project is licensed under the GNU Affero General Public License v3.0. See the LICENSE file for details.",
   "engines": {
-    "bun": ">=1.2.16"
+    "bun": ">=1.2.19"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -64,10 +88,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SkidGod4444/prexo/tree/main/packages/ai-chat-sdk"
+    "url": "git+https://github.com/SkidGod4444/prexo.git#main"
   },
   "bugs": {
     "url": "https://github.com/SkidGod4444/prexo/issues"
   },
-  "homepage": "https://docs.prexoai.xyz"
+  "homepage": "https://docs.prexoai.xyz/app/ai-chat-sdk/intro"
 }

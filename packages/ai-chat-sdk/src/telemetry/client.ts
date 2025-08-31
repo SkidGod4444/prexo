@@ -1,14 +1,40 @@
-import type { TelementryEvents } from "../../lib/types";
+import type { TelementryEvents } from "../../../ai-chat-bot/src/lib/types";
+import { SDK_VERSION } from '../version';
 
-type TelementryOptions = {
+export type TelementryOptions = {
   enabled?: boolean;
   endpoint?: string;
   ingestionKey?: string;
-  sdkVersion?: string;
+  sdkVersion?: string; // Optional - will auto-detect if not provided
 };
 
 // Static cache for ingestion key per endpoint+domain
 const ingestionKeyCache: Record<string, Promise<string>> = {};
+
+// Auto-detect SDK version
+function getSDKVersion(): string {
+  try {
+    // Try to get from process.env (works in Node.js)
+    if (typeof process !== 'undefined' && process.env?.PREXO_SDK_VERSION) {
+      return process.env.PREXO_SDK_VERSION;
+    }
+    
+    // Try to get from window (works in browser with injected globals)
+    if (typeof window !== 'undefined' && (window as any).__PREXO_SDK_VERSION__) {
+      return (window as any).__PREXO_SDK_VERSION__;
+    }
+    
+    // Try to get from globalThis (works in modern environments)
+    if (typeof globalThis !== 'undefined' && (globalThis as any).__PREXO_SDK_VERSION__) {
+      return (globalThis as any).__PREXO_SDK_VERSION__;
+    }
+    
+    // Use the version from the version file (default fallback)
+    return SDK_VERSION;
+  } catch {
+    return SDK_VERSION;
+  }
+}
 
 function getCacheKey(endpoint: string, domain: string) {
   return `${endpoint}::${domain}`;
@@ -18,7 +44,7 @@ export class Telementry {
   private enabled: boolean;
   private endpoint: string;
   private ingestionKey?: string;
-  private sdkVersion?: string;
+  private sdkVersion: string;
   private ingestionKeyPromise?: Promise<string>;
 
   constructor(options: TelementryOptions) {
@@ -27,7 +53,9 @@ export class Telementry {
 
     this.enabled = options.enabled ?? !envDisabled;
     this.endpoint = options.endpoint ?? "https://api.prexo.ai/v1/telementry";
-    this.sdkVersion = options.sdkVersion ?? "unknown";
+    
+    // Auto-detect SDK version if not provided
+    this.sdkVersion = options.sdkVersion ?? getSDKVersion();
 
     if (options.ingestionKey) {
       this.ingestionKey = options.ingestionKey;
