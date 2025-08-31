@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-sdk",
   "type": "module",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.0",
   "description": "AI Chat Component with Persistent History",
   "exports": {
     ".": {
@@ -35,7 +35,7 @@
     "d:build": "tsup",
     "pre-publish": "bun run prebuild && bun run d:build",
     "type-check": "tsc --noEmit",
-    "release": "release-it",
+    "release": "bun pre-publish && release-it && bun prebuild",
     "update-version": "node scripts/update-version.js"
   },
   "keywords": [
