@@ -6,13 +6,13 @@ export type { PrexoAiChatBotProps } from "../src/react/client/components/custom/
 export type { AIModelsFreeTierId, AIModelsFreeTier } from "./lib/types";
 
 // Export constants
-export { 
+export {
   DEFAULT_CHAT_SESSION_ID,
   DEFAULT_HISTORY_LENGTH,
   DEFAULT_HISTORY_TTL,
   DEFAULT_MSG_ID,
   DEFAULT_SIMILARITY_THRESHOLD,
-  DEFAULT_TOP_K
+  DEFAULT_TOP_K,
 } from "./lib/constants";
 
 // Export utilities
@@ -22,10 +22,22 @@ export { cn } from "./lib/utils";
 export { useLocalStorage } from "./react/hooks/use.local.store";
 
 // Export UI components
-export { Avatar, AvatarFallback, AvatarImage } from "../src/react/client/components/ui/avatar";
-export { Button, buttonVariants } from "../src/react/client/components/ui/button";
+export {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../src/react/client/components/ui/avatar";
+export {
+  Button,
+  buttonVariants,
+} from "../src/react/client/components/ui/button";
 export { Input } from "../src/react/client/components/ui/input";
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../src/react/client/components/ui/tooltip";
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "../src/react/client/components/ui/tooltip";
 
 // Export custom components
 export { Message } from "../src/react/client/components/custom/message";
@@ -43,7 +55,13 @@ interface GlobalChatConfig {
     pfp: string | "../../logo.png";
     lastSeen: Date;
   };
-  model?: "deepseek/deepseek-chat-v3-0324:free" | "openai/gpt-oss-20b:free" | "meta-llama/Llama-3.3-70B-Instruct-Turbo:free" | "google/gemini-2.0-flash-exp:free" | "google/gemma-3n-e4b-it:free" | "mistralai/mistral-small-3.2-24b-instruct:free";
+  model?:
+    | "deepseek/deepseek-chat-v3-0324:free"
+    | "openai/gpt-oss-20b:free"
+    | "meta-llama/Llama-3.3-70B-Instruct-Turbo:free"
+    | "google/gemini-2.0-flash-exp:free"
+    | "google/gemma-3n-e4b-it:free"
+    | "mistralai/mistral-small-3.2-24b-instruct:free";
   placeholder?: string;
   telementry?: { enabled: boolean };
   botName?: string;

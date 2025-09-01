@@ -3,12 +3,9 @@
 import { memo } from "react";
 import { DEFAULT_MSG_ID } from "@prexo/ai-chat-sdk";
 import { Button } from "../../components/ui/button";
-import type {
-  SuggestedActionsT,
-} from "../../../../lib/types";
+import type { SuggestedActionsT } from "../../../../lib/types";
 import { motion } from "framer-motion";
 import type { BaseMessageHistory } from "@prexo/ai-chat-sdk";
-
 
 interface SuggestedActionsProps {
   append: (content: string) => Promise<void>;

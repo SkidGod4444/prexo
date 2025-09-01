@@ -2,9 +2,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { MainNavbar } from "./main.nav";
 import { Icons } from "@/constants/icons";
 import { constants } from "@/constants";
@@ -13,7 +11,6 @@ import { useMyProfileStore } from "@prexo/store";
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { myProfile } = useMyProfileStore();
-  const router = useRouter();
   const consoleUrl =
     process.env.NODE_ENV === "production"
       ? "https://console.prexoai.xyz"
@@ -23,18 +20,6 @@ export function Navbar() {
   if (myProfile) {
     loginURL = myProfile.role === "onboarded" ? consoleUrl : "/onboarding";
   }
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "l" || e.key === "L") {
-        e.preventDefault();
-        router.push(loginURL);
-      }
-    };
-
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, [loginURL, router]);
 
   return (
     <header className="fixed top-5 w-5/6 z-[500] border border-border/60 bg-secondary/30 backdrop-blur-lg supports-[backdrop-filter]:bg-secondary/50 dark:border-border rounded-2xl">
@@ -90,7 +75,6 @@ export function Navbar() {
           <Link href={loginURL} className="hidden md:flex">
             <Button variant={"secondary"} className="h-8 px-3 cursor-pointer">
               Log in
-              <Badge className="px-2">L</Badge>
             </Button>
           </Link>
 

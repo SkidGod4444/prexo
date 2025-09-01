@@ -355,19 +355,19 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   // Fetch chat history if needed
   useEffect(() => {
     const fetchHistory = async () => {
-              try {
-          setLoading(true);
-          if (history) {
-            const chatHistory: MessageT[] = await history.getMessages({
-              sessionId: sessionId!,
-            });
-            if (chatHistory.length > 0) {
-              setConvo([]);
-              setConvo(chatHistory);
-            }
+      try {
+        setLoading(true);
+        if (history) {
+          const chatHistory: MessageT[] = await history.getMessages({
+            sessionId: sessionId!,
+          });
+          if (chatHistory.length > 0) {
+            setConvo([]);
+            setConvo(chatHistory);
           }
-          setHistoryFetched(true);
-        } catch (error) {
+        }
+        setHistoryFetched(true);
+      } catch (error) {
         console.error("Error fetching chat history:", error);
       } finally {
         setLoading(false);

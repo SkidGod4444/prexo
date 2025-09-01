@@ -4,7 +4,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     telemetry: "src/telemetry/index.ts",
-    context: "src/context/index.ts", 
+    context: "src/context/index.ts",
     history: "src/history/index.ts",
     types: "src/types.ts",
   },
@@ -17,7 +17,7 @@ export default defineConfig({
   minify: true,
   external: [
     "@upstash/vector",
-    "@upstash/redis", 
+    "@upstash/redis",
     "ai",
     "nanoid",
     "cheerio",
@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   noExternal: [
     "class-variance-authority",
-    "clsx", 
+    "clsx",
     "tailwind-merge",
     "tw-animate-css",
   ],

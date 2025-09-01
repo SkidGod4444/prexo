@@ -177,16 +177,19 @@ export function formatDateTimeAgo(date: Date | string): string {
  * Example: "user@example.com" becomes "u***@example.com"
  */
 export function maskEmail(email: string): string {
-  if (!email || !email.includes('@')) {
+  if (!email || !email.includes("@")) {
     return email;
   }
 
-  const [localPart, domain] = email.split('@');
-  
+  const [localPart, domain] = email.split("@");
+
   // Mask the local part (before @)
-  const maskedLocal = localPart.length > 2 
-    ? localPart[0] + '*'.repeat(Math.min(localPart.length - 2, 3)) + localPart[localPart.length - 1]
-    : localPart;
+  const maskedLocal =
+    localPart.length > 2
+      ? localPart[0] +
+        "*".repeat(Math.min(localPart.length - 2, 3)) +
+        localPart[localPart.length - 1]
+      : localPart;
 
   return `${maskedLocal}@${domain}`;
 }

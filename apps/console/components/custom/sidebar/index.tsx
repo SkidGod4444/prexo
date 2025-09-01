@@ -10,7 +10,7 @@ import {
   GitCompareArrows,
   BookDashed,
   Mail,
-  SquareDashedMousePointer
+  SquareDashedMousePointer,
 } from "lucide-react";
 
 import {

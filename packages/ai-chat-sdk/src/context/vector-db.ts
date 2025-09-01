@@ -4,10 +4,7 @@ import type {
   SaveOperationResult,
   VectorPayload,
 } from "../types";
-import {
-  DEFAULT_SIMILARITY_THRESHOLD,
-  DEFAULT_TOP_K,
-} from "../lib/constants";
+import { DEFAULT_SIMILARITY_THRESHOLD, DEFAULT_TOP_K } from "../lib/constants";
 import type { Index } from "@upstash/vector";
 import { nanoid } from "nanoid";
 import { BASE_API_ENDPOINT } from "../lib/utils";

@@ -56,7 +56,6 @@ export type SDKStatus = {
 export type EventProperties = Record<string, any>;
 export type EventName = string | number | symbol;
 
-
 export type TelementryEvents = {
   agent_onFinish: {
     llmModel?: string;

@@ -48,9 +48,7 @@ export default function PlansDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild className="px-0">
-        <Button
-          className="mx-2 my-1 w-[calc(100%-1rem)]" variant="outline"
-        >
+        <Button className="mx-2 my-1 w-[calc(100%-1rem)]" variant="outline">
           <BadgeDollarSign className="text-muted-foreground" />
           Premium
         </Button>
