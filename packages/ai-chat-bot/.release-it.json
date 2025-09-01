@@ -20,7 +20,7 @@
       },
     "github": {
       "release": true,
-      "releaseName": "${packageName}-v${version}",
+      "releaseName": "ai-chat-bot-v${version}",
       "tokenRef": "GITHUB_TOKEN",
       "comments": {
       "submit": true,
