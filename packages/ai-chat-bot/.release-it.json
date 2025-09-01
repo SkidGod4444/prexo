@@ -1,7 +1,7 @@
 {
     "git": {
-      "tagName": "v${version}",
-      "commitMessage": "feat(${scope}): released version v${version} [no ci]",
+      "tagName": "${packageName}-v${version}",
+      "commitMessage": "feat: released version v${version}",
       "requireCleanWorkingDir": true
     },
     "npm": {
