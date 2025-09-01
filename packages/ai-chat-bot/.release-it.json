@@ -1,6 +1,6 @@
 {
     "git": {
-      "tagName": "${packageName}-v${version}",
+      "tagName": "ai-chat-bot:-v${version}",
       "commitMessage": "feat: released version v${version}",
       "requireCleanWorkingDir": true
     },
