@@ -1,7 +1,7 @@
 {
     "git": {
       "tagName": "ai-chat-bot-v${version}",
-      "commitMessage": "feat: released version v${version}",
+      "commitMessage": "feat(ai-chat-bot): released version v${version}",
       "requireCleanWorkingDir": true
     },
     "npm": {
