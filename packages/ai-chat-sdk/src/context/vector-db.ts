@@ -3,14 +3,14 @@ import type {
   ResetOptions,
   SaveOperationResult,
   VectorPayload,
-} from "../../../ai-chat-bot/src/lib/types";
+} from "../types";
 import {
   DEFAULT_SIMILARITY_THRESHOLD,
   DEFAULT_TOP_K,
-} from "../../../ai-chat-bot/src/lib/constants";
+} from "../lib/constants";
 import type { Index } from "@upstash/vector";
 import { nanoid } from "nanoid";
-import { BASE_API_ENDPOINT } from "../../../ai-chat-bot/src/lib/utils";
+import { BASE_API_ENDPOINT } from "../lib/utils";
 
 // Helper function to chunk text
 function chunkText(text: string, chunkSize = 500, overlap = 50): string[] {

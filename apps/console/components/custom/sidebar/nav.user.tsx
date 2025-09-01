@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
+import { ChevronsUpDown, Cog, CreditCard, DoorOpen, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -21,11 +20,15 @@ import { useAuth } from "@/context/auth.context";
 import { authClient } from "@prexo/auth/client";
 import { useMyProfileStore } from "@prexo/store";
 import PlansDialog from "./plans.dialog";
+import { useRouter } from "next/navigation";
+import { maskEmail } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
   const { myProfile } = useMyProfileStore();
+  const router = useRouter();
   const isPremium = myProfile?.role === "pro";
   if (!myProfile) {
     return;
@@ -33,6 +36,10 @@ export function NavUser() {
   const handleBiling = async () => {
     const res = await authClient.customer.portal();
     console.log(res);
+  };
+
+  const redirectOnClick = (url: string) => {
+    router.push(url);
   };
 
   return (
@@ -56,7 +63,7 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{myProfile.name}</span>
-                <span className="truncate text-xs">{myProfile.email}</span>
+                <span className="truncate text-xs">{maskEmail(myProfile.email)}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -81,13 +88,21 @@ export function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{myProfile.name}</span>
-                  <span className="truncate text-xs">{myProfile.email}</span>
+                  <span className="truncate text-xs">{maskEmail(myProfile.email)}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {isPremium ? (
+            <DropdownMenuItem onClick={() => redirectOnClick("https://prexoai.xyz")} className="cursor-pointer">
+              <DoorOpen />
+              Home
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Cog />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {isPremium ? (
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={handleBiling}
@@ -98,12 +113,10 @@ export function NavUser() {
               ) : (
                 <PlansDialog />
               )}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout} className="cursor-pointer">
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <Button className="mx-2 my-1 w-[calc(100%-1rem)]" variant="outline" onClick={logout}>
+            <LogOut className="text-primary" />
+            Log out
+            </Button>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

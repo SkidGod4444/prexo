@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { CheckIcon, BanknoteArrowUp, RefreshCcwIcon } from "lucide-react";
+import { CheckIcon, RefreshCcwIcon, BadgeDollarSign } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,13 +47,12 @@ export default function PlansDialog() {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="px-0">
         <Button
-          variant={"ghost"}
-          className="w-full items-start justify-start px-0"
+          className="mx-2 my-1 w-[calc(100%-1rem)]" variant="outline"
         >
-          <BanknoteArrowUp className="size-5 text-muted-foreground" />
-          Upgrade Plan
+          <BadgeDollarSign className="text-muted-foreground" />
+          Premium
         </Button>
       </DialogTrigger>
       <DialogContent>

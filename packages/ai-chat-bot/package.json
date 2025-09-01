@@ -4,17 +4,11 @@
   "version": "1.0.0-beta.1",
   "description": "AI Chat Component with Persistent History",
   "exports": {
-    ".": {
-      "import": "./src/client/index.ts"
-    },
-    "./history": {
-      "import": "./src/services/history/client.ts"
-    },
-    "./context": {
-      "import": "./src/services/context/vector-db.ts"
+    "./react": {
+      "import": "./src/react/client/index.ts"
     }
   },
-  "main": "./dist/client/index.js",
+  "main": "./dist/react/client/index.js",
   "files": [
     "dist"
   ],
@@ -27,8 +21,8 @@
   "keywords": ["react", "chat", "widget", "sdk", "typescript", "embeddable", "ai-chat-sdk", "prexo-ai", "chat-widget", "chatbot", "react-chat-widget"],
   "private": false,
   "publishConfig": {
-  "access": "public"
-},
+    "access": "public"
+  },
   "author": "Saidev Dhal",
   "license": "GNU Affero General Public License v3.0",
   "licenseText": "This project is licensed under the GNU Affero General Public License v3.0. See the LICENSE file for details.",
@@ -44,9 +38,11 @@
   },
   "peerDependencies": {
     "typescript": "^5",
-    "ai": "^4.3.16"
+    "ai": "^4.3.16",
+    "@prexo/ai-chat-sdk": "^1.0.1-beta.1"
   },
   "dependencies": {
+    "@prexo/ai-chat-sdk": "^1.0.1-beta.1",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",

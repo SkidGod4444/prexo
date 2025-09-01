@@ -1,5 +1,5 @@
 "use client";
-import type { BaseMessageHistory } from "../../../ai-chat-bot/src/lib/types";
+import type { BaseMessageHistory } from "../types";
 import { InMemoryHistory } from "./in-memory";
 import { InRedisHistory } from "./in-redis";
 

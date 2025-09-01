@@ -2,18 +2,9 @@
 // This SDK provides AI chat functionality with persistent history and vector context
 
 // Import all components
-import { Telementry } from './telemetry';
-import { 
-  getContextClient, 
-  VectorDB,
-  ExtVector,
-  IntVector
-} from './context';
-import { 
-  getHistoryClient, 
-  InMemoryHistory,
-  InRedisHistory
-} from './history';
+import { Telementry } from "./telemetry";
+import { getContextClient, VectorDB, ExtVector, IntVector } from "./context";
+import { getHistoryClient, InMemoryHistory, InRedisHistory } from "./history";
 
 // Import centralized types and version info
 import type {
@@ -25,9 +16,11 @@ import type {
   SDKConfig,
   SDKStatus,
   EventName,
-  EventProperties
-} from './types';
-import { SDK_VERSION, SDK_NAME } from './version';
+  EventProperties,
+  VectorContextResult,
+  BaseMessageHistory,
+} from "./types";
+import { SDK_VERSION, SDK_NAME } from "./version";
 
 // Re-export all components
 export {
@@ -41,6 +34,16 @@ export {
   InRedisHistory,
 };
 
+// Re-export constants
+export {
+  DEFAULT_CHAT_SESSION_ID,
+  DEFAULT_HISTORY_LENGTH,
+  DEFAULT_HISTORY_TTL,
+  DEFAULT_MSG_ID,
+  DEFAULT_SIMILARITY_THRESHOLD,
+  DEFAULT_TOP_K,
+} from "./lib/constants";
+
 // Re-export all types
 export type {
   TelementryOptions,
@@ -51,7 +54,9 @@ export type {
   SDKConfig,
   SDKStatus,
   EventName,
-  EventProperties
+  EventProperties,
+  VectorContextResult,
+  BaseMessageHistory,
 };
 
 // Export version information
@@ -59,7 +64,7 @@ export { SDK_VERSION, SDK_NAME };
 
 /**
  * AI Chat SDK - Main class for configuring and managing AI chat functionality
- * 
+ *
  * @example
  * ```typescript
  * // Professional usage - recommended approach
@@ -73,7 +78,7 @@ export { SDK_VERSION, SDK_NAME };
  *     }
  *   }
  * });
- * 
+ *
  * // Use the configured clients
  * const contextClient = sdk.getContextClient();
  * const historyClient = sdk.getHistoryClient();
@@ -83,28 +88,38 @@ export class AIChatSDK {
   private telemetry?: Telementry;
   private contextClient?: ReturnType<typeof getContextClient>;
   private historyClient?: ReturnType<typeof getHistoryClient>;
+  private apiKey?: string;
 
   /**
    * Creates a new AIChatSDK instance with the specified configuration
-   * 
+   *
    * @param config - Configuration options for telemetry, context, and history
-   * 
+   *
    * @example
    * ```typescript
    * const sdk = new AIChatSDK({
    *   telemetry: { enabled: true },
+   *   apiKey: 'your-api-key',
    *   context: { apiKey: 'your-api-key' },
    *   history: { redis: { url: '...', token: '...' } }
    * });
    * ```
    */
   constructor(config?: SDKConfig) {
+    // Store the API key at SDK level
+    this.apiKey = config?.apiKey;
+
     if (config?.telemetry) {
       this.telemetry = new Telementry(config.telemetry);
     }
 
     if (config?.context) {
-      this.contextClient = getContextClient(config.context);
+      // If apiKey is provided at SDK level but not in context, use the SDK-level one
+      const contextConfig = {
+        ...config.context,
+        apiKey: config.context.apiKey || this.apiKey,
+      };
+      this.contextClient = getContextClient(contextConfig);
     }
 
     if (config?.history) {
@@ -134,9 +149,19 @@ export class AIChatSDK {
   }
 
   /**
+   * Get the API key configured for this SDK instance
+   */
+  getApiKey(): string | undefined {
+    return this.apiKey;
+  }
+
+  /**
    * Send a telemetry event if telemetry is enabled
    */
-  async trackEvent(event: EventName, properties: EventProperties): Promise<void> {
+  async trackEvent(
+    event: EventName,
+    properties: EventProperties,
+  ): Promise<void> {
     if (this.telemetry) {
       await this.telemetry.send(event as any, properties as any);
     }
@@ -146,7 +171,7 @@ export class AIChatSDK {
    * Check if the SDK is properly configured
    */
   isConfigured(): boolean {
-    return !!(this.contextClient || this.historyClient);
+    return !!(this.contextClient || this.historyClient || this.apiKey);
   }
 
   /**
@@ -177,6 +202,7 @@ export class AIChatSDK {
     this.telemetry = undefined;
     this.contextClient = undefined;
     this.historyClient = undefined;
+    this.apiKey = undefined;
   }
 
   /**
@@ -184,13 +210,21 @@ export class AIChatSDK {
    */
   updateConfig(config: SDKConfig): void {
     this.reset();
-    
+
+    // Store the new API key
+    this.apiKey = config.apiKey;
+
     if (config.telemetry) {
       this.telemetry = new Telementry(config.telemetry);
     }
 
     if (config.context) {
-      this.contextClient = getContextClient(config.context);
+      // If apiKey is provided at SDK level but not in context, use the SDK-level one
+      const contextConfig = {
+        ...config.context,
+        apiKey: config.context.apiKey || this.apiKey,
+      };
+      this.contextClient = getContextClient(contextConfig);
     }
 
     if (config.history) {

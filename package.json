@@ -27,7 +27,8 @@
     "db:kill": "cd packages/db && bun db:kill",
     "setup": "bash scripts/setup.sh",
     "envc": "bash scripts/envc.sh",
-    "cleanup": "bash scripts/cleanup.sh"
+    "cleanup": "bash scripts/cleanup.sh",
+    "release:ai-chat-sdk": "turbo --filter=ai-chat-sdk release"
   },
   "devDependencies": {
     "@trigger.dev/build": "^3.3.17",

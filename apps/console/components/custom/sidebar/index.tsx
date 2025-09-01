@@ -8,9 +8,9 @@ import {
   MessageCircleDashed,
   Video,
   GitCompareArrows,
-  // DollarSign,
-  // SquareDashedMousePointer,
-  // Bolt,
+  BookDashed,
+  Mail,
+  SquareDashedMousePointer
 } from "lucide-react";
 
 import {
@@ -54,15 +54,18 @@ const items: MenuItem[] = [
   },
   {
     title: "Conversations",
-    url: "#",
+    url: "/conversations",
     icon: MessageCircleDashed,
-    isDisabled: true,
   },
   {
     title: "Meetings",
-    url: "#",
+    url: "/meetings",
     icon: Video,
-    isDisabled: true,
+  },
+  {
+    title: "Inboxes",
+    url: "/inboxes",
+    icon: Mail,
   },
 ];
 
@@ -89,6 +92,16 @@ const IntelItems: MenuItem[] = [
     title: "Memory",
     url: "/memory",
     icon: BrainCircuit,
+  },
+  {
+    title: "Rules",
+    url: "/rules",
+    icon: BookDashed,
+  },
+  {
+    title: "Profiles",
+    url: "/profiles",
+    icon: SquareDashedMousePointer,
   },
   // {
   //   title: "Commerce",

@@ -4,7 +4,7 @@ import type {
   AddContextPayload,
   VectorPayload,
   SaveOperationResult,
-} from "../../../ai-chat-bot/src/lib/types";
+} from "../types";
 
 export type ExtVectorConfig = {
   url: string;

@@ -3,10 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: {
     index: "src/index.ts",
-    telemetry: "src/telemetry/index.ts",
-    context: "src/context/index.ts", 
-    history: "src/history/index.ts",
-    types: "src/types.ts",
+    react: "src/react/client/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,
@@ -17,7 +14,7 @@ export default defineConfig({
   minify: true,
   external: [
     "@upstash/vector",
-    "@upstash/redis", 
+    "@upstash/redis",
     "ai",
     "nanoid",
     "cheerio",
@@ -26,7 +23,7 @@ export default defineConfig({
   ],
   noExternal: [
     "class-variance-authority",
-    "clsx", 
+    "clsx",
     "tailwind-merge",
     "tw-animate-css",
   ],

@@ -9,17 +9,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Maximize, Minimize, X } from "lucide-react";
 import { useLocalStorage } from "../../../hooks/use.local.store";
 import { useChat, type UseChatHelpers } from "@ai-sdk/react";
-import { BASE_API_ENDPOINT } from "../../../lib/utils";
+import { BASE_API_ENDPOINT } from "../../../../lib/utils";
 import { SuggestedActions } from "./suggested.actions";
 import type {
   AIModelsFreeTierId,
   SuggestedActionsT,
-  VectorContextResult,
-} from "../../../../src/lib/types";
-import { getHistoryClient } from "../../../services/history/client";
+} from "../../../../lib/types";
+import { AIChatSDK, type VectorContextResult } from "@prexo/ai-chat-sdk";
 import type { Message as MessageT } from "ai";
-import { getContextClient } from "../../../services/context/client";
-import { Telementry } from "../../../services/telementry/client";
 
 export interface PrexoAiChatBotProps {
   apiKey: string;
@@ -78,13 +75,19 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   vector,
   RAGDisabled = false,
 }) => {
-  const telementryEvents = new Telementry({
-    sdkVersion: "1.0.0-beta.1",
-    enabled: telementry?.enabled ?? true,
-    ...(process.env.NODE_ENV === "development"
-      ? { endpoint: "http://localhost:3001/v1/telementry" }
-      : {}),
+  // Initialize SDK with professional approach
+  const sdk = new AIChatSDK({
+    telemetry: {
+      enabled: telementry?.enabled ?? true
+    },
+    apiKey: apiKey, // Pass API key to SDK level
+    context: vector ? { vector } : apiKey ? { apiKey } : undefined,
+    history: redis ? { redis } : undefined,
   });
+
+  // Get clients from SDK
+  const history = sdk.getHistoryClient();
+  const context = sdk.getContextClient();
 
   // State and refs
   const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);
@@ -104,8 +107,6 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     "@prexo-chat-bot-#isMinimized",
     false,
   );
-  const history = getHistoryClient({ redis });
-  const context = getContextClient({ vector, apiKey });
   const [historyFetched, setHistoryFetched] = useState(false);
   const [isActive, setIsActive] = useLocalStorage(
     "@prexo-chat-bot-#isActive",
@@ -140,7 +141,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
         if (!res.ok) {
           if (!isUnmounted) {
             setIsActive(false);
-            telementryEvents.send("chat_widget_activated", {
+            sdk.trackEvent("chat_widget_activated", {
               value: false,
               sessionId,
               sessionTTL,
@@ -157,7 +158,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
             setIsActive(true);
           } else {
             setIsActive(false);
-            telementryEvents.send("chat_widget_activated", {
+            sdk.trackEvent("chat_widget_activated", {
               value: false,
               sessionId,
               sessionTTL,
@@ -170,7 +171,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       } catch (err) {
         if (!isUnmounted) {
           setIsActive(false);
-          telementryEvents.send("chat_widget_activated", {
+          sdk.trackEvent("chat_widget_activated", {
             value: false,
             sessionId,
             sessionTTL,
@@ -194,7 +195,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
 
   // Error checks
   if (!apiKey || apiKey.length === 0) {
-    telementryEvents.send("error", {
+    sdk.trackEvent("error", {
       code: "API_KEY_MISSING",
       message: "API key is required for PrexoAiChatBot to function properly",
     });
@@ -207,7 +208,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   }
   if (suggestedActions && suggestedActions.length > 3) {
     const msg = "You can only add max 3 suggested actions!";
-    telementryEvents.send("error", {
+    sdk.trackEvent("error", {
       code: "SUGGESTED_ACTIONS_LIMIT_EXCEEDED",
       message: msg,
     });
@@ -236,25 +237,27 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       RAGDisabled: RAGDisabled,
     },
     async onFinish(message, { usage, finishReason }) {
-      telementryEvents.send("agent_onFinish", {
+      sdk.trackEvent("agent_onFinish", {
         sessionId,
         sessionTTL,
         RAGDisabled,
         usage,
         finishReason,
       });
-      await history.addMessage({
-        message: {
-          id: message.id,
-          role: message.role,
-          content: message.content,
-        },
-        sessionId: sessionId!,
-        sessionTTL: sessionTTL!,
-      });
+      if (history) {
+        await history.addMessage({
+          message: {
+            id: message.id,
+            role: message.role,
+            content: message.content,
+          },
+          sessionId: sessionId!,
+          sessionTTL: sessionTTL!,
+        });
+      }
     },
     onError(error) {
-      telementryEvents.send("agent_onError", {
+      sdk.trackEvent("agent_onError", {
         code: "AGENT_CALL_ERROR_OCCURED",
         error,
       });
@@ -320,7 +323,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   // Clear input after message is submitted
   useEffect(() => {
     if (status === "submitted") {
-      telementryEvents.send("user_message_sent", {
+      sdk.trackEvent("user_message_sent", {
         sessionId,
         sessionTTL,
         content: input,
@@ -332,7 +335,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
       setCntxt([]);
     }
     if (status === "error") {
-      telementryEvents.send("user_message_error", {
+      sdk.trackEvent("user_message_error", {
         code: "MESSAGE_SUBMISSION_ERROR",
         sessionId,
         sessionTTL,
@@ -352,17 +355,19 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   // Fetch chat history if needed
   useEffect(() => {
     const fetchHistory = async () => {
-      try {
-        setLoading(true);
-        const chatHistory: MessageT[] = await history.getMessages({
-          sessionId: sessionId!,
-        });
-        if (chatHistory.length > 0) {
-          setConvo([]);
-          setConvo(chatHistory);
-        }
-        setHistoryFetched(true);
-      } catch (error) {
+              try {
+          setLoading(true);
+          if (history) {
+            const chatHistory: MessageT[] = await history.getMessages({
+              sessionId: sessionId!,
+            });
+            if (chatHistory.length > 0) {
+              setConvo([]);
+              setConvo(chatHistory);
+            }
+          }
+          setHistoryFetched(true);
+        } catch (error) {
         console.error("Error fetching chat history:", error);
       } finally {
         setLoading(false);
@@ -397,7 +402,9 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   };
 
   const handleClose = async () => {
-    await history.deleteMessages({ sessionId: sessionId! });
+    if (history) {
+      await history.deleteMessages({ sessionId: sessionId! });
+    }
     setIsOpen(false);
     if (onClose) {
       onClose();

@@ -171,3 +171,22 @@ export function formatDateTimeAgo(date: Date | string): string {
   const years = Math.floor(months / 12);
   return `${years} year${years === 1 ? "" : "s"} ago`;
 }
+
+/**
+ * Masks an email address by hiding characters in the local part (before @)
+ * Example: "user@example.com" becomes "u***@example.com"
+ */
+export function maskEmail(email: string): string {
+  if (!email || !email.includes('@')) {
+    return email;
+  }
+
+  const [localPart, domain] = email.split('@');
+  
+  // Mask the local part (before @)
+  const maskedLocal = localPart.length > 2 
+    ? localPart[0] + '*'.repeat(Math.min(localPart.length - 2, 3)) + localPart[localPart.length - 1]
+    : localPart;
+
+  return `${maskedLocal}@${domain}`;
+}

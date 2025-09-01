@@ -1,1 +1,1 @@
-export { Telementry } from './client';
+export { Telementry } from "./client";

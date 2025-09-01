@@ -9,8 +9,8 @@
       "types": "./src/index.ts"
     },
     "./telemetry": {
-      "import": "./src/telementry/index.ts",
-      "types": "./src/telementry/index.ts"
+      "import": "./src/telemetry/index.ts",
+      "types": "./src/telemetry/index.ts"
     },
     "./context": {
       "import": "./src/context/index.ts",
@@ -35,7 +35,7 @@
     "d:build": "tsup",
     "pre-publish": "bun run prebuild && bun run d:build",
     "type-check": "tsc --noEmit",
-    "release": "bun pre-publish && release-it && bun prebuild",
+    "release": "bun d:build && release-it --preRelease=beta && bun prebuild",
     "update-version": "node scripts/update-version.js"
   },
   "keywords": [
@@ -61,6 +61,7 @@
     "bun": ">=1.2.19"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.1",
     "@types/bun": "latest",
     "@types/papaparse": "^5.3.16",
     "@types/pdf-parse": "^1.1.5",

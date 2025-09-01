@@ -1,8 +1,8 @@
 "use client";
 import React, { useRef, type KeyboardEvent, memo } from "react";
 import type { UseChatHelpers } from "@ai-sdk/react";
-import type { BaseMessageHistory } from "../../../../src/lib/types";
-import { DEFAULT_MSG_ID } from "../../../../src/lib/constants";
+import type { BaseMessageHistory } from "@prexo/ai-chat-sdk";
+import { DEFAULT_MSG_ID } from "@prexo/ai-chat-sdk";
 
 interface ChatInputProps {
   input: UseChatHelpers["input"];

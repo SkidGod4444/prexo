@@ -1,5 +1,5 @@
-import type { TelementryEvents } from "../../../ai-chat-bot/src/lib/types";
-import { SDK_VERSION } from '../version';
+import type { TelementryEvents } from "../types";
+import { SDK_VERSION } from "../version";
 
 export type TelementryOptions = {
   enabled?: boolean;
@@ -15,20 +15,26 @@ const ingestionKeyCache: Record<string, Promise<string>> = {};
 function getSDKVersion(): string {
   try {
     // Try to get from process.env (works in Node.js)
-    if (typeof process !== 'undefined' && process.env?.PREXO_SDK_VERSION) {
+    if (typeof process !== "undefined" && process.env?.PREXO_SDK_VERSION) {
       return process.env.PREXO_SDK_VERSION;
     }
-    
+
     // Try to get from window (works in browser with injected globals)
-    if (typeof window !== 'undefined' && (window as any).__PREXO_SDK_VERSION__) {
+    if (
+      typeof window !== "undefined" &&
+      (window as any).__PREXO_SDK_VERSION__
+    ) {
       return (window as any).__PREXO_SDK_VERSION__;
     }
-    
+
     // Try to get from globalThis (works in modern environments)
-    if (typeof globalThis !== 'undefined' && (globalThis as any).__PREXO_SDK_VERSION__) {
+    if (
+      typeof globalThis !== "undefined" &&
+      (globalThis as any).__PREXO_SDK_VERSION__
+    ) {
       return (globalThis as any).__PREXO_SDK_VERSION__;
     }
-    
+
     // Use the version from the version file (default fallback)
     return SDK_VERSION;
   } catch {
@@ -53,7 +59,7 @@ export class Telementry {
 
     this.enabled = options.enabled ?? !envDisabled;
     this.endpoint = options.endpoint ?? "https://api.prexo.ai/v1/telementry";
-    
+
     // Auto-detect SDK version if not provided
     this.sdkVersion = options.sdkVersion ?? getSDKVersion();
 

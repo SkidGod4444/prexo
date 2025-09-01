@@ -1,9 +1,9 @@
-import { BASE_API_ENDPOINT } from "../../../ai-chat-bot/src/lib/utils";
+import { BASE_API_ENDPOINT } from "../lib/utils";
 import type {
   AddContextPayload,
   VectorPayload,
   SaveOperationResult,
-} from "../../../ai-chat-bot/src/lib/types";
+} from "../types";
 
 export class IntVector {
   private namespace: string;

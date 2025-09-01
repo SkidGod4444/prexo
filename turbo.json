@@ -66,6 +66,9 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "release": {
+      "dependsOn": ["^release"]
+    },
     "dev": {
       "dependsOn": ["^db:generate"],
       "cache": false,

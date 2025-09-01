@@ -1,5 +1,5 @@
 "use client";
-import type { BaseVectorContext } from "../../../ai-chat-bot/src/lib/types";
+import type { BaseVectorContext } from "../types";
 import { ExtVector } from "./ext-vector";
 import { IntVector } from "./int-vector";
 

@@ -4,8 +4,8 @@ import {
   DEFAULT_CHAT_SESSION_ID,
   DEFAULT_HISTORY_LENGTH,
   DEFAULT_HISTORY_TTL,
-} from "../../../ai-chat-bot/src/lib/constants";
-import type { BaseMessageHistory } from "../../../ai-chat-bot/src/lib/types";
+} from "../lib/constants";
+import type { BaseMessageHistory } from "../types";
 
 export type RedisHistoryConfig = {
   config?: RedisConfigNodejs;

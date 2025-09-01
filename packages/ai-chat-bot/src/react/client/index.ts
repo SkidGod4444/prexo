@@ -1,4 +1,4 @@
-import type { AIModelsFreeTierId } from "../lib/types";
+import type { AIModelsFreeTierId } from "../../lib/types";
 
 export { PrexoAiChatBot } from "./components/custom/chat.widget";
 export type { PrexoAiChatBotProps } from "./components/custom/chat.widget";
