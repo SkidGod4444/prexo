@@ -62,10 +62,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SkidGod4444/prexo/tree/main/packages/ai-chat-sdk"
+    "url": "git+https://github.com/SkidGod4444/prexo.git#main"
   },
   "bugs": {
     "url": "https://github.com/SkidGod4444/prexo/issues"
   },
-  "homepage": "https://docs.prexoai.xyz"
+  "homepage": "https://docs.prexoai.xyz/app/ai-chat-bot/intro"
 }
