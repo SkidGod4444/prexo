@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-bot",
   "type": "module",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "AI Chat Component with Persistent History",
   "exports": {
     "./react": {
@@ -19,7 +19,19 @@
     "type-check": "tsc --noEmit",
     "release": "bun d:build && bun run postbuild && release-it --preRelease=beta"
   },
-  "keywords": ["react", "chat", "widget", "sdk", "typescript", "embeddable", "ai-chat-sdk", "prexo-ai", "chat-widget", "chatbot", "react-chat-widget"],
+  "keywords": [
+    "react",
+    "chat",
+    "widget",
+    "sdk",
+    "typescript",
+    "embeddable",
+    "ai-chat-sdk",
+    "prexo-ai",
+    "chat-widget",
+    "chatbot",
+    "react-chat-widget"
+  ],
   "private": false,
   "publishConfig": {
     "access": "public"
