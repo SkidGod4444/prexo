@@ -78,7 +78,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   // Initialize SDK with professional approach
   const sdk = new AIChatSDK({
     telemetry: {
-      enabled: telementry?.enabled ?? true
+      enabled: telementry?.enabled ?? true,
     },
     apiKey: apiKey, // Pass API key to SDK level
     context: vector ? { vector } : apiKey ? { apiKey } : undefined,

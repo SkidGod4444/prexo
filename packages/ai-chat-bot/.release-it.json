@@ -1,0 +1,31 @@
+{
+    "git": {
+      "tagName": "v${version}",
+      "commitMessage": "feat(${scope}): released version v${version} [no ci]",
+      "requireCleanWorkingDir": true
+    },
+    "npm": {
+        "publish": true,
+        "versionArgs": ["--workspaces false"]
+      },
+      "plugins": {
+        "@release-it/conventional-changelog": {
+          "path": ".",
+          "infile": "CHANGELOG.md",
+          "preset": "conventionalcommits",
+          "gitRawCommitsOpts": {
+            "path": "."
+          }
+        }
+      },
+    "github": {
+      "release": true,
+      "releaseName": "${packageName}-v${version}",
+      "tokenRef": "GITHUB_TOKEN",
+      "comments": {
+      "submit": true,
+      "issue": ":rocket: _This issue has been resolved in v${version}. See [${releaseName}](${releaseUrl}) for release notes._",
+      "pr": ":rocket: _This pull request is included in v${version}. See [${releaseName}](${releaseUrl}) for release notes._"
+    }
+    }
+  }

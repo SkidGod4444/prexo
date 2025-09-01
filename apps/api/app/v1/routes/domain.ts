@@ -7,8 +7,6 @@ import { auditLogs } from "@/middleware/audit.logs";
 
 const domain = new Hono();
 
-domain.use(auditLogs);
-
 domain.post("/status", async (c) => {
   const { domain } = await c.req.json();
   if (!domain) {
@@ -42,6 +40,7 @@ domain.post("/status", async (c) => {
 });
 
 domain.use(checkUser);
+domain.use(auditLogs);
 
 domain.post("/create", async (c) => {
   const { name, alias, status, projectId } = await c.req.json();

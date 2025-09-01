@@ -1,6 +1,6 @@
 import { SiteFooter } from "@/components/custom/site/footer/footer";
 import { Navbar } from "@/components/custom/site/navbar/navbar";
-import { PrexoAiChatBot } from "@prexo/ai-chat-sdk";
+import { PrexoAiChatBot } from "@prexo/ai-chat-bot/react";
 
 interface PublicLayoutProps {
   children: React.ReactNode;

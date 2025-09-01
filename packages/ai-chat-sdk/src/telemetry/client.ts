@@ -3,9 +3,7 @@ import { SDK_VERSION } from "../version";
 
 export type TelementryOptions = {
   enabled?: boolean;
-  endpoint?: string;
   ingestionKey?: string;
-  sdkVersion?: string; // Optional - will auto-detect if not provided
 };
 
 // Static cache for ingestion key per endpoint+domain
@@ -58,10 +56,15 @@ export class Telementry {
       typeof process !== "undefined" && process.env?.DISABLE_TELEMETRY === "1";
 
     this.enabled = options.enabled ?? !envDisabled;
-    this.endpoint = options.endpoint ?? "https://api.prexo.ai/v1/telementry";
+    this.endpoint =
+      typeof process !== "undefined" &&
+      process.env &&
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3001/v1/telementry"
+        : "https://api.prexoai.xyz/v1/telementry";
 
     // Auto-detect SDK version if not provided
-    this.sdkVersion = options.sdkVersion ?? getSDKVersion();
+    this.sdkVersion = getSDKVersion();
 
     if (options.ingestionKey) {
       this.ingestionKey = options.ingestionKey;
@@ -98,7 +101,7 @@ export class Telementry {
   private async fetchIngestionKey(domain: string): Promise<string> {
     const keyEndpoint = this.endpoint
       ? this.endpoint.replace(/\/?$/, "/key")
-      : "https://api.prexo.ai/v1/telementry/key";
+      : "https://api.prexoai.xyz/v1/telementry/key";
     try {
       const res = await fetch(keyEndpoint, {
         method: "POST",

@@ -152,7 +152,7 @@ import { createAIChatSDK } from "@prexo/ai-chat-sdk";
 const sdk = createAIChatSDK({
   telemetry: {
     enabled: true,
-    endpoint: "https://api.prexo.ai/v1/telementry",
+    endpoint: "https://api.prexoai.xyz/v1/telementry",
     // Note: sdkVersion is automatically detected - no need to provide it!
   },
 });
