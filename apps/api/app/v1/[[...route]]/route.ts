@@ -56,7 +56,7 @@ app.use(
 );
 
 // app.use(logger());
-app.use("*", rateLimitHandler);
+app.use(rateLimitHandler);
 
 // Import routes
 app.route("/health", health);

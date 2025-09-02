@@ -46,10 +46,9 @@
     "packages/*"
   ],
   "dependencies": {
+    "@mendable/firecrawl-js": "^4.3.1",
     "@trigger.dev/sdk": "^3.3.17",
     "next": "^15.3.5",
-    "pdf-parser": "^1.0.5",
-    "puppeteer": "^24.12.1",
-    "tesseract.js": "^6.0.1"
+    "puppeteer": "^24.12.1"
   }
 }

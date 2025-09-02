@@ -7,7 +7,6 @@ import {
   PlusIcon,
   AlertCircleIcon,
   LinkIcon,
-  SparklesIcon,
 } from "lucide-react";
 import { extractUrls } from "@/lib/utils";
 import { useLocalStorage } from "usehooks-ts";
@@ -20,7 +19,6 @@ export default function CtxWebpagesCard() {
       url: string;
       error?: string;
       timestamp: number;
-      isNew: boolean;
     }[]
   >("@prexo-#ctxWebpages", []);
 
@@ -30,6 +28,7 @@ export default function CtxWebpagesCard() {
 
   // Add a new empty input
   const handleAddWebpage = () => {
+    if (webpages.length >= 2) return;
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     setWebpages((prev) => [
       ...prev,
@@ -37,7 +36,6 @@ export default function CtxWebpagesCard() {
         id,
         url: "",
         timestamp: Date.now(),
-        isNew: true,
       },
     ]);
     setIsAdding(true);
@@ -51,9 +49,12 @@ export default function CtxWebpagesCard() {
   const handleAddMultipleWebpages = useCallback(
     (urls: string[]) => {
       if (!urls.length) return;
+      const availableSlots = 2 - webpages.length;
+      if (availableSlots <= 0) return;
+      const urlsToAdd = urls.slice(0, availableSlots);
       setWebpages((prev) => [
         ...prev,
-        ...urls.map((url) => {
+        ...urlsToAdd.map((url) => {
           // Remove http(s):// prefix if present
           const cleanUrl = url.replace(/^https?:\/\//i, "");
           const validation = isValidUrl(cleanUrl);
@@ -62,13 +63,12 @@ export default function CtxWebpagesCard() {
             url: cleanUrl,
             error: validation.isValid ? undefined : validation.error,
             timestamp: Date.now(),
-            isNew: true,
           };
         }),
       ]);
       setIsAdding(false);
     },
-    [setWebpages],
+    [setWebpages, webpages.length],
   );
 
   // Remove a webpage input
@@ -138,27 +138,8 @@ export default function CtxWebpagesCard() {
     }
   }
 
-  // Get newly added links (added in the last session or marked as new)
-  const getNewLinks = useCallback(() => {
-    return webpages.filter((w) => w.isNew);
-  }, [webpages]);
-
-  // Get recently added links (added in the last 24 hours)
-  const getRecentLinks = useCallback(() => {
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-    return webpages.filter((w) => w.timestamp > oneDayAgo);
-  }, [webpages]);
-
-  // Get count of new links
-  const newLinksCount = getNewLinks().length;
-
   // Check if all URLs are valid
   const hasInvalidUrls = webpages.some((w) => w.error);
-
-  // Get count of valid URLs
-  const validUrlsCount = webpages.filter(
-    (w) => !w.error && w.url.trim(),
-  ).length;
 
   // Handle paste event for the empty box
   const handlePaste = useCallback(
@@ -205,6 +186,7 @@ export default function CtxWebpagesCard() {
               className="mt-4"
               onClick={handleAddWebpage}
               type="button"
+              disabled={webpages.length >= 2}
             >
               <PlusIcon className="-ms-1 opacity-60" aria-hidden="true" />
               Add Link
@@ -216,12 +198,6 @@ export default function CtxWebpagesCard() {
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-sm font-medium">
               Links ({webpages.length})
-              {newLinksCount > 0 && (
-                <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-600 dark:bg-blue-600 dark:text-blue-200">
-                  <SparklesIcon className="size-3" />
-                  {newLinksCount} new
-                </span>
-              )}
               {hasInvalidUrls && (
                 <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
                   <AlertCircleIcon className="size-3" />
@@ -235,6 +211,7 @@ export default function CtxWebpagesCard() {
                 size="sm"
                 onClick={handleAddWebpage}
                 type="button"
+                disabled={webpages.length >= 2}
               >
                 <PlusIcon className="-ms-1 opacity-60" aria-hidden="true" />
                 Add Link

@@ -23,6 +23,7 @@ const CONSUMER = "trigger-cron-consumer";
 export const mailerConsumerJobs = schedules.task({
   id: "mailer-consumer",
   cron: "*/0.5 * * * * *", // every 30 seconds
+  maxDuration: 300, // Stop executing after 300 secs (5 mins) of compute
   run: async (payload) => {
     const res = await redis.xreadgroup(GROUP, CONSUMER, [STREAM_KEY], [">"], {
       count: 50,

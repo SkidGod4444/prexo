@@ -1,76 +1,43 @@
 import puppeteer from "puppeteer";
-import fs from "fs/promises";
 import path from "path";
 import Papa from "papaparse";
+import Firecrawl from "@mendable/firecrawl-js";
 
-const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY!;
-const OCR_SPACE_API_URL = "https://api.ocr.space/parse/image";
+// const OCR_SPACE_API_KEY = process.env.OCR_SPACE_API_KEY!;
+// const OCR_SPACE_API_URL = "https://api.ocr.space/parse/image";
 
-export async function extractText(source: string): Promise<string> {
+const firecrawl = new Firecrawl({ apiKey: process.env.FIRE_CRAWLER_API_KEY! });
+
+export async function extractText(source: string, type?: 'pdf' | 'csv' | 'html'): Promise<string> {
   const ext = path.extname(source).toLowerCase();
 
   // Handle PDF URLs
-  if (ext === ".pdf") {
-    if (source.startsWith("http://") || source.startsWith("https://")) {
-      const formData = new FormData();
-      formData.append("url", source);
-      formData.append("language", "eng");
+  if (type !== 'csv') {
+    if (source.startsWith("https://")) {
+      const doc = await firecrawl.scrape(source, { formats: ['markdown', 'summary'] });
 
-      const response = await fetch(OCR_SPACE_API_URL, {
-        method: "POST",
-        headers: {
-          apikey: OCR_SPACE_API_KEY,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
+      if (!doc.markdown || !doc.summary || doc.markdown.length === 0 || doc.summary.length === 0) {
         throw new Error(
-          `OCR API request failed: ${response.status} ${response.statusText}`,
+          "Failed to extract text from DOC using Firecrawl",
         );
       }
 
-      const result = await response.json();
-
-      // Extract all ParsedText from ParsedResults
-      const texts =
-        result.ParsedResults?.map((r: any) => r.ParsedText).filter(
-          (t: any) => typeof t === "string" && t.trim().length > 0,
-        ) || [];
-
-      if (texts.length === 0) {
-        throw new Error("No text found in OCR response");
-      }
-
-      const combinedText = texts.join("\n").trim();
-
-      // Check for error messages
-      const errorMessages: string[] = [];
-      if (Array.isArray(result.ErrorMessage)) {
-        errorMessages.push(
-          ...result.ErrorMessage.filter(
-            (msg: unknown): msg is string => typeof msg === "string",
-          ),
-        );
-      } else if (typeof result.ErrorMessage === "string") {
-        errorMessages.push(result.ErrorMessage);
-      }
-      if (errorMessages.length > 0) {
-        console.log(errorMessages);
-      }
-
-      return combinedText;
+      return JSON.stringify([
+        { markdown: doc.markdown },
+        { summary: doc.summary },
+        { source: doc.metadata?.sourceURL }
+      ]);
     } else {
       throw new Error(
-        "Local PDF files are not supported. Please provide a URL to the PDF.",
+        "Local files are not supported. Please provide a URL.",
       );
     }
   }
 
   // Handle CSV URLs
   if (
-    ext === ".csv" &&
-    (source.startsWith("http://") || source.startsWith("https://"))
+    ext === ".csv" || type === 'csv' &&
+    source.startsWith("https://")
   ) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -108,41 +75,5 @@ export async function extractText(source: string): Promise<string> {
     return Papa.parse<any>(csvContent, { header: false }).data.flat().join(" ");
   }
 
-  // Handle other URLs (non-PDF, non-CSV)
-  if (source.startsWith("http://") || source.startsWith("https://")) {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(source, { waitUntil: "networkidle0" });
-
-    let previousHeight = 0;
-    while (true) {
-      const currentHeight = await page.evaluate(() => {
-        window.scrollBy(0, window.innerHeight);
-        return document.body.scrollHeight;
-      });
-
-      if (currentHeight === previousHeight) break;
-
-      previousHeight = currentHeight;
-      await new Promise((res) => setTimeout(res, 500));
-    }
-
-    const text = await page.evaluate(() => {
-      return document.body.innerText.replace(/\s+/g, " ").trim();
-    });
-
-    await browser.close();
-    return text;
-  }
-
-  // Handle local CSV
-  if (ext === ".csv") {
-    const text = await fs.readFile(source, "utf8");
-    return Papa.parse<any>(text, { header: false }).data.flat().join(" ");
-  }
-  // Handle local TXT
-  if (ext === ".txt") {
-    return await fs.readFile(source, "utf8");
-  }
   throw new Error(`Unsupported source type: ${source}`);
 }

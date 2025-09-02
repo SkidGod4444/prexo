@@ -1,7 +1,7 @@
 import { verifyApiKey } from "@/middleware/check.api";
 import { Hono } from "hono";
 import { tasks, runs } from "@trigger.dev/sdk/v3";
-import { textExtractor } from "../../../../../../triggers/extractor";
+import { textExtractor } from "../../../../../../triggers/extractor.example";
 const extractor = new Hono();
 
 export const maxDuration = 300;

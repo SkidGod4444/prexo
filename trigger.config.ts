@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     extensions: [
       additionalPackages({
-        packages: ["papaparse", "fs", "path", "@upstash/redis", "resend"],
+        packages: ["papaparse", "path", "@upstash/redis", "resend", "@mendable/firecrawl-js", "@upstash/vector"],
       }),
       additionalFiles({
         files: [

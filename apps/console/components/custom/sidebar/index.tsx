@@ -79,11 +79,13 @@ const navSecondary = [
     title: "Documentation",
     url: "https://docs.prexoai.xyz",
     icon: BookMarked,
+    isExternal: true,
   },
   {
     title: "Changelogs",
     url: "https://changelogs.prexoai.xyz",
     icon: GitCompareArrows,
+    isExternal: true,
   },
 ];
 // Playground items.

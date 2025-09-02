@@ -21,6 +21,7 @@ export function NavSecondary({
     title: string;
     url: string;
     icon: LucideIcon;
+    isExternal?: boolean;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const path = usePathname();
@@ -34,8 +35,9 @@ export function NavSecondary({
                 asChild
                 tooltip={item.title}
                 isActive={path.includes(item.url)}
+                rel={item.isExternal ? "noreferrer" : undefined}
               >
-                <Link href={item.url}>
+                <Link href={item.url} target={item.isExternal ? "_blank" : "_self"}>
                   <item.icon className="text-muted-foreground" />
                   <span>{item.title}</span>
                 </Link>
