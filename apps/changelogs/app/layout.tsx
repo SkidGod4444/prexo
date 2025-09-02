@@ -20,11 +20,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(changelogConfig.url),
   description: changelogConfig.description,
   keywords: [
-    "Next.js",
+    "Prexo AI",
     "React",
-    "Tailwind CSS",
-    "Server Components",
-    "Radix UI",
+    "Prexo AI Chat BOT",
+    "Prexo AI Chat SDK",
+    "Changelogs",
+    "Prexo AI Changelog",
+    "Saidev Dhal"
   ],
   authors: [
     {

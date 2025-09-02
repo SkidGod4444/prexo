@@ -1,30 +1,38 @@
 import { Metadata } from "next";
-import { siteConfig } from "@/lib/site";
+import { changelogConfig } from "@prexo/utils/config";
 
 export const metadata: Metadata = {
-  title: siteConfig.name,
-  description: siteConfig.description,
-  keywords: siteConfig.keywords,
+  title: changelogConfig.name,
+  description: changelogConfig.description,
+  keywords: [
+    "Prexo AI",
+    "React",
+    "Prexo AI Chat BOT",
+    "Prexo AI Chat SDK",
+    "Changelogs",
+    "Prexo AI Changelog",
+    "Saidev Dhal"
+  ],
   authors: [
     {
-      name: "Magic UI",
-      url: "https://magicui.design",
+      name: "Saidev Dhal",
+      url: "https://devwtf.in",
     },
   ],
-  creator: "magicuidesign",
+  creator: "Saidev Dhal",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
+    url: changelogConfig.url,
+    title: changelogConfig.name,
+    description: changelogConfig.description,
+    siteName: changelogConfig.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    creator: "@magicuidesign",
+    title: changelogConfig.name,
+    description: changelogConfig.description,
+    creator: "@SaidevDhal",
   },
   robots: {
     index: true,
