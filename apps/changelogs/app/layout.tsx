@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "Prexo AI Chat SDK",
     "Changelogs",
     "Prexo AI Changelog",
-    "Saidev Dhal"
+    "Saidev Dhal",
   ],
   authors: [
     {
