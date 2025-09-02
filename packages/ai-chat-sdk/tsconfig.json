@@ -33,6 +33,6 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../ai-chat-bot/src/react/hooks", "../ai-chat-bot/src/lib"],
   "exclude": ["node_modules", "dist"]
 }

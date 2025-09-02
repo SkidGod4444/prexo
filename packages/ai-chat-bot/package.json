@@ -1,0 +1,83 @@
+{
+  "name": "@prexo/ai-chat-bot",
+  "type": "module",
+  "version": "1.0.0-beta.4",
+  "description": "AI Chat Component with Persistent History and Context",
+  "exports": {
+    "./react": {
+      "import": "./src/react/client/index.ts"
+    }
+  },
+  "main": "./dist/react/client/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "d:build": "tsup",
+    "postbuild": "rm -rf dist/client/styles && cpx 'src/**/*.css' dist",
+    "pre-publish": "bun run d:build && bun run postbuild",
+    "type-check": "tsc --noEmit",
+    "release": "bun d:build && bun run postbuild && release-it --preRelease=beta"
+  },
+  "keywords": [
+    "react",
+    "chat",
+    "widget",
+    "sdk",
+    "typescript",
+    "embeddable",
+    "ai-chat-sdk",
+    "prexo-ai",
+    "chat-widget",
+    "chatbot",
+    "react-chat-widget"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Saidev Dhal",
+  "license": "GNU Affero General Public License v3.0",
+  "licenseText": "This project is licensed under the GNU Affero General Public License v3.0. See the LICENSE file for details.",
+  "engines": {
+    "bun": ">=1.2.16"
+  },
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.1",
+    "@types/bun": "latest",
+    "@types/papaparse": "^5.3.16",
+    "@types/pdf-parse": "^1.1.5",
+    "cpx": "^1.5.0",
+    "tsup": "^8.5.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5",
+    "ai": "^4.3.16",
+    "@prexo/ai-chat-sdk": "^1.0.1-beta.1"
+  },
+  "dependencies": {
+    "@prexo/ai-chat-sdk": "workspace:*",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tooltip": "^1.2.7",
+    "@upstash/vector": "^1.2.2",
+    "ai": "^4.3.16",
+    "cheerio": "^1.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.525.0",
+    "nanoid": "^5.1.5",
+    "papaparse": "^5.5.3",
+    "pdf-parse": "^1.1.1",
+    "tailwind-merge": "^3.3.1",
+    "tw-animate-css": "^1.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkidGod4444/prexo.git#main"
+  },
+  "bugs": {
+    "url": "https://github.com/SkidGod4444/prexo/issues"
+  },
+  "homepage": "https://docs.prexoai.xyz/app/ai-chat-bot/intro"
+}

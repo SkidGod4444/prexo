@@ -11,8 +11,10 @@ jobs:
     name: 'Format Check'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -21,9 +23,23 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-
-      - name: Run Format check
+      - name: Format code with Prettier
         run: bun run format
+
+      - name: Check for changes and push if needed
+        if: |
+          github.event_name == 'push' && 
+          github.event.head_commit.message != 'format: make the code prettier'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "format: make the code prettier"
+            git push origin HEAD:$(git rev-parse --abbrev-ref HEAD)
+          else
+            echo "No formatting changes to push."
+          fi
 
   eslint:
     name: 'ESLint Check'

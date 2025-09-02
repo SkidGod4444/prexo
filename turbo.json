@@ -3,31 +3,6 @@
   "ui": "tui",
   "concurrency": "100%",
   "daemon": true,
-  "globalEnv": [
-    "UPSTASH_VECTOR_REST_URL",
-    "UPSTASH_VECTOR_REST_TOKEN",
-    "TOGETHER_API_KEY",
-    "OPENAI_API_KEY",
-    "DATABASE_URL",
-    "DIRECT_DATABASE_URL",
-    "BETTER_AUTH_SECRET",
-    "BETTER_AUTH_URL",
-    "POLAR_ACCESS_TOKEN",
-    "POLAR_WEBHOOK_SECRET",
-    "GITHUB_CLIENT_ID",
-    "GITHUB_CLIENT_SECRET",
-    "DISCORD_CLIENT_ID",
-    "DISCORD_CLIENT_SECRET",
-    "GOOGLE_CLIENT_ID",
-    "GOOGLE_CLIENT_SECRET",
-    "BASE_API_URL",
-    "UNKEY_ROOT_API_KEY",
-    "UNKEY_API_ID",
-    "PREXO_API_KEY",
-    "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN",
-    "OCR_SPACE_API_KEY"
-  ],
   "envMode": "strict",
   "tasks": {
     "build": {
@@ -55,7 +30,14 @@
         "PREXO_API_KEY",
         "UPSTASH_REDIS_REST_URL",
         "UPSTASH_REDIS_REST_TOKEN",
-        "OCR_SPACE_API_KEY"
+        "TRIGGER_SECRET_KEY",
+        "OCR_SPACE_API_KEY",
+        "RESEND_API_KEY",
+        "NEXT_PUBLIC_POSTHOG_KEY",
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "LOGS_WEBHOOK_URL",
+        "OPENROUTER_API_KEY",
+        "UPLOADTHING_TOKEN"
       ],
       "inputs": ["$TURBO_DEFAULT$"],
       "outputs": [".next/**", "!.next/cache/**"]
@@ -64,6 +46,14 @@
       "cache": false
     },
     "db:push": {
+      "cache": false
+    },
+
+    "db:dev": {
+      "cache": false
+    },
+
+    "db:kill": {
       "cache": false
     },
 
@@ -76,33 +66,11 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "release": {
+      "dependsOn": ["^release"]
+    },
     "dev": {
       "dependsOn": ["^db:generate"],
-      "env": [
-        "UPSTASH_VECTOR_REST_URL",
-        "UPSTASH_VECTOR_REST_TOKEN",
-        "TOGETHER_API_KEY",
-        "OPENAI_API_KEY",
-        "DATABASE_URL",
-        "DIRECT_DATABASE_URL",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "POLAR_ACCESS_TOKEN",
-        "POLAR_WEBHOOK_SECRET",
-        "GITHUB_CLIENT_ID",
-        "GITHUB_CLIENT_SECRET",
-        "DISCORD_CLIENT_ID",
-        "DISCORD_CLIENT_SECRET",
-        "GOOGLE_CLIENT_ID",
-        "GOOGLE_CLIENT_SECRET",
-        "BASE_API_URL",
-        "UNKEY_ROOT_API_KEY",
-        "UNKEY_API_ID",
-        "PREXO_API_KEY",
-        "UPSTASH_REDIS_REST_URL",
-        "UPSTASH_REDIS_REST_TOKEN",
-        "OCR_SPACE_API_KEY"
-      ],
       "cache": false,
       "persistent": true
     }

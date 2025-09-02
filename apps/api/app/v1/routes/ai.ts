@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { createTogetherAI } from "@ai-sdk/togetherai";
 import {
   NoSuchToolError,
   InvalidToolArgumentsError,
@@ -7,15 +6,15 @@ import {
   ToolExecutionError,
 } from "ai";
 import { systemPrompt } from "@/lib/constants";
-import { tools } from "@/lib/ai/tools";
+import { z } from "zod";
+import { checkUser } from "@/middleware/check.user";
+import { prexoai } from "@/lib/utils";
 
 const ai = new Hono();
 
-export const maxDuration = 30;
+ai.use(checkUser);
 
-const togetherai = createTogetherAI({
-  apiKey: process.env.TOGETHER_API_KEY!,
-});
+export const maxDuration = 30;
 
 ai.post("/stream", async (c) => {
   const { messages } = await c.req.json();
@@ -31,13 +30,57 @@ ai.post("/stream", async (c) => {
   });
 
   const result = streamText({
-    model: togetherai("meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"),
+    model: prexoai("deepseek/deepseek-chat-v3-0324:free"),
     system: systemPrompt(),
     messages: filteredMessages,
     maxSteps: 5,
-    tools: tools,
+    onError: (error) => {
+      console.error("Error in streamText:", error.error);
+    },
+    tools: {
+      askForConfirmation: {
+        description: "Ask the user for any confirmation.",
+        parameters: z.object({
+          message: z
+            .string()
+            .describe("Onboarding message to ask for confirmation."),
+        }),
+      },
+      sendCreateProjectForm: {
+        description: "Send create project form to user. After confirmation.",
+        parameters: z.object({
+          message: z
+            .string()
+            .describe("Message to send to user after confirmation."),
+        }),
+      },
+      sendCreateApiFrom: {
+        description: "Send create API form to user. After confirmation.",
+        parameters: z.object({
+          message: z
+            .string()
+            .describe("Message to send to user after confirmation."),
+        }),
+      },
+      sendApiCopyCard: {
+        description: "Send API Key copy card. After confirmation.",
+        parameters: z.object({
+          message: z
+            .string()
+            .describe("Message to send to user after confirmation."),
+        }),
+      },
+      completeOnboarding: {
+        description: "Send UI to user to confirm onboarding is complete.",
+        parameters: z.object({
+          message: z
+            .string()
+            .describe("Message to ask if onboarding is complete."),
+        }),
+      },
+    },
     onStepFinish: (step) => {
-      console.log("Step finished:", step);
+      // console.log("Step finished:", step);
     },
   });
 

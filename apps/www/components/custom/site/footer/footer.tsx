@@ -22,7 +22,8 @@ export function SiteFooter() {
           </Badge>
         </Link>
         <p className="text-muted-foreground text-sm max-w-lg">
-        We&apos;re developing open-sourced AI agents tailored for sales and customer support. Feel free to give us a try!
+          We&apos;re developing open-sourced AI agents tailored for sales and
+          customer support. Feel free to give us a try!
         </p>
 
         <div className="flex flex-col">

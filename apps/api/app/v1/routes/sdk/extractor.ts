@@ -1,4 +1,4 @@
-import { verifyApiKey } from "@/lib/middleware";
+import { verifyApiKey } from "@/middleware/check.api";
 import { Hono } from "hono";
 import { tasks, runs } from "@trigger.dev/sdk/v3";
 import { textExtractor } from "../../../../../../triggers/extractor";

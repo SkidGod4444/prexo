@@ -1,0 +1,14 @@
+{
+  "name": "@prexo/cache",
+    "version": "0.0.0",
+    "private": false,
+    "exports": {
+        ".": "./src/index.ts"
+    },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

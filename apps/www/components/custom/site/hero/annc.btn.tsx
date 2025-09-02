@@ -1,8 +1,8 @@
 import { socials } from "@prexo/utils/constants";
 import { cn } from "@/lib/utils";
 import { AnimatedShinyText } from "../../animated-shiny-text";
-import IconsVersionControl16 from "@/assets/icons/QlementineIconsVersionControl16";
-import { IconsEndArrowNotch } from "@/assets/icons/IconsArrowBtn";
+import IconsVersionControl16 from "@/public/icons/QlementineIconsVersionControl16";
+import { IconsEndArrowNotch } from "@/public/icons/IconsArrowBtn";
 import Link from "next/link";
 
 export function AnncBtn() {

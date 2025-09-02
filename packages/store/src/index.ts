@@ -1,6 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { MyProfileStore, ProjectStore, UserStore } from "../types";
+import {
+  ApiKeyStore,
+  AuditLogStore,
+  ContainerStore,
+  DomainStore,
+  EnvStore,
+  MyProfileStore,
+  NotificationsStore,
+  ProjectStore,
+  UsageLogStore,
+  UserStore,
+} from "../types";
 
 const useUsersStore = create<UserStore>()(
   persist(
@@ -13,6 +24,20 @@ const useUsersStore = create<UserStore>()(
     }),
     {
       name: "@prexo-#users",
+    },
+  ),
+);
+
+const useApiKeyStore = create<ApiKeyStore>()(
+  persist(
+    (set) => ({
+      key: null,
+      addKey: (key) => set({ key }),
+      removeKey: () => set({ key: null }),
+      setKey: (key) => set({ key }),
+    }),
+    {
+      name: "@prexo-#key",
     },
   ),
 );
@@ -31,6 +56,113 @@ const useProjectsStore = create<ProjectStore>()(
     }),
     {
       name: "@prexo-#projects",
+    },
+  ),
+);
+
+const useNotificationsStore = create<NotificationsStore>()(
+  persist(
+    (set) => ({
+      notifications: [],
+      addNotifications: (noty) =>
+        set((state) => ({ notifications: [...state.notifications, noty] })),
+      removeNotification: (notyId) =>
+        set((state) => ({
+          notifications: state.notifications.filter((p) => p.id !== notyId),
+        })),
+      setNotifications: (notifications) => set({ notifications }),
+    }),
+    {
+      name: "@prexo-#notifications",
+    },
+  ),
+);
+
+const useDomainsStore = create<DomainStore>()(
+  persist(
+    (set) => ({
+      domains: [],
+      addDomain: (domain) =>
+        set((state) => ({ domains: [...state.domains, domain] })),
+      removeDomain: (domainId) =>
+        set((state) => ({
+          domains: state.domains.filter((p) => p.id !== domainId),
+        })),
+      setDomains: (domains) => set({ domains }),
+    }),
+    {
+      name: "@prexo-#domains",
+    },
+  ),
+);
+
+const useEnvsStore = create<EnvStore>()(
+  persist(
+    (set) => ({
+      envs: [],
+      addEnv: (env) => set((state) => ({ envs: [...state.envs, env] })),
+      removeEnv: (envId) =>
+        set((state) => ({
+          envs: state.envs.filter((p) => p.id !== envId),
+        })),
+      setEnvs: (envs) => set({ envs }),
+    }),
+    {
+      name: "@prexo-#environments",
+    },
+  ),
+);
+
+const useContainersStore = create<ContainerStore>()(
+  persist(
+    (set) => ({
+      containers: [],
+      addContainer: (container) =>
+        set((state) => ({ containers: [...state.containers, container] })),
+      removeContainer: (containerId) =>
+        set((state) => ({
+          containers: state.containers.filter((p) => p.id !== containerId),
+        })),
+      setContainers: (containers) => set({ containers }),
+    }),
+    {
+      name: "@prexo-#containers",
+    },
+  ),
+);
+
+const useAuditLogsStore = create<AuditLogStore>()(
+  persist(
+    (set) => ({
+      auditLogs: [],
+      addAuditLog: (audit) =>
+        set((state) => ({ auditLogs: [...state.auditLogs, audit] })),
+      removeAuditLog: (auditId) =>
+        set((state) => ({
+          auditLogs: state.auditLogs.filter((p) => p.id !== auditId),
+        })),
+      setAuditLogs: (auditLogs) => set({ auditLogs }),
+    }),
+    {
+      name: "@prexo-#auditLogs",
+    },
+  ),
+);
+
+const useUsageLogsStore = create<UsageLogStore>()(
+  persist(
+    (set) => ({
+      usageLogs: [],
+      addUsageLog: (usage) =>
+        set((state) => ({ usageLogs: [...state.usageLogs, usage] })),
+      removeUsageLog: (usageId) =>
+        set((state) => ({
+          usageLogs: state.usageLogs.filter((p) => p.id !== usageId),
+        })),
+      setUsageLogs: (usageLogs) => set({ usageLogs }),
+    }),
+    {
+      name: "@prexo-#usageLogs",
     },
   ),
 );
@@ -54,4 +186,15 @@ const useMyProfileStore = create<MyProfileStore>()(
   ),
 );
 
-export { useUsersStore, useMyProfileStore, useProjectsStore };
+export {
+  useUsersStore,
+  useMyProfileStore,
+  useProjectsStore,
+  useApiKeyStore,
+  useDomainsStore,
+  useNotificationsStore,
+  useEnvsStore,
+  useContainersStore,
+  useAuditLogsStore,
+  useUsageLogsStore,
+};

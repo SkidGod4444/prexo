@@ -20,16 +20,16 @@ const agentCards = [
     description:
       "Integrate agents seamlessly into your existing applications. Our platform supports ReactJs frameworks and languages, making it easy to get started.",
     icon: IconBrain,
-    href: "/features/ai-assistant",
-    class: "md:col-span-2 md:row-span-2 md:h-[40rem]",
+    href: "https://docs.prexoai.xyz/app/quick-start",
+    class: "md:col-span-2 md:row-span-2 md:h-[43rem]",
     image: "/img/demo.config.png",
   },
   {
     title: "Agentic Automation",
     description:
-      "Automate issue tickets and sales processes with intelligent workflows. This feature allows you to focus on more important aspects of your projects.",
+      "Automate support service and sales processes with intelligent workflows. This feature allows you to focus on more important aspects of your projects.",
     icon: IconRobot,
-    href: "/features/automation",
+    href: "https://docs.prexoai.xyz/",
     class: "",
     image: null,
   },
@@ -38,13 +38,13 @@ const agentCards = [
     description:
       "Agents remembers user interactions and preferences, allowing them to provide personalized responses. This enhances user experience and engagement.",
     icon: IconCode,
-    href: "/features/code-gen",
+    href: "https://docs.prexoai.xyz/",
     class: "",
     image: "",
   },
 ];
 
-export default function AgentsSec({isMob = false}: { isMob?: boolean }) {
+export default function AgentsSec({ isMob = false }: { isMob?: boolean }) {
   return (
     <div className="relative w-full items-center justify-center py-10">
       <div className="px-4 md:px-14">
@@ -66,30 +66,34 @@ export default function AgentsSec({isMob = false}: { isMob?: boolean }) {
               key={index}
               className={cn(
                 card.class,
-                "relative group overflow-hidden backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-dashed border-border cursor-pointer",
+                "relative group h-full rounded-2xl border p-2 md:rounded-3xl md:p-3 flex flex-col",
               )}
             >
-              {(card.image && !isMob) && (
-                <div className="w-full absolute bottom-[-8rem] right-[-4rem] h-auto mb-4 rounded-xl">
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    className="h-[35rem] object-contain mb-4 rounded-lg"
-                    width={800}
-                    height={800}
-                  />
+              <div className="border relative flex flex-1 flex-col justify-between gap-6 overflow-hidden rounded-2xl p-6 md:p-6 dark:shadow-[0px_0px_20px_0px_#2D2D2D]">
+                <div className="relative flex flex-1 flex-col justify-between gap-3">
+                  <h3 className="text-2xl font-semibold mb-2">{card.title}</h3>
+                  <p className="text-muted-foreground">{card.description}</p>
+
+                  <Link
+                    href={card.href}
+                    className="text-primary group w-fit flex items-center gap-1 bg-accent text-xs border border-accent rounded-full px-3 mt-4 py-1 transition-all duration-300 hover:bg-primary hover:text-background"
+                  >
+                    <span className="font-semibold text-xs">Read More</span>
+                    <IconArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-all duration-300" />
+                  </Link>
+                  {card.image && !isMob && (
+                    <div className="w-full flex justify-end items-end mt-20 ml-18">
+                      <Image
+                        src={card.image}
+                        alt={card.title}
+                        className="h-[18rem] md:h-[28rem] object-contain rounded-lg"
+                        width={800}
+                        height={800}
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-              <h3 className="text-2xl font-semibold mb-2">{card.title}</h3>
-              <p className="text-muted-foreground">{card.description}</p>
-              <div className="md:bottom-[-30rem] left-[10%] group-hover:opacity-100 opacity-30 z-[-1] absolute bg-gradient-to-t from-secondary/20 to-primary/50 blur-[8em] rounded-xl transition-all translate-x-[-50%] duration-500 ease-out w-[10rem] md:w-[30rem] h-[20rem] md:h-[30rem] rotate-[0deg]" />
-              <Link
-                href={card.href}
-                className="text-primary group w-fit flex items-center gap-1 bg-accent text-xs border border-accent rounded-full px-3 mt-4 py-1 transition-all duration-300 hover:bg-primary hover:text-background"
-              >
-                <span className="font-semibold text-xs">Read More</span>{" "}
-                <IconArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-all duration-300" />
-              </Link>
+              </div>
             </div>
           ))}
         </div>

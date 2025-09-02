@@ -1,0 +1,13 @@
+{
+  "name": "@prexo/logs",
+  "version": "0.0.0",
+  "private": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./api": "./src/api.ts"
+  },
+  "dependencies": {
+    "@unkey/api": "^0.36.0",
+    "getlogs-sdk": "^1.0.0"
+  }
+}

@@ -16,10 +16,9 @@ export function MainNavbar() {
         draggable={false}
         className="mr-8 flex items-center space-x-2"
       >
-         <Logo isTextVisible={false}/>
+        <Logo isTextVisible={false} />
       </Link>
       <nav className="hidden md:flex items-center gap-8 text-sm font-semibold">
-
         <Link
           href={socials.docs}
           target="_blank"

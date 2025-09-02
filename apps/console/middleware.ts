@@ -27,16 +27,37 @@ export default async function authMiddleware(request: NextRequest) {
 
   const currentPath = request.nextUrl.pathname;
 
+  // If not authenticated, redirect to login unless already there
   if (!session) {
+    if (currentPath.startsWith("/auth")) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (!("role" in session.user) || session.user.role !== "onboarded") {
-    return NextResponse.redirect(redirectUrl);
+  // If user is inactive, always redirect to /new unless already there
+  if ("role" in session.user && session.user.role === "inactive") {
+    if (currentPath !== "/new") {
+      return NextResponse.redirect(`${appDomain}/new`);
+    }
+    return NextResponse.next();
   }
 
+  // If user is not onboarded or inactive, redirect to login unless already there
   if (
-    session.user.role === "onboarded" && currentPath === "/"
+    !("role" in session.user) ||
+    (session.user.role !== "onboarded" && session.user.role !== "inactive")
+  ) {
+    if (currentPath.startsWith("/auth")) {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If onboarded and on root or /new, redirect to dashboard
+  if (
+    session.user.role === "onboarded" &&
+    (currentPath === "/" || currentPath === "/new")
   ) {
     return NextResponse.redirect(`${appDomain}/dashboard`);
   }

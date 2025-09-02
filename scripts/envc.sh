@@ -3,7 +3,7 @@ set -e
 
 # Customizable paths
 ROOT_ENV_FILE="./.env"  # You can change this to your actual root env path
-APP_ENV_PATHS=(./apps/www ./apps/api)  # Replace with your actual app-level paths
+APP_ENV_PATHS=(./apps/www ./apps/api ./apps/console)  # Replace with your actual app-level paths
 
 if [ ! -f "$ROOT_ENV_FILE" ]; then
   echo "Root .env file not found at $ROOT_ENV_FILE"

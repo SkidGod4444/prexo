@@ -9,8 +9,15 @@ export default defineConfig({
   project: "proj_zqfxzidlrnyrsvmyknsn",
   build: {
     extensions: [
-      additionalPackages({ packages: ["papaparse", "fs", "path"] }),
-      additionalFiles({ files: ["triggers/lib/extract-text.ts"] }),
+      additionalPackages({
+        packages: ["papaparse", "fs", "path", "@upstash/redis", "resend"],
+      }),
+      additionalFiles({
+        files: [
+          "triggers/lib/extract-text.ts",
+          "triggers/lib/templates/welcome.tsx",
+        ],
+      }),
       puppeteer(),
     ],
   },

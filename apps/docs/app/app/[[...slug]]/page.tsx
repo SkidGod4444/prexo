@@ -40,11 +40,13 @@ export default async function Page(props: {
       }}
       tableOfContent={{
         enabled: true,
-        style: "clerk"
+        style: "clerk",
       }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-2">{page.data.description}</DocsDescription>
+      <DocsDescription className="mb-2">
+        {page.data.description}
+      </DocsDescription>
       <div className="flex flex-row gap-2 items-center border-b pb-6">
         <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
         <ViewOptions
@@ -91,7 +93,7 @@ export async function generateMetadata({
   const { slug = [] } = await params;
   const page = source.getPage(slug);
   if (!page) notFound();
-  const image = ['/docs-og', ...slug, 'image.png'].join('/');
+  const image = ["/docs-og", ...slug, "image.png"].join("/");
   return {
     title: page.data.title,
     description: page.data.description,
@@ -99,7 +101,7 @@ export async function generateMetadata({
       images: image,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       images: image,
     },
   };

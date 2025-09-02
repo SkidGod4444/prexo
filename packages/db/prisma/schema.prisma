@@ -1,11 +1,10 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
@@ -18,9 +17,12 @@ model User {
   createdAt     DateTime
   updatedAt     DateTime
   role          String
+  hashKey       String?
+  lang          String?
   sessions      Session[]
   accounts      Account[]
   passkeys      Passkey[]
+  projects      Project[]
 
   @@unique([email])
   @@map("user")
@@ -89,14 +91,139 @@ model Passkey {
 }
 
 model Project {
-  id          String    @id @default(uuid())
+  id            String          @id @default(uuid())
+  name          String
+  userId        String
+  description   String?
+  memoId        String?
+  keyId         String?         @unique
+  domains       Domain[]
+  notifications Notifications[]
+  environments  Environments[]
+  files         Files[]
+  containers    Containers[]
+  auditLogs     AuditLogs[]
+  usageLogs     UsageLogs[]
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  @@map("project")
+}
+
+model Domain {
+  id               String       @id @default(uuid())
+  name             String // full domain e.g. "www.xyz.com"
+  alias            String // subdomain/alias
+  status           String // e.g. "Invalid", "Pending", "Active"
+  projectId        String
+  telementry_key   String       @unique
+  telemetry_events Telementry[]
+  project          Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@map("domain")
+}
+
+model Telementry {
+  id         String   @id @default(cuid())
+  key        String
+  event      String
+  properties Json
+  revoked    Boolean  @default(false)
+  timestamp  DateTime @default(now())
+  domain     Domain   @relation(fields: [key], references: [telementry_key])
+
+  @@map("telementry")
+}
+
+model Notifications {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  desc      String?
+  icon      String?
+  url       String?
+  isSeen    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notifications")
+}
+
+model Environments {
+  id          String   @id @default(uuid())
+  projectId   String
+  environment String?
+  name        String
+  value       Json
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("environments")
+}
+
+model Files {
+  id          String   @id @default(uuid())
+  key         String
+  name        String
+  size        Int
+  url         String
+  downloadUrl String
+  type        String
+  embeddings  String[]
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("files")
+}
+
+model Containers {
+  id          String   @id @default(uuid())
+  key         String   @unique
   name        String
   description String?
-  domains      String[]
-  createdAt   DateTime
-  updatedAt   DateTime
-  userId      String
-  memoId     String?
-  apiKey      String?
-  @@map("project")
+  resources   Int?     @default(0)
+  filesId     String[]
+  projectId   String
+  status      String?  @default("active")
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("containers")
+}
+
+model AuditLogs {
+  id        String   @id @default(uuid())
+  time      DateTime
+  actor     String
+  action    String
+  endpoint  String
+  credits   Int?
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("auditLogs")
+}
+
+model UsageLogs {
+  id           String   @id @default(uuid())
+  year         Int?
+  month        Int?
+  api_calls    Int?
+  credits_used Decimal?
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("usageLogs")
 }

@@ -1,5 +1,5 @@
-'use client';
-import { useDocsSearch } from 'fumadocs-core/search/client';
+"use client";
+import { useDocsSearch } from "fumadocs-core/search/client";
 import {
   SearchDialog,
   SearchDialogClose,
@@ -13,15 +13,15 @@ import {
   TagsList,
   TagsListItem,
   type SharedProps,
-} from 'fumadocs-ui/components/dialog/search';
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { useState } from 'react';
+} from "fumadocs-ui/components/dialog/search";
+import { useI18n } from "fumadocs-ui/contexts/i18n";
+import { useState } from "react";
 
 export default function PrexoSearchDialog(props: SharedProps) {
   const { locale } = useI18n(); // (optional) for i18n
   const [tag, setTag] = useState<string | undefined>("All");
   const { search, setSearch, query } = useDocsSearch({
-    type: 'fetch',
+    type: "fetch",
     locale,
     tag,
   });
@@ -40,19 +40,19 @@ export default function PrexoSearchDialog(props: SharedProps) {
           <SearchDialogInput />
           <SearchDialogClose />
         </SearchDialogHeader>
-        <SearchDialogList items={query.data !== 'empty' ? query.data : null} />
+        <SearchDialogList items={query.data !== "empty" ? query.data : null} />
         <SearchDialogFooter className="flex flex-row items-center justify-between">
-         <div className='flex gap-2'>
-         <span className='text-sm text-muted-foreground'>Filters:</span>
-         <TagsList tag={tag} onTagChange={setTag} allowClear>
-            <TagsListItem value="intro">Introduction</TagsListItem>
-            <TagsListItem value="ai-chat-sdk">AI Chat SDK</TagsListItem>
-            <TagsListItem value="api">Prexo API</TagsListItem>
-          </TagsList>
+          <div className="flex gap-2">
+            <span className="text-sm text-muted-foreground">Filters:</span>
+            <TagsList tag={tag} onTagChange={setTag} allowClear>
+              <TagsListItem value="intro">Introduction</TagsListItem>
+              <TagsListItem value="ai-chat-sdk">AI Chat SDK</TagsListItem>
+              <TagsListItem value="api">Prexo API</TagsListItem>
+            </TagsList>
           </div>
 
-          <span className='text-sm text-muted-foreground'>
-            Powered by{' '}
+          <span className="text-sm text-muted-foreground">
+            Powered by{" "}
             <a
               href="https://prexoai.xyz"
               target="_blank"
