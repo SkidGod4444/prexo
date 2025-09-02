@@ -276,7 +276,7 @@
     },
     "packages/ai-chat-bot": {
       "name": "@prexo/ai-chat-bot",
-      "version": "1.0.0-beta.1",
+      "version": "1.0.0-beta.4",
       "dependencies": {
         "@prexo/ai-chat-sdk": "workspace:*",
         "@radix-ui/react-avatar": "^1.1.10",

@@ -161,7 +161,7 @@ export default function RootLayout({
         </AuthProvider>
         <Toaster />
         <Analytics />
-        <WIPAlert open/>
+        <WIPAlert open />
       </body>
     </html>
   );
