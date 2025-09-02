@@ -2,7 +2,7 @@
   "name": "@prexo/ai-chat-sdk",
   "type": "module",
   "version": "1.0.1-beta.1",
-  "description": "AI Chat Component with Persistent History",
+  "description": "AI Chat SDK for building AI chat applications with Context and History",
   "exports": {
     ".": {
       "import": "./src/index.ts",

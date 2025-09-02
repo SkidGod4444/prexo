@@ -8,6 +8,7 @@ import { ContentProvider } from "@/context/store.context";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { consoleConfig } from "@prexo/utils/config";
+import WIPAlert from "@/components/wip";
 
 const uxumGrotesque = localFont({
   src: [
@@ -160,6 +161,7 @@ export default function RootLayout({
         </AuthProvider>
         <Toaster />
         <Analytics />
+        <WIPAlert open/>
       </body>
     </html>
   );
