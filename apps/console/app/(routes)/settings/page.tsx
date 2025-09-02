@@ -1,6 +1,6 @@
 "use client";
 import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
-import ApiKeySettings from "@/components/custom/settings/apikey.settings";
+import ApiKeySettings from "@/components/custom/settings/apikey/apikey.settings";
 import AppSettings from "@/components/custom/settings/app.settings";
 import DomainsSettings from "@/components/custom/settings/domains.settings";
 import EnvKeysSettings from "@/components/custom/settings/envkeys.settings";

@@ -1,5 +1,4 @@
 import React, { useEffect, useId, useState } from "react";
-import SectionLabel from "../section.label";
 import ApiKeyTable from "@/components/custom/settings/apikey/apikey.table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useReadLocalStorage } from "usehooks-ts";
@@ -27,6 +26,7 @@ import { useApiKeyStore, useProjectsStore } from "@prexo/store";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ApiKeyInput from "@/components/custom/settings/apikey/apikey.input";
+import SectionLabel from "../../section.label";
 
 const options = [
   {
