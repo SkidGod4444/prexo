@@ -276,10 +276,10 @@ export default function CtxFileUploader() {
             Max {maxFiles} files ∙ Up to {formatBytes(maxSize)}
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-              <span className="font-medium">Tip:</span> You can also{" "}
-              <span className="font-semibold">drag & drop</span> to add
-              them automatically.
-            </p>
+            <span className="font-medium">Tip:</span> You can also{" "}
+            <span className="font-semibold">drag & drop</span> to add them
+            automatically.
+          </p>
           <Button variant="outline" className="mt-4" onClick={openFileDialog}>
             <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />
             Select files

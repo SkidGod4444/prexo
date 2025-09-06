@@ -2,12 +2,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Trash2Icon,
-  PlusIcon,
-  AlertCircleIcon,
-  LinkIcon,
-} from "lucide-react";
+import { Trash2Icon, PlusIcon, AlertCircleIcon, LinkIcon } from "lucide-react";
 import { extractUrls } from "@/lib/utils";
 import { useLocalStorage } from "usehooks-ts";
 

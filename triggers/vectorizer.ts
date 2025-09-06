@@ -15,14 +15,14 @@ export const textExtractor = schedules.task({
   maxDuration: 300, // Stop executing after 300 secs (5 mins) of compute
   run: async (payload) => {
     const res = await redis.xreadgroup(GROUP, CONSUMER, [STREAM_KEY], [">"], {
-        count: 50,
-      });
-      if (!res) return "No jobs found!";
+      count: 50,
+    });
+    if (!res) return "No jobs found!";
     // logger.log("Starting text extraction for", { payload, ctx });
     // const extText = await extractText(payload.url);
     // logger.log("Text Extracted: ", { extText });
     return {
-    //   txt: extText,
+      //   txt: extText,
     };
   },
 });
