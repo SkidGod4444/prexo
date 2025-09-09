@@ -34,7 +34,7 @@ export function MainNavbar() {
           Docs
         </Link>
 
-        <Link
+        {/* <Link
           href="/pricing"
           draggable={false}
           className={cn(
@@ -45,6 +45,21 @@ export function MainNavbar() {
           )}
         >
           Pricing
+        </Link> */}
+
+<Link
+          href={socials.changelogs}
+          draggable={false}
+          target="_blank"
+          rel="noreferrer"
+          className={cn(
+            "transition-colors hover:text-foreground/80",
+            pathname?.startsWith("/pricing")
+              ? "text-foreground"
+              : "text-foreground/60",
+          )}
+        >
+          Changelogs
         </Link>
 
         {/* <Link

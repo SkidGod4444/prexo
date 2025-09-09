@@ -30,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useContainersStore } from "@prexo/store";
 
 // Create some dummy initial files
 const initialFiles = [
@@ -165,7 +166,10 @@ const getFileIcon = (file: { file: File | { type: string; name: string } }) => {
   return <FileIcon className="size-5 opacity-60" />;
 };
 
-export default function CtxFileUploader() {
+export default function CtxFileUploader({currentContainer}: {currentContainer: string}) {
+  const { containers } = useContainersStore();
+  const container = containers.find((c) => c.key === currentContainer);
+  console.log("MemoryPage container:", container?.id);
   // State to track upload progress for each file
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
 

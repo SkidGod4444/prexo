@@ -8,6 +8,7 @@ import {
   ContainerType,
   AuditLogType,
   UsageLogType,
+  LinkType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -42,6 +43,13 @@ type AuditLogStore = {
   addAuditLog: (audit: AuditLogType) => void;
   removeAuditLog: (auditId: string) => void;
   setAuditLogs: (audits: AuditLogType[]) => void;
+};
+
+type LinksStore = {
+  links: LinkType[];
+  addLink: (link: LinkType) => void;
+  removeLink: (linkId: string) => void;
+  setLinks: (links: LinkType[]) => void;
 };
 
 type UsageLogStore = {
@@ -90,4 +98,5 @@ export type {
   ContainerStore,
   AuditLogStore,
   UsageLogStore,
+  LinksStore,
 };

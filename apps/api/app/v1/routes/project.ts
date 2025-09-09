@@ -40,8 +40,8 @@ project.delete("/delete", async (c) => {
   }
 
   try {
-    const session = await auth.api.getSession({ headers: c.req.raw.headers });
-    if (!session?.user?.id) {
+    const user = c.get("user");
+    if (!user.id) {
       return c.json({ message: "Unauthorized" }, 401);
     }
 
@@ -52,7 +52,7 @@ project.delete("/delete", async (c) => {
     if (!proj) {
       return c.json({ message: "Not found" }, 404);
     }
-    if (proj.userId !== session.user.id) {
+    if (proj.userId !== user.id) {
       return c.json({ message: "Forbidden" }, 403);
     }
 

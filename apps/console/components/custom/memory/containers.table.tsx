@@ -87,6 +87,7 @@ export default function ContainersTable() {
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
+              "x-project-id": typeof consoleId === "string" ? consoleId : "",
             },
             body: JSON.stringify({ id: itemId }),
           });
@@ -112,6 +113,7 @@ export default function ContainersTable() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "x-project-id": typeof consoleId === "string" ? consoleId : "",
       },
       body: JSON.stringify({
         id: itemId,
@@ -137,6 +139,7 @@ export default function ContainersTable() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "x-project-id": typeof consoleId === "string" ? consoleId : "",
       },
       body: JSON.stringify({
         name: name,
@@ -385,7 +388,7 @@ export default function ContainersTable() {
             </TableFooter> */}
           </Table>
           <p className="text-muted-foreground mt-4 text-center text-sm">
-            Memory Containers are just a way to categorize your data!
+            TIP: Click on a container name to view and manage its details.
           </p>
         </>
       )}
