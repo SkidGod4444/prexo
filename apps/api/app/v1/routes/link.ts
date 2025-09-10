@@ -10,7 +10,7 @@ link.use(checkUser);
 link.use(auditLogs);
 
 link.post("/create", async (c) => {
-    const { url, containerId, type } = await c.req.json();
+  const { url, containerId, type } = await c.req.json();
   if (!url || !containerId) {
     return c.json({ message: "URL and containerId are required" }, 400);
   }
@@ -19,19 +19,18 @@ link.post("/create", async (c) => {
     data: {
       url,
       containerId,
-      type
+      type,
     },
   });
-    if (!newLink) {
-        return c.json({ message: "Failed to create link" }, 500);
-    }
-    console.log("Created new link:", newLink);
-    return c.json({ link: newLink }, 201);
-}
-);
+  if (!newLink) {
+    return c.json({ message: "Failed to create link" }, 500);
+  }
+  console.log("Created new link:", newLink);
+  return c.json({ link: newLink }, 201);
+});
 
 link.get("/:containerId/all", async (c) => {
-    const containerId = c.req.param("containerId");
+  const containerId = c.req.param("containerId");
   if (!containerId) {
     return c.json({ message: "Container ID is required" }, 400);
   }
@@ -50,11 +49,10 @@ link.get("/:containerId/all", async (c) => {
     console.error("Error fetching links:", error);
     return c.json({ message: "Failed to fetch links" }, 500);
   }
-}
-);
+});
 
 link.delete("/delete", async (c) => {
-    const { id } = await c.req.json();
+  const { id } = await c.req.json();
   if (!id) {
     return c.json({ message: "Link id is required" }, 400);
   }
@@ -67,7 +65,10 @@ link.delete("/delete", async (c) => {
 
     const link = await prisma.links.findUnique({
       where: { id },
-      select: { id: true, container: { select: { project: { select: { userId: true } } } } },
+      select: {
+        id: true,
+        container: { select: { project: { select: { userId: true } } } },
+      },
     });
     if (!link) {
       return c.json({ message: "Not found" }, 404);
@@ -84,41 +85,42 @@ link.delete("/delete", async (c) => {
     console.error("Error deleting link:", error);
     return c.json({ message: "Error deleting link" }, 500);
   }
-}
-);
+});
 
 link.post("/update", async (c) => {
-    const { id, ...fields } = await c.req.json();
-    if (!id) {
-      return c.json({ message: "Link id is required" }, 400);
+  const { id, ...fields } = await c.req.json();
+  if (!id) {
+    return c.json({ message: "Link id is required" }, 400);
+  }
+  try {
+    const user = c.get("user");
+    if (!user.id) {
+      return c.json({ message: "Unauthorized" }, 401);
     }
-    try {
-      const user = c.get("user");
-      if (!user.id) {
-        return c.json({ message: "Unauthorized" }, 401);
-      }
-  
-      const link = await prisma.links.findUnique({
-        where: { id },
-        select: { id: true, container: { select: { project: { select: { userId: true } } } } },
-      });
-      if (!link) {
-        return c.json({ message: "Not found" }, 404);
-      }
-      if (link.container.project.userId !== user.id) {
-        return c.json({ message: "Forbidden" }, 403);
-      }
-  
-      const updatedLink = await prisma.links.update({
-        where: { id },
-        data: { ...fields, updatedAt: new Date() },
-      });
-      return c.json({ link: updatedLink }, 200);
-    } catch (error) {
-      console.error("Failed to update link:", error);
-      return c.json({ message: "Failed to update link" }, 500);
+
+    const link = await prisma.links.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        container: { select: { project: { select: { userId: true } } } },
+      },
+    });
+    if (!link) {
+      return c.json({ message: "Not found" }, 404);
     }
-}
-);
+    if (link.container.project.userId !== user.id) {
+      return c.json({ message: "Forbidden" }, 403);
+    }
+
+    const updatedLink = await prisma.links.update({
+      where: { id },
+      data: { ...fields, updatedAt: new Date() },
+    });
+    return c.json({ link: updatedLink }, 200);
+  } catch (error) {
+    console.error("Failed to update link:", error);
+    return c.json({ message: "Failed to update link" }, 500);
+  }
+});
 
 export default link;

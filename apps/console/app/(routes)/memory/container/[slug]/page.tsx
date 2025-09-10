@@ -13,13 +13,16 @@ import { useContainersStore } from "@prexo/store";
 export default function MemoryPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
   const { containers } = useContainersStore();
   console.log("MemoryPage slug:", slug);
   const container = containers.find((c) => c.key === slug);
-  const [containerId, setContainerId] = useLocalStorage("@prexo-#containerId", "");
+  const [containerId, setContainerId] = useLocalStorage(
+    "@prexo-#containerId",
+    "",
+  );
 
   useEffect(() => {
     if (container?.id && containerId !== container.id) {
@@ -56,7 +59,7 @@ export default function MemoryPage({
               Sync context
             </RainbowButton> */}
           </div>
-          <CtxWebpagesCard/>
+          <CtxWebpagesCard />
         </Card>
 
         <Card className="p-2 gap-2">

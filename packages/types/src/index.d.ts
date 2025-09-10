@@ -177,5 +177,5 @@ export type {
   AuditLogType,
   UsageLogType,
   LinkType,
-  FileType
+  FileType,
 };

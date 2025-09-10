@@ -30,9 +30,10 @@ import { useReadLocalStorage } from "usehooks-ts";
 import { useFilesStore } from "@prexo/store";
 
 // API endpoint with environment detection
-const FILE_API_ENDPOINT = process.env.NODE_ENV === "production" 
-  ? "https://api.prexoai.xyz/v1/file" 
-  : "http://localhost:3001/v1/file";
+const FILE_API_ENDPOINT =
+  process.env.NODE_ENV === "production"
+    ? "https://api.prexoai.xyz/v1/file"
+    : "http://localhost:3001/v1/file";
 
 // Type for tracking upload progress
 type UploadProgress = {
@@ -49,7 +50,9 @@ type PendingFile = {
   preview: string | undefined;
 };
 
-const getFileIcon = (file: { file: File | { type: string; name: string } } | PendingFile) => {
+const getFileIcon = (
+  file: { file: File | { type: string; name: string } } | PendingFile,
+) => {
   const fileType = file.file instanceof File ? file.file.type : file.file.type;
   const fileName = file.file instanceof File ? file.file.name : file.file.name;
 
@@ -93,7 +96,11 @@ const getFileIcon = (file: { file: File | { type: string; name: string } } | Pen
 export default function CtxFileUploader() {
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const containerId = useReadLocalStorage("@prexo-#containerId");
-  const { files: storeFiles, setFiles, removeFile: removeFileFromStore } = useFilesStore();
+  const {
+    files: storeFiles,
+    setFiles,
+    removeFile: removeFileFromStore,
+  } = useFilesStore();
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -104,7 +111,7 @@ export default function CtxFileUploader() {
 
   const fetchFiles = useCallback(async () => {
     if (!containerId) return;
-    
+
     try {
       const response = await fetch(`${FILE_API_ENDPOINT}/${containerId}/all`, {
         credentials: "include",
@@ -126,21 +133,24 @@ export default function CtxFileUploader() {
 
     setIsUploading(true);
     const formData = new FormData();
-    
+
     // Add all pending files to FormData
     pendingFiles.forEach((pendingFile) => {
       formData.append("files", pendingFile.file);
     });
 
     try {
-      const response = await fetch(`${FILE_API_ENDPOINT}/${containerId}/upload`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-        headers: {
-          "x-project-id": typeof consoleId === "string" ? consoleId : "",
+      const response = await fetch(
+        `${FILE_API_ENDPOINT}/${containerId}/upload`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+          headers: {
+            "x-project-id": typeof consoleId === "string" ? consoleId : "",
+          },
         },
-      });
+      );
 
       if (response.ok) {
         // Upload successful, fetch updated files
@@ -151,15 +161,23 @@ export default function CtxFileUploader() {
         const errorData = await response.json();
         console.error("Upload failed:", errorData);
         // Mark all files as failed
-        setUploadProgress(prev => 
-          prev.map(item => ({ ...item, completed: true, error: errorData.message }))
+        setUploadProgress((prev) =>
+          prev.map((item) => ({
+            ...item,
+            completed: true,
+            error: errorData.message,
+          })),
         );
       }
     } catch (error) {
       console.error("Upload error:", error);
       // Mark all files as failed
-      setUploadProgress(prev => 
-        prev.map(item => ({ ...item, completed: true, error: "Upload failed" }))
+      setUploadProgress((prev) =>
+        prev.map((item) => ({
+          ...item,
+          completed: true,
+          error: "Upload failed",
+        })),
       );
     } finally {
       setIsUploading(false);
@@ -203,7 +221,7 @@ export default function CtxFileUploader() {
       preview: file.preview,
     }));
 
-    setPendingFiles(prev => [...prev, ...newPendingFiles]);
+    setPendingFiles((prev) => [...prev, ...newPendingFiles]);
 
     // Initialize progress tracking for each new file
     const newProgressItems = addedFiles.map((file) => ({
@@ -216,7 +234,8 @@ export default function CtxFileUploader() {
 
     // Simulate progress for better UX (since we can't track real progress with FormData)
     addedFiles.forEach((file) => {
-      const fileSize = file.file instanceof File ? file.file.size : file.file.size;
+      const fileSize =
+        file.file instanceof File ? file.file.size : file.file.size;
       simulateProgress(file.id, fileSize);
     });
   };
@@ -243,7 +262,9 @@ export default function CtxFileUploader() {
       } else {
         setUploadProgress((prev) =>
           prev.map((item) =>
-            item.fileId === fileId ? { ...item, progress: 100, completed: true } : item,
+            item.fileId === fileId
+              ? { ...item, progress: 100, completed: true }
+              : item,
           ),
         );
       }
@@ -265,7 +286,7 @@ export default function CtxFileUploader() {
         method: "DELETE",
         credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           "x-project-id": typeof consoleId === "string" ? consoleId : "",
         },
         body: JSON.stringify({ ids: [fileId] }),
@@ -289,12 +310,12 @@ export default function CtxFileUploader() {
     if (storeFiles.length === 0) return;
 
     try {
-      const fileIds = storeFiles.map(file => file.id);
+      const fileIds = storeFiles.map((file) => file.id);
       const response = await fetch(`${FILE_API_ENDPOINT}/delete`, {
         method: "DELETE",
         credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           "x-project-id": typeof consoleId === "string" ? consoleId : "",
         },
         body: JSON.stringify({ ids: fileIds }),
@@ -338,7 +359,6 @@ export default function CtxFileUploader() {
     onFilesAdded: handleFilesAdded,
   });
 
-
   return (
     <div className="flex flex-col gap-2">
       {/* Hidden input for file dialog - always available */}
@@ -347,9 +367,9 @@ export default function CtxFileUploader() {
         className="sr-only"
         aria-label="Upload files"
       />
-      
+
       {/* Drop area - only show if no files exist */}
-      {(storeFiles.length === 0 && pendingFiles.length === 0) && (
+      {storeFiles.length === 0 && pendingFiles.length === 0 && (
         <div
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -374,10 +394,10 @@ export default function CtxFileUploader() {
               Supported: pdf, txt, csv, mdx, json, html only
             </p>
             <p className="text-xs text-muted-foreground mt-2">
-                <span className="font-medium">Tip:</span> You can also{" "}
-                <span className="font-semibold">drag & drop</span> to add
-                them automatically.
-              </p>
+              <span className="font-medium">Tip:</span> You can also{" "}
+              <span className="font-semibold">drag & drop</span> to add them
+              automatically.
+            </p>
             <Button variant="outline" className="mt-4" onClick={openFileDialog}>
               <UploadIcon className="-ms-1 opacity-60" aria-hidden="true" />
               Select files
@@ -393,8 +413,8 @@ export default function CtxFileUploader() {
               Files ({storeFiles.length})
               {pendingFiles.length > 0 && (
                 <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                Syncing...
-              </span>
+                  Syncing...
+                </span>
               )}
             </h3>
             <div className="flex gap-2">
@@ -437,7 +457,8 @@ export default function CtxFileUploader() {
                   const fileProgress = uploadProgress.find(
                     (p) => p.fileId === file.id,
                   );
-                  const isUploadingFile = fileProgress && !fileProgress.completed;
+                  const isUploadingFile =
+                    fileProgress && !fileProgress.completed;
                   return (
                     <TableRow
                       key={file.id}
@@ -498,13 +519,15 @@ export default function CtxFileUploader() {
                     </TableRow>
                   );
                 })}
-                
+
                 {/* Render uploaded files from store */}
                 {storeFiles.map((file) => (
                   <TableRow key={file.id}>
                     <TableCell className="max-w-48 py-2 font-medium">
                       <span className="flex items-center gap-2">
-                        <span className="shrink-0">{getFileIcon({ file })}</span>{" "}
+                        <span className="shrink-0">
+                          {getFileIcon({ file })}
+                        </span>{" "}
                         <span className="truncate">{file.name}</span>
                       </span>
                     </TableCell>
@@ -517,14 +540,16 @@ export default function CtxFileUploader() {
                     <TableCell className="py-2 text-right whitespace-nowrap">
                       {file.downloadUrl && (
                         <Button
-                        size="icon"
-                        variant="ghost"
-                        className="text-muted-foreground/80 hover:text-foreground size-8 hover:bg-transparent"
-                        aria-label={`Download ${file.name}`}
-                        onClick={() => window.open(file.downloadUrl!, "_blank")}
-                      >
-                        <DownloadIcon className="size-4" />
-                      </Button>
+                          size="icon"
+                          variant="ghost"
+                          className="text-muted-foreground/80 hover:text-foreground size-8 hover:bg-transparent"
+                          aria-label={`Download ${file.name}`}
+                          onClick={() =>
+                            window.open(file.downloadUrl!, "_blank")
+                          }
+                        >
+                          <DownloadIcon className="size-4" />
+                        </Button>
                       )}
                       <Button
                         size="icon"

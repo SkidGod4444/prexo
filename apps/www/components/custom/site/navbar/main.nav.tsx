@@ -47,7 +47,7 @@ export function MainNavbar() {
           Pricing
         </Link> */}
 
-<Link
+        <Link
           href={socials.changelogs}
           draggable={false}
           target="_blank"

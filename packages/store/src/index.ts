@@ -234,5 +234,5 @@ export {
   useAuditLogsStore,
   useUsageLogsStore,
   useLinksStore,
-  useFilesStore
+  useFilesStore,
 };

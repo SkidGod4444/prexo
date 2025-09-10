@@ -12,7 +12,10 @@ export const auditLogs: MiddlewareHandler = async (c, next) => {
   }
 
   if (!projectId) {
-    return c.json({ message: "Project ID is required in the 'x-project-id' header." }, 401);
+    return c.json(
+      { message: "Project ID is required in the 'x-project-id' header." },
+      401,
+    );
   }
 
   const method = c.req.method;

@@ -18,21 +18,26 @@ interface WebpageItem {
 export default function CtxWebpagesCard() {
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const containerId = useReadLocalStorage("@prexo-#containerId");
-  const {links, addLink, removeLink, setLinks} = useLinksStore();
+  const { links, addLink, removeLink, setLinks } = useLinksStore();
   const [webpages, setWebpages] = useState<WebpageItem[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const pasteBoxRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const LINK_API_ENDPOINT = process.env.NODE_ENV === "production" ? "https://api.prexoai.xyz/v1/link" : "http://localhost:3001/v1/link";
+  const LINK_API_ENDPOINT =
+    process.env.NODE_ENV === "production"
+      ? "https://api.prexoai.xyz/v1/link"
+      : "http://localhost:3001/v1/link";
 
   // Get existing links for this container
-  const existingLinks = links.filter(link => link.containerId === containerId);
+  const existingLinks = links.filter(
+    (link) => link.containerId === containerId,
+  );
 
   // Fetch links from API on component mount
   const fetchLinks = useCallback(async () => {
     if (!containerId) return;
-    
+
     try {
       const response = await fetch(`${LINK_API_ENDPOINT}/${containerId}/all`, {
         credentials: "include",
@@ -58,95 +63,107 @@ export default function CtxWebpagesCard() {
 
   // Combine existing links with webpages for display
   const allItems = [
-    ...existingLinks.map(link => ({
+    ...existingLinks.map((link) => ({
       id: link.id,
       url: link.url,
       isExisting: true,
       timestamp: new Date(link.createdAt).getTime(),
       error: undefined,
-      isCreating: false
+      isCreating: false,
     })),
-    ...webpages.map(webpage => ({
+    ...webpages.map((webpage) => ({
       id: webpage.id,
       url: webpage.url,
       error: webpage.error,
       isCreating: webpage.isCreating,
       isExisting: false,
-      timestamp: webpage.timestamp
-    }))
+      timestamp: webpage.timestamp,
+    })),
   ].sort((a, b) => b.timestamp - a.timestamp);
 
   // Check if URL already exists in links store
-  const isUrlDuplicate = useCallback((url: string): boolean => {
-    if (!containerId) return false;
-    return links.some(link => 
-      link.url === url && link.containerId === containerId
-    );
-  }, [links, containerId]);
+  const isUrlDuplicate = useCallback(
+    (url: string): boolean => {
+      if (!containerId) return false;
+      return links.some(
+        (link) => link.url === url && link.containerId === containerId,
+      );
+    },
+    [links, containerId],
+  );
 
   // Create links via API
-  const createLinks = useCallback(async (webpageItems: WebpageItem[]) => {
-    if (!containerId) return;
+  const createLinks = useCallback(
+    async (webpageItems: WebpageItem[]) => {
+      if (!containerId) return;
 
-    const validWebpages = webpageItems.filter(w => w.url && !w.error && !isUrlDuplicate(w.url));
-    
-    if (validWebpages.length === 0) return;
+      const validWebpages = webpageItems.filter(
+        (w) => w.url && !w.error && !isUrlDuplicate(w.url),
+      );
 
-    // Mark webpages as creating
-    setWebpages(prev => 
-      prev.map(w => 
-        validWebpages.some(vw => vw.id === w.id) 
-          ? { ...w, isCreating: true }
-          : w
-      )
-    );
+      if (validWebpages.length === 0) return;
 
-    try {
-      const createPromises = validWebpages.map(async (webpage) => {
-        const response = await fetch(`${LINK_API_ENDPOINT}/create`, {
-          method: 'POST',
-          credentials: "include",
-          headers: {
-            'Content-Type': 'application/json',
-            "x-project-id": typeof consoleId === "string" ? consoleId : "",
-          },
-          body: JSON.stringify({
-            url: webpage.url,
-            containerId,
-            type: 'webpage'
-          }),
+      // Mark webpages as creating
+      setWebpages((prev) =>
+        prev.map((w) =>
+          validWebpages.some((vw) => vw.id === w.id)
+            ? { ...w, isCreating: true }
+            : w,
+        ),
+      );
+
+      try {
+        const createPromises = validWebpages.map(async (webpage) => {
+          const response = await fetch(`${LINK_API_ENDPOINT}/create`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "x-project-id": typeof consoleId === "string" ? consoleId : "",
+            },
+            body: JSON.stringify({
+              url: webpage.url,
+              containerId,
+              type: "webpage",
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to create link: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          console.log("Created link:", result.link);
+          return result.link;
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to create link: ${response.statusText}`);
-        }
+        const createdLinks = await Promise.all(createPromises);
 
-        const result = await response.json();
-        console.log("Created link:", result.link);
-        return result.link;
-      });
+        // Add created links to store
+        createdLinks.forEach((link) => addLink(link));
 
-      const createdLinks = await Promise.all(createPromises);
-      
-      // Add created links to store
-      createdLinks.forEach(link => addLink(link));
-      
-      // Remove successfully created webpages from state
-      setWebpages(prev => 
-        prev.filter(w => !validWebpages.some(vw => vw.id === w.id))
-      );
-      
-      // Refresh links from API to ensure consistency
-      await fetchLinks();
-      
-    } catch (error) {
-      console.error('Error creating links:', error);
-      // Reset creating state on error
-      setWebpages(prev => 
-        prev.map(w => ({ ...w, isCreating: false }))
-      );
-    }
-  }, [containerId, addLink, isUrlDuplicate, LINK_API_ENDPOINT, consoleId, fetchLinks]);
+        // Remove successfully created webpages from state
+        setWebpages((prev) =>
+          prev.filter((w) => !validWebpages.some((vw) => vw.id === w.id)),
+        );
+
+        // Refresh links from API to ensure consistency
+        await fetchLinks();
+      } catch (error) {
+        console.error("Error creating links:", error);
+        // Reset creating state on error
+        setWebpages((prev) => prev.map((w) => ({ ...w, isCreating: false })));
+      }
+    },
+    [
+      containerId,
+      addLink,
+      isUrlDuplicate,
+      LINK_API_ENDPOINT,
+      consoleId,
+      fetchLinks,
+    ],
+  );
 
   // Effect to handle delayed API calls
   useEffect(() => {
@@ -156,7 +173,9 @@ export default function CtxWebpagesCard() {
     }
 
     // Only set timeout if there are valid webpages
-    const validWebpages = webpages.filter(w => w.url && !w.error && !w.isCreating);
+    const validWebpages = webpages.filter(
+      (w) => w.url && !w.error && !w.isCreating,
+    );
     if (validWebpages.length > 0) {
       timeoutRef.current = setTimeout(() => {
         createLinks(validWebpages);
@@ -207,8 +226,10 @@ export default function CtxWebpagesCard() {
           return {
             id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
             url: cleanUrl,
-            error: validation.isValid 
-              ? (isDuplicate ? "Link already exists" : undefined)
+            error: validation.isValid
+              ? isDuplicate
+                ? "Link already exists"
+                : undefined
               : validation.error,
             timestamp: Date.now(),
           };
@@ -227,13 +248,13 @@ export default function CtxWebpagesCard() {
   // Delete a link from the store
   const handleDeleteLink = async (linkId: string) => {
     if (!consoleId) return;
-    
+
     try {
       const response = await fetch(`${LINK_API_ENDPOINT}/delete`, {
-        method: 'DELETE',
+        method: "DELETE",
         credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           "x-project-id": typeof consoleId === "string" ? consoleId : "",
         },
         body: JSON.stringify({ id: linkId }),
@@ -248,42 +269,42 @@ export default function CtxWebpagesCard() {
       // Refresh links from API to ensure consistency
       await fetchLinks();
     } catch (error) {
-      console.error('Error deleting link:', error);
+      console.error("Error deleting link:", error);
     }
   };
 
   // Delete all existing links
   const handleDeleteAllExistingLinks = async () => {
     if (!consoleId || existingLinks.length === 0) return;
-    
+
     try {
-      const deletePromises = existingLinks.map(link => 
+      const deletePromises = existingLinks.map((link) =>
         fetch(`${LINK_API_ENDPOINT}/delete`, {
-          method: 'DELETE',
+          method: "DELETE",
           credentials: "include",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "x-project-id": typeof consoleId === "string" ? consoleId : "",
           },
           body: JSON.stringify({ id: link.id }),
-        })
+        }),
       );
 
       const responses = await Promise.all(deletePromises);
-      
+
       // Check if all deletions were successful
-      const allSuccessful = responses.every(response => response.ok);
-      
+      const allSuccessful = responses.every((response) => response.ok);
+
       if (allSuccessful) {
         // Remove all existing links from store
-        existingLinks.forEach(link => removeLink(link.id));
+        existingLinks.forEach((link) => removeLink(link.id));
         // Refresh links from API to ensure consistency
         await fetchLinks();
       } else {
-        throw new Error('Some deletions failed');
+        throw new Error("Some deletions failed");
       }
     } catch (error) {
-      console.error('Error deleting all links:', error);
+      console.error("Error deleting all links:", error);
     }
   };
 
@@ -302,8 +323,10 @@ export default function CtxWebpagesCard() {
           ? {
               ...w,
               url: cleanValue,
-              error: validation.isValid 
-                ? (isDuplicate ? "Link already exists" : undefined)
+              error: validation.isValid
+                ? isDuplicate
+                  ? "Link already exists"
+                  : undefined
                 : validation.error,
             }
           : w,
@@ -478,7 +501,9 @@ export default function CtxWebpagesCard() {
                   <div className="relative flex-1">
                     {item.isExisting ? (
                       <div className="flex items-center gap-1 p-2 bg-muted/50 rounded-lg">
-                        <span className="text-muted-foreground text-sm">https://</span>
+                        <span className="text-muted-foreground text-sm">
+                          https://
+                        </span>
                         <span className="text-sm font-medium">{item.url}</span>
                       </div>
                     ) : (
@@ -496,7 +521,9 @@ export default function CtxWebpagesCard() {
                           placeholder="devwtf.in"
                           type="text"
                           value={item.url}
-                          onChange={(e) => handleChange(item.id, e.target.value)}
+                          onChange={(e) =>
+                            handleChange(item.id, e.target.value)
+                          }
                           onKeyDown={(e) => {
                             // Prevent invalid characters from being typed
                             const invalidChars = /[<>"{}|\\^`\[\]]/;
@@ -534,8 +561,8 @@ export default function CtxWebpagesCard() {
                     variant="outline"
                     className="hover:text-red-600 size-8 mt-0.5"
                     aria-label={`Remove ${item.url || "webpage"}`}
-                    onClick={() => 
-                      item.isExisting 
+                    onClick={() =>
+                      item.isExisting
                         ? handleDeleteLink(item.id)
                         : handleRemoveWebpage(item.id)
                     }

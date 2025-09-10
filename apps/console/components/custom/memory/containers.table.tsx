@@ -40,7 +40,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useReadLocalStorage } from "usehooks-ts";
 import { useContainersStore } from "@prexo/store";
 import { toast } from "sonner";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CONTAINERS_API_ENDPOINT =
   process.env.NODE_ENV == "development"
@@ -324,18 +328,18 @@ export default function ContainersTable() {
                   </TableCell>
                   <TableCell className="py-2.5 px-0 font-medium">
                     <Tooltip>
-                    <TooltipTrigger asChild>
-                    <Badge
-                      variant={"secondary"}
-                      className="cursor-pointer py-1"
-                      onClick={() => handleCopyToClipboard(item.key)}
-                    >
-                      {item.key}
-                    </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent>
-        <p>Copy to clipboard</p>
-      </TooltipContent>
+                      <TooltipTrigger asChild>
+                        <Badge
+                          variant={"secondary"}
+                          className="cursor-pointer py-1"
+                          onClick={() => handleCopyToClipboard(item.key)}
+                        >
+                          {item.key}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Copy to clipboard</p>
+                      </TooltipContent>
                     </Tooltip>
                   </TableCell>
                   <TableCell className="py-2.5 font-medium">

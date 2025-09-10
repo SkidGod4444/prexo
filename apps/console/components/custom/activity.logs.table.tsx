@@ -110,13 +110,14 @@ export default function ActivityLogsTable() {
                     <TableCell className="font-mono text-sm">
                       {(() => {
                         // Remove the consoleId and containerId from the endpoint if present
-                        if (!row.endpoint || (!consoleId && !containerId)) return row.endpoint;
+                        if (!row.endpoint || (!consoleId && !containerId))
+                          return row.endpoint;
                         // Match /something/:consoleId/ or /something/:containerId/...
-                        const ids = [consoleId, containerId].filter(Boolean).join("|");
+                        const ids = [consoleId, containerId]
+                          .filter(Boolean)
+                          .join("|");
                         if (!ids) return row.endpoint;
-                        const regex = new RegExp(
-                          `(/v1/[^/]+/)(${ids})(/|$)`,
-                        );
+                        const regex = new RegExp(`(/v1/[^/]+/)(${ids})(/|$)`);
                         if (regex.test(row.endpoint)) {
                           // Remove the consoleId or containerId segment
                           return row.endpoint.replace(regex, "$1");
