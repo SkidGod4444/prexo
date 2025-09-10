@@ -32,6 +32,7 @@ function getActionBadgeVariant(action: string) {
 export default function ActivityLogsTable() {
   const [visibleItems, setVisibleItems] = useState(50);
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
+  const containerId = useReadLocalStorage("@prexo-#containerId");
   const { auditLogs } = useAuditLogsStore();
   const [hovered, setHovered] = useState(false);
   const [barHovered, setBarHovered] = useState(false);
@@ -108,14 +109,16 @@ export default function ActivityLogsTable() {
                     </TableCell>
                     <TableCell className="font-mono text-sm">
                       {(() => {
-                        // Remove the consoleId from the endpoint if present
-                        if (!row.endpoint || !consoleId) return row.endpoint;
-                        // Match /something/:consoleId/...
+                        // Remove the consoleId and containerId from the endpoint if present
+                        if (!row.endpoint || (!consoleId && !containerId)) return row.endpoint;
+                        // Match /something/:consoleId/ or /something/:containerId/...
+                        const ids = [consoleId, containerId].filter(Boolean).join("|");
+                        if (!ids) return row.endpoint;
                         const regex = new RegExp(
-                          `(/v1/[^/]+/)${consoleId}(/|$)`,
+                          `(/v1/[^/]+/)(${ids})(/|$)`,
                         );
                         if (regex.test(row.endpoint)) {
-                          // Remove the consoleId segment
+                          // Remove the consoleId or containerId segment
                           return row.endpoint.replace(regex, "$1");
                         }
                         return row.endpoint;

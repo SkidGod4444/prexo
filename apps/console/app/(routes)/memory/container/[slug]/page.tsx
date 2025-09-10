@@ -65,7 +65,7 @@ export default function MemoryPage({
               Sync context
             </RainbowButton> */}
           </div>
-          <CtxFileUploader currentContainer={slug} />
+          <CtxFileUploader />
         </Card>
       </div>
     </div>

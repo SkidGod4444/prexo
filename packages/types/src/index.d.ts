@@ -37,6 +37,20 @@ type LinkType = {
   updatedAt: Date | string;
 };
 
+type FileType = {
+  id: string;
+  key: string;
+  name: string;
+  size: number;
+  url?: string | null;
+  downloadUrl?: string | null;
+  type: string;
+  embeddings: string[];
+  containerId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
 type NotificationType = {
   id: string;
   userId: string;
@@ -162,5 +176,6 @@ export type {
   AIModelsFreeTier,
   AuditLogType,
   UsageLogType,
-  LinkType
+  LinkType,
+  FileType
 };

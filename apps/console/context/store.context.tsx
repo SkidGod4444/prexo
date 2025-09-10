@@ -6,7 +6,6 @@ import {
   useContainersStore,
   useDomainsStore,
   useEnvsStore,
-  useLinksStore,
   useNotificationsStore,
   useProjectsStore,
   useUsageLogsStore,
@@ -16,7 +15,6 @@ import {
   ContainerType,
   DomainType,
   EnvType,
-  LinkType,
   NotificationType,
   ProjectType,
   UsageLogType,
@@ -52,14 +50,12 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
-  const containerId = useReadLocalStorage("@prexo-#containerId");
   const { user, loading } = useAuth();
   const { projects, setProjects } = useProjectsStore();
   const { notifications, setNotifications } = useNotificationsStore();
   const { domains, setDomains } = useDomainsStore();
   const { envs, setEnvs } = useEnvsStore();
   const { key, removeKey, setKey } = useApiKeyStore();
-  const { links, setLinks} = useLinksStore();
   const { containers, setContainers } = useContainersStore();
   const { auditLogs, setAuditLogs } = useAuditLogsStore();
   const { usageLogs, setUsageLogs } = useUsageLogsStore();
@@ -117,9 +113,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     process.env.NODE_ENV == "development"
       ? "http://localhost:3001/v1/container"
       : "https://api.prexoai.xyz/v1/container";
-
-      const LINK_API_ENDPOINT = process.env.NODE_ENV === "production" ? "https://api.prexoai.xyz/v1/link" : "http://localhost:3001/v1/link";
-
 
   function getKeyApiEndpoint(keyId: string) {
     return process.env.NODE_ENV == "development"
@@ -251,35 +244,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    async function fetchLinks() {
-      setContentLoading(true);
-      try {
-        const data = await fetch(`${LINK_API_ENDPOINT}/${containerId}/all`, {
-          credentials: "include",
-          headers: {
-            "x-project-id": String(consoleId || ""),
-            "x-polling-req": "true", // Indicate this is a polling request
-          },
-        });
-
-        if (!data.ok) {
-          throw new Error(`Failed to fetch links: ${data.status}`);
-        }
-
-        const response = await data.json();
-        if (Array.isArray(response?.links)) {
-          setLinks(response.links.map((link: LinkType) => link));
-        } else {
-          setLinks([]);
-        }
-      } catch (error) {
-        console.error("Error fetching links:", error);
-        setLinks([]);
-      } finally {
-        setContentLoading(false);
-      }
-    }
-
     async function fetchContainers() {
       setContentLoading(true);
       try {
@@ -395,10 +359,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       fetchContainers();
     }
 
-    if (links.length == 0) {
-      fetchLinks();
-    }
-
     if (auditLogs.length == 0 || usageLogs.length == 0) {
       console.log("Fetching logs because arrays are empty");
       fetchLogs();
@@ -409,7 +369,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       fetchEnvs();
       fetchContainers();
       fetchLogs();
-      fetchLinks();
     }, 30000);
     return () => clearInterval(interval);
   }, [

@@ -83,8 +83,20 @@ file.delete("/delete", async (c) => {
     return c.json({ message: "File Id is required" }, 400);
   }
   try {
+    // Delete from UploadThing
     const res = await utapi.deleteFiles(ids);
-    console.log(res);
+    console.log("UploadThing deletion result:", res);
+
+    // Delete from database
+    await prisma.files.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    console.log("Files deleted from database");
+
     return c.json(
       {
         message: "File(s) deleted successfully",

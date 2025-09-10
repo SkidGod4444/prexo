@@ -23,7 +23,7 @@ interface WebpageItem {
 export default function CtxWebpagesCard() {
   const consoleId = useReadLocalStorage("@prexo-#consoleId");
   const containerId = useReadLocalStorage("@prexo-#containerId");
-  const {links, addLink, removeLink} = useLinksStore();
+  const {links, addLink, removeLink, setLinks} = useLinksStore();
   const [webpages, setWebpages] = useState<WebpageItem[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
@@ -33,6 +33,33 @@ export default function CtxWebpagesCard() {
 
   // Get existing links for this container
   const existingLinks = links.filter(link => link.containerId === containerId);
+
+  // Fetch links from API on component mount
+  const fetchLinks = useCallback(async () => {
+    if (!containerId) return;
+    
+    try {
+      const response = await fetch(`${LINK_API_ENDPOINT}/${containerId}/all`, {
+        credentials: "include",
+        headers: {
+          "x-project-id": typeof consoleId === "string" ? consoleId : "",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLinks(data.links || []);
+      }
+    } catch (error) {
+      console.error("Error fetching links:", error);
+    }
+  }, [containerId, consoleId, LINK_API_ENDPOINT, setLinks]);
+
+  // Fetch links on mount
+  useEffect(() => {
+    if (containerId) {
+      fetchLinks();
+    }
+  }, [containerId, fetchLinks]);
 
   // Combine existing links with webpages for display
   const allItems = [
@@ -114,6 +141,9 @@ export default function CtxWebpagesCard() {
         prev.filter(w => !validWebpages.some(vw => vw.id === w.id))
       );
       
+      // Refresh links from API to ensure consistency
+      await fetchLinks();
+      
     } catch (error) {
       console.error('Error creating links:', error);
       // Reset creating state on error
@@ -121,7 +151,7 @@ export default function CtxWebpagesCard() {
         prev.map(w => ({ ...w, isCreating: false }))
       );
     }
-  }, [containerId, addLink, isUrlDuplicate, LINK_API_ENDPOINT, consoleId]);
+  }, [containerId, addLink, isUrlDuplicate, LINK_API_ENDPOINT, consoleId, fetchLinks]);
 
   // Effect to handle delayed API calls
   useEffect(() => {
@@ -205,7 +235,7 @@ export default function CtxWebpagesCard() {
     
     try {
       const response = await fetch(`${LINK_API_ENDPOINT}/delete`, {
-        method: 'POST',
+        method: 'DELETE',
         credentials: "include",
         headers: {
           'Content-Type': 'application/json',
@@ -220,6 +250,8 @@ export default function CtxWebpagesCard() {
 
       // Remove from store
       removeLink(linkId);
+      // Refresh links from API to ensure consistency
+      await fetchLinks();
     } catch (error) {
       console.error('Error deleting link:', error);
     }
@@ -232,7 +264,7 @@ export default function CtxWebpagesCard() {
     try {
       const deletePromises = existingLinks.map(link => 
         fetch(`${LINK_API_ENDPOINT}/delete`, {
-          method: 'POST',
+          method: 'DELETE',
           credentials: "include",
           headers: {
             'Content-Type': 'application/json',
@@ -250,6 +282,8 @@ export default function CtxWebpagesCard() {
       if (allSuccessful) {
         // Remove all existing links from store
         existingLinks.forEach(link => removeLink(link.id));
+        // Refresh links from API to ensure consistency
+        await fetchLinks();
       } else {
         throw new Error('Some deletions failed');
       }
@@ -392,7 +426,7 @@ export default function CtxWebpagesCard() {
               )}
               {isCreating && (
                 <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                  Creating...
+                  Syncing...
                 </span>
               )}
             </h3>
@@ -448,7 +482,7 @@ export default function CtxWebpagesCard() {
                 >
                   <div className="relative flex-1">
                     {item.isExisting ? (
-                      <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-1 p-2 bg-muted/50 rounded-lg">
                         <span className="text-muted-foreground text-sm">https://</span>
                         <span className="text-sm font-medium">{item.url}</span>
                       </div>

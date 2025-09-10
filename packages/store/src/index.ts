@@ -6,6 +6,7 @@ import {
   ContainerStore,
   DomainStore,
   EnvStore,
+  FilesStore,
   LinksStore,
   MyProfileStore,
   NotificationsStore,
@@ -131,6 +132,23 @@ const useLinksStore = create<LinksStore>()(
   ),
 );
 
+const useFilesStore = create<FilesStore>()(
+  persist(
+    (set) => ({
+      files: [],
+      addFile: (file) => set((state) => ({ files: [...state.files, file] })),
+      removeFile: (fileId) =>
+        set((state) => ({
+          files: state.files.filter((p) => p.id !== fileId),
+        })),
+      setFiles: (files) => set({ files }),
+    }),
+    {
+      name: "@prexo-#contextFiles",
+    },
+  ),
+);
+
 const useContainersStore = create<ContainerStore>()(
   persist(
     (set) => ({
@@ -215,5 +233,6 @@ export {
   useContainersStore,
   useAuditLogsStore,
   useUsageLogsStore,
-  useLinksStore
+  useLinksStore,
+  useFilesStore
 };
