@@ -26,6 +26,31 @@ type KeyType = {
   roles: string[];
 };
 
+type LinkType = {
+  id: string;
+  type?: string | null;
+  url: string;
+  markdown?: string | null;
+  summary?: string | null;
+  containerId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
+type FileType = {
+  id: string;
+  key: string;
+  name: string;
+  size: number;
+  url?: string | null;
+  downloadUrl?: string | null;
+  type: string;
+  embeddings: string[];
+  containerId: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+};
+
 type NotificationType = {
   id: string;
   userId: string;
@@ -151,4 +176,6 @@ export type {
   AIModelsFreeTier,
   AuditLogType,
   UsageLogType,
+  LinkType,
+  FileType,
 };

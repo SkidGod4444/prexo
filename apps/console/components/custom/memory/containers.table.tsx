@@ -40,6 +40,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useReadLocalStorage } from "usehooks-ts";
 import { useContainersStore } from "@prexo/store";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CONTAINERS_API_ENDPOINT =
   process.env.NODE_ENV == "development"
@@ -69,6 +74,11 @@ export default function ContainersTable() {
     }
   };
 
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard!");
+  };
+
   const handleSelectItem = (itemId: string, checked: boolean) => {
     if (checked) {
       setSelectedItems((prev) => [...prev, itemId]);
@@ -87,6 +97,7 @@ export default function ContainersTable() {
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
+              "x-project-id": typeof consoleId === "string" ? consoleId : "",
             },
             body: JSON.stringify({ id: itemId }),
           });
@@ -112,6 +123,7 @@ export default function ContainersTable() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "x-project-id": typeof consoleId === "string" ? consoleId : "",
       },
       body: JSON.stringify({
         id: itemId,
@@ -137,6 +149,7 @@ export default function ContainersTable() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "x-project-id": typeof consoleId === "string" ? consoleId : "",
       },
       body: JSON.stringify({
         name: name,
@@ -283,6 +296,7 @@ export default function ContainersTable() {
                     aria-label="Select all items"
                   />
                 </TableHead>
+                <TableHead>Key</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Resources</TableHead>
@@ -311,6 +325,22 @@ export default function ContainersTable() {
                       aria-label={`Select ${item.name}`}
                       className="cursor-pointer"
                     />
+                  </TableCell>
+                  <TableCell className="py-2.5 px-0 font-medium">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge
+                          variant={"secondary"}
+                          className="cursor-pointer py-1"
+                          onClick={() => handleCopyToClipboard(item.key)}
+                        >
+                          {item.key}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Copy to clipboard</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </TableCell>
                   <TableCell className="py-2.5 font-medium">
                     <p
@@ -385,7 +415,7 @@ export default function ContainersTable() {
             </TableFooter> */}
           </Table>
           <p className="text-muted-foreground mt-4 text-center text-sm">
-            Memory Containers are just a way to categorize your data!
+            TIP: Click on a container name to view and manage its details.
           </p>
         </>
       )}

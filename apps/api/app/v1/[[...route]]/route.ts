@@ -23,6 +23,7 @@ import telementryEvents from "../routes/telemetry";
 import auditLogs from "../routes/logger";
 import { rateLimitHandler } from "@/middleware/ratelimit";
 import mailer from "../routes/webhooks/mailer";
+import link from "../routes/link";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -69,6 +70,7 @@ app.route("/envs", envs);
 app.route("/notification", notifications);
 app.route("/api", api);
 app.route("/context", cntxt);
+app.route("/link", link);
 app.route("/container", containers);
 app.route("/file", file);
 app.route("/telementry", telementryEvents);

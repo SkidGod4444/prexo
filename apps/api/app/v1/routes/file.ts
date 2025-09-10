@@ -11,10 +11,10 @@ file.use(auditLogs);
 
 export const utapi = new UTApi();
 
-file.post("/:projectId/upload", async (c) => {
-  const projectId = c.req.param("projectId");
-  if (!projectId) {
-    return c.json({ message: "Project ID is required" }, 400);
+file.post("/:containerId/upload", async (c) => {
+  const containerId = c.req.param("containerId");
+  if (!containerId) {
+    return c.json({ message: "Container ID is required" }, 400);
   }
   const formData = await c.req.formData();
   const filesData = formData.getAll("files");
@@ -51,11 +51,11 @@ file.post("/:projectId/upload", async (c) => {
             prisma.files.create({
               data: {
                 key: fileData.key,
+                containerId,
                 name: fileData.name,
                 url: fileData.url,
                 downloadUrl: fileData.ufsUrl,
                 type: fileData.type,
-                projectId,
                 size: fileData.size,
               },
             }),
@@ -83,8 +83,20 @@ file.delete("/delete", async (c) => {
     return c.json({ message: "File Id is required" }, 400);
   }
   try {
+    // Delete from UploadThing
     const res = await utapi.deleteFiles(ids);
-    console.log(res);
+    console.log("UploadThing deletion result:", res);
+
+    // Delete from database
+    await prisma.files.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    console.log("Files deleted from database");
+
     return c.json(
       {
         message: "File(s) deleted successfully",
@@ -100,14 +112,14 @@ file.delete("/delete", async (c) => {
   }
 });
 
-file.get("/:projectId/all", async (c) => {
-  const projectId = c.req.param("projectId");
-  if (!projectId) {
-    return c.json({ message: "Project ID is required" }, 400);
+file.get("/:containerId/all", async (c) => {
+  const containerId = c.req.param("containerId");
+  if (!containerId) {
+    return c.json({ message: "Container ID is required" }, 400);
   }
   try {
     const files = await prisma.files.findMany({
-      where: { projectId },
+      where: { containerId },
       orderBy: { createdAt: "desc" },
       cacheStrategy: {
         ttl: 30,

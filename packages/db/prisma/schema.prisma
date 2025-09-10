@@ -100,7 +100,6 @@ model Project {
   domains       Domain[]
   notifications Notifications[]
   environments  Environments[]
-  files         Files[]
   containers    Containers[]
   auditLogs     AuditLogs[]
   usageLogs     UsageLogs[]
@@ -167,20 +166,34 @@ model Environments {
 }
 
 model Files {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   key         String
   name        String
   size        Int
-  url         String
-  downloadUrl String
+  url         String?
+  downloadUrl String?
   type        String
   embeddings  String[]
-  projectId   String
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  containerId String
+  container   Containers @relation(fields: [containerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@map("files")
+}
+
+model Links {
+  id          String     @id @default(uuid())
+  type        String?
+  url         String @unique
+  markdown    String?
+  summary     String?
+  containerId String
+  container   Containers @relation(fields: [containerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("links")
 }
 
 model Containers {
@@ -192,6 +205,8 @@ model Containers {
   filesId     String[]
   projectId   String
   status      String?  @default("active")
+  links       Links[]
+  files       Files[]
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
