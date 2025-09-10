@@ -2,12 +2,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Trash2Icon,
-  PlusIcon,
-  AlertCircleIcon,
-  LinkIcon,
-} from "lucide-react";
+import { Trash2Icon, PlusIcon, AlertCircleIcon, LinkIcon } from "lucide-react";
 import { extractUrls } from "@/lib/utils";
 import { useLinksStore } from "@prexo/store";
 import { useReadLocalStorage } from "usehooks-ts";

@@ -8,37 +8,40 @@ import Firecrawl from "@mendable/firecrawl-js";
 
 const firecrawl = new Firecrawl({ apiKey: process.env.FIRE_CRAWLER_API_KEY! });
 
-export async function extractText(source: string, type?: 'pdf' | 'csv' | 'html'): Promise<string> {
+export async function extractText(
+  source: string,
+  type?: "pdf" | "csv" | "html",
+): Promise<string> {
   const ext = path.extname(source).toLowerCase();
 
   // Handle PDF URLs
-  if (type !== 'csv') {
+  if (type !== "csv") {
     if (source.startsWith("https://")) {
-      const doc = await firecrawl.scrape(source, { formats: ['markdown', 'summary'] });
+      const doc = await firecrawl.scrape(source, {
+        formats: ["markdown", "summary"],
+      });
 
-      if (!doc.markdown || !doc.summary || doc.markdown.length === 0 || doc.summary.length === 0) {
-        throw new Error(
-          "Failed to extract text from DOC using Firecrawl",
-        );
+      if (
+        !doc.markdown ||
+        !doc.summary ||
+        doc.markdown.length === 0 ||
+        doc.summary.length === 0
+      ) {
+        throw new Error("Failed to extract text from DOC using Firecrawl");
       }
 
       return JSON.stringify([
         { markdown: doc.markdown },
         { summary: doc.summary },
-        { source: doc.metadata?.sourceURL }
+        { source: doc.metadata?.sourceURL },
       ]);
     } else {
-      throw new Error(
-        "Local files are not supported. Please provide a URL.",
-      );
+      throw new Error("Local files are not supported. Please provide a URL.");
     }
   }
 
   // Handle CSV URLs
-  if (
-    ext === ".csv" || type === 'csv' &&
-    source.startsWith("https://")
-  ) {
+  if (ext === ".csv" || (type === "csv" && source.startsWith("https://"))) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 

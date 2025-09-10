@@ -37,7 +37,10 @@ export function NavSecondary({
                 isActive={path.includes(item.url)}
                 rel={item.isExternal ? "noreferrer" : undefined}
               >
-                <Link href={item.url} target={item.isExternal ? "_blank" : "_self"}>
+                <Link
+                  href={item.url}
+                  target={item.isExternal ? "_blank" : "_self"}
+                >
                   <item.icon className="text-muted-foreground" />
                   <span>{item.title}</span>
                 </Link>
