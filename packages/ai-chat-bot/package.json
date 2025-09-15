@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-bot",
   "type": "module",
-  "version": "1.0.0-beta.4",
+  "version": "1.1.0",
   "description": "AI Chat Component with Persistent History and Context",
   "exports": {
     "./react": {
