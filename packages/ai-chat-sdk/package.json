@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-sdk",
   "type": "module",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.2",
   "description": "AI Chat SDK for building AI chat applications with Context and History",
   "exports": {
     ".": {
