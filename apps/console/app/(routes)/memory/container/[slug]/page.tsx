@@ -54,10 +54,6 @@ export default function MemoryPage({
         <Card className="p-2 gap-2">
           <div className="flex items-center justify-between">
             <Badge>Links as context</Badge>
-            {/* 
-            <RainbowButton variant="outline" className="rounded-2xl">
-              Sync context
-            </RainbowButton> */}
           </div>
           <CtxWebpagesCard />
         </Card>
@@ -65,10 +61,6 @@ export default function MemoryPage({
         <Card className="p-2 gap-2">
           <div className="flex items-center justify-between">
             <Badge>Files as context</Badge>
-            {/* 
-            <RainbowButton variant="outline" className="rounded-2xl">
-              Sync context
-            </RainbowButton> */}
           </div>
           <CtxFileUploader />
         </Card>

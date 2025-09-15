@@ -117,7 +117,7 @@ context.post("/add", async (c) => {
   }
 });
 
-context.get("/get", async (c) => {
+context.post("/get", async (c) => {
   try {
     const { payload, namespace } = await c.req.json();
     const result = await vectorDB.retrieve({ ...payload, namespace });

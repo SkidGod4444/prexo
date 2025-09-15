@@ -10,7 +10,6 @@ import project from "../routes/project";
 import api from "../routes/api";
 import configs from "../routes/sdk/configs";
 import aiSdk from "../routes/sdk/ai";
-import extractor from "../routes/sdk/extractor";
 import context from "../routes/sdk/context";
 import cntxt from "../routes/context";
 import playgroundAi from "../routes/playground/ai";
@@ -24,6 +23,7 @@ import auditLogs from "../routes/logger";
 import { rateLimitHandler } from "@/middleware/ratelimit";
 import mailer from "../routes/webhooks/mailer";
 import link from "../routes/link";
+import vectorizer from "../routes/webhooks/vectorizer";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -79,11 +79,11 @@ app.route("/logger", auditLogs);
 // SDK Routes
 app.route("/sdk/configs", configs);
 app.route("/sdk/ai", aiSdk);
-app.route("/sdk/extractor", extractor);
 app.route("/sdk/context", context);
 
 // Webhook Routes
 app.route("/webhook/mailer", mailer);
+app.route("/webhook/vectorizer", vectorizer);
 
 // Playground Routes
 app.route("/playground/ai", playgroundAi);

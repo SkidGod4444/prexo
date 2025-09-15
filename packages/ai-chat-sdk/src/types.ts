@@ -16,7 +16,6 @@ export type GetContextClientParams = {
     token: string;
     namespace?: string;
   };
-  apiKey?: string;
 };
 
 export type ExtVectorConfig = {
@@ -42,7 +41,6 @@ export type SDKConfig = {
   telemetry?: TelementryOptions;
   context?: GetContextClientParams;
   history?: GetHistoryClientParams;
-  apiKey?: string;
 };
 
 // SDK Status types

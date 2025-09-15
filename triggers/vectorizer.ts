@@ -3,7 +3,7 @@ import { extractText } from "./lib/extract-text";
 import { Redis } from "@upstash/redis";
 import { Index } from "@upstash/vector";
 
-const STREAM_KEY = "containers-stream";
+const STREAM_KEY = "vectorizer-stream";
 const GROUP = "vectorizer";
 const CONSUMER = "vectorizer-worker";
 const redis = Redis.fromEnv();

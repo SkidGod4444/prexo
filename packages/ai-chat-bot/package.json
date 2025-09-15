@@ -17,7 +17,8 @@
     "postbuild": "rm -rf dist/client/styles && cpx 'src/**/*.css' dist",
     "pre-publish": "bun run d:build && bun run postbuild",
     "type-check": "tsc --noEmit",
-    "release": "bun d:build && bun run postbuild && release-it --preRelease=beta"
+    "release": "bun d:build && bun run postbuild && release-it",
+    "release:pre": "bun d:build && bun run postbuild && release-it --preRelease=beta"
   },
   "keywords": [
     "react",

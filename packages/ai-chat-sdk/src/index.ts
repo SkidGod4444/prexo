@@ -86,7 +86,6 @@ export class AIChatSDK {
   private telemetry?: Telementry;
   private contextClient?: ReturnType<typeof getContextClient>;
   private historyClient?: ReturnType<typeof getHistoryClient>;
-  private apiKey?: string;
 
   /**
    * Creates a new AIChatSDK instance with the specified configuration
@@ -97,27 +96,18 @@ export class AIChatSDK {
    * ```typescript
    * const sdk = new AIChatSDK({
    *   telemetry: { enabled: true },
-   *   apiKey: 'your-api-key',
-   *   context: { apiKey: 'your-api-key' },
+   *   context: { vector: { url: '...', token: '...', namespace: '...' } },
    *   history: { redis: { url: '...', token: '...' } }
    * });
    * ```
    */
   constructor(config?: SDKConfig) {
-    // Store the API key at SDK level
-    this.apiKey = config?.apiKey;
-
     if (config?.telemetry) {
       this.telemetry = new Telementry(config.telemetry);
     }
 
     if (config?.context) {
-      // If apiKey is provided at SDK level but not in context, use the SDK-level one
-      const contextConfig = {
-        ...config.context,
-        apiKey: config.context.apiKey || this.apiKey,
-      };
-      this.contextClient = getContextClient(contextConfig);
+      this.contextClient = getContextClient(config.context);
     }
 
     if (config?.history) {
@@ -147,13 +137,6 @@ export class AIChatSDK {
   }
 
   /**
-   * Get the API key configured for this SDK instance
-   */
-  getApiKey(): string | undefined {
-    return this.apiKey;
-  }
-
-  /**
    * Send a telemetry event if telemetry is enabled
    */
   async trackEvent(
@@ -169,7 +152,7 @@ export class AIChatSDK {
    * Check if the SDK is properly configured
    */
   isConfigured(): boolean {
-    return !!(this.contextClient || this.historyClient || this.apiKey);
+    return !!(this.contextClient || this.historyClient);
   }
 
   /**
@@ -200,7 +183,6 @@ export class AIChatSDK {
     this.telemetry = undefined;
     this.contextClient = undefined;
     this.historyClient = undefined;
-    this.apiKey = undefined;
   }
 
   /**
@@ -209,20 +191,12 @@ export class AIChatSDK {
   updateConfig(config: SDKConfig): void {
     this.reset();
 
-    // Store the new API key
-    this.apiKey = config.apiKey;
-
     if (config.telemetry) {
       this.telemetry = new Telementry(config.telemetry);
     }
 
     if (config.context) {
-      // If apiKey is provided at SDK level but not in context, use the SDK-level one
-      const contextConfig = {
-        ...config.context,
-        apiKey: config.context.apiKey || this.apiKey,
-      };
-      this.contextClient = getContextClient(contextConfig);
+      this.contextClient = getContextClient(config.context);
     }
 
     if (config.history) {
