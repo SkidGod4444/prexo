@@ -1,7 +1,7 @@
 {
   "name": "@prexo/ai-chat-bot",
   "type": "module",
-  "version": "1.0.0-beta.4",
+  "version": "1.1.0",
   "description": "AI Chat Component with Persistent History and Context",
   "exports": {
     "./react": {
@@ -17,7 +17,8 @@
     "postbuild": "rm -rf dist/client/styles && cpx 'src/**/*.css' dist",
     "pre-publish": "bun run d:build && bun run postbuild",
     "type-check": "tsc --noEmit",
-    "release": "bun d:build && bun run postbuild && release-it --preRelease=beta"
+    "release": "bun d:build && bun run postbuild && release-it",
+    "release:pre": "bun d:build && bun run postbuild && release-it --preRelease=beta"
   },
   "keywords": [
     "react",

@@ -7,7 +7,7 @@ import type {
 import { DEFAULT_SIMILARITY_THRESHOLD, DEFAULT_TOP_K } from "../lib/constants";
 import type { Index } from "@upstash/vector";
 import { nanoid } from "nanoid";
-import { BASE_API_ENDPOINT } from "../lib/utils";
+import { scrapeContent } from "../lib/firecrawl";
 
 // Helper function to chunk text
 function chunkText(text: string, chunkSize = 500, overlap = 50): string[] {
@@ -62,7 +62,7 @@ export class VectorDB {
       },
       { namespace },
     );
-    // console.log("Vector Retrive: ", result)
+    console.log("Vector Retrive: ", result)
     const allValuesUndefined = result.every(
       (embedding) => embedding.data === undefined,
     );
@@ -151,20 +151,10 @@ export class VectorDB {
         }
 
         // extractText should return a string (the extracted text)
-        const response = await fetch(`${BASE_API_ENDPOINT}/extractor`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.PREXO_API_KEY!}`,
-          },
-          body: JSON.stringify({ url: fileSource }),
-        });
-        if (!response.ok) {
-          throw new Error(
-            `Failed to extract text: ${response.status} ${response.statusText}`,
-          );
+        const res = await scrapeContent(fileSource);
+        if (!res?.markdown && !res?.summary) {
+          throw new Error("Failed to extract data from the provided source");
         }
-        const res = await response.json();
 
         // chunk the extracted text
         const transformArgs = "config" in input ? input.config : {};
@@ -173,7 +163,17 @@ export class VectorDB {
           (transformArgs && (transformArgs as any).chunkSize) || 500;
         const overlap =
           (transformArgs && (transformArgs as any).overlap) || 100;
-        const chunks = chunkText(res.output.txt, chunkSize, overlap);
+
+        // Prefer markdown for chunking; fallbacks for possible shapes
+        const markdown =
+          (res as any).markdown ??
+          (res as any)?.output?.markdown ??
+          (res as any)?.output?.txt ??
+          "";
+        const summary =
+          (res as any).summary ?? (res as any)?.output?.summary;
+
+        const chunks = chunkText(markdown, chunkSize, overlap);
 
         // upsert each chunk
         const ids: string[] = [];
@@ -183,7 +183,10 @@ export class VectorDB {
             {
               data: chunk,
               id,
-              metadata: input.options?.metadata,
+              metadata: {
+                ...(input.options?.metadata ?? {}),
+                ...(summary ? { summary } : {}),
+              },
             },
             { namespace },
           );

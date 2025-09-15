@@ -4,11 +4,33 @@ import InfobarBreadCrumb from "@/components/custom/infobar/bread.crumb";
 // import { RainbowButton } from "@/components/custom/rainbow-button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import CtxWebpagesCard from "@/components/custom/memory/ctx.webp.card";
 import { InfoIcon } from "lucide-react";
+import { useLocalStorage } from "usehooks-ts";
+import { useContainersStore } from "@prexo/store";
 
-export default function MemoryPage() {
+export default function MemoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = use(params);
+  const { containers } = useContainersStore();
+  console.log("MemoryPage slug:", slug);
+  const container = containers.find((c) => c.key === slug);
+  const [containerId, setContainerId] = useLocalStorage(
+    "@prexo-#containerId",
+    "",
+  );
+
+  useEffect(() => {
+    if (container?.id && containerId !== container.id) {
+      console.log("Updating containerId from", containerId, "to", container.id);
+      setContainerId(container.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [container?.id, setContainerId]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isProcessing, setIsProcessing] = useState(false);
   return (
@@ -32,10 +54,6 @@ export default function MemoryPage() {
         <Card className="p-2 gap-2">
           <div className="flex items-center justify-between">
             <Badge>Links as context</Badge>
-            {/* 
-            <RainbowButton variant="outline" className="rounded-2xl">
-              Sync context
-            </RainbowButton> */}
           </div>
           <CtxWebpagesCard />
         </Card>
@@ -43,10 +61,6 @@ export default function MemoryPage() {
         <Card className="p-2 gap-2">
           <div className="flex items-center justify-between">
             <Badge>Files as context</Badge>
-            {/* 
-            <RainbowButton variant="outline" className="rounded-2xl">
-              Sync context
-            </RainbowButton> */}
           </div>
           <CtxFileUploader />
         </Card>

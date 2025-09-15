@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-interface GlobalChatConfig {
+export interface GlobalChatConfig {
   apiKey: string;
   // theme?: "light" | "dark";
   user?: {
@@ -29,6 +29,7 @@ interface GlobalChatConfig {
   height?: number | string;
   position?: "bottom-right" | "bottom-left";
   mountId?: string;
+  container_id: string;
   onClose?: () => void;
 }
 

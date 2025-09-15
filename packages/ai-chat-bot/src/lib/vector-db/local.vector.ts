@@ -1,9 +1,10 @@
-import { BASE_API_ENDPOINT } from "../lib/utils";
+
+import { BASE_API_ENDPOINT } from "../utils";
 import type {
   AddContextPayload,
   VectorPayload,
   SaveOperationResult,
-} from "../types";
+} from "@prexo/ai-chat-sdk/types";
 
 export class IntVector {
   private namespace: string;
@@ -16,9 +17,25 @@ export class IntVector {
   }
 
   async addContext(input: AddContextPayload): Promise<SaveOperationResult> {
-    // Always use the internal namespace
-    if (!input.options) input.options = {};
-    input.options.namespace = this.namespace;
+    // Map SDK payload to server contract
+    let body: any = { namespace: this.namespace };
+    if (input.type === "text") {
+      body = { ...body, type: "text", data: (input as any).data };
+    } else if (input.type === "embedding") {
+      body = { ...body, type: "embedding", data: (input as any).data };
+    } else if (input.type === "html") {
+      const src = (input as any).fileSource ?? (input as any).source;
+      body = { ...body, type: "html", url: src };
+    } else if (input.type === "pdf") {
+      const src = (input as any).fileSource ?? (input as any).source;
+      body = { ...body, type: "pdf", url: src };
+    } else if (input.type === "csv") {
+      const src = (input as any).fileSource ?? (input as any).source;
+      body = { ...body, type: "csv", url: src };
+    } else if (input.type === "text-file" || (input as any).fileSource) {
+      const src = (input as any).fileSource ?? (input as any).source;
+      body = { ...body, type: "text-file", url: src };
+    }
 
     const response = await fetch(`${this.BASE_API}/add`, {
       method: "POST",
@@ -26,14 +43,19 @@ export class IntVector {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    const json = await response.json();
+    // Normalize to SaveOperationResult
+    if (json && Array.isArray(json.ids)) {
+      return { success: true, ids: json.ids };
+    }
+    return { success: false, error: json?.error || "Unknown error" };
   }
 
   async removeContext(ids: string[]): Promise<void> {
@@ -55,19 +77,21 @@ export class IntVector {
     payload: Omit<VectorPayload, "namespace">,
   ): Promise<{ data: string; id: string; metadata: TMetadata }[]> {
     const response = await fetch(`${this.BASE_API}/get`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify({ ...payload, namespace: this.namespace }),
+      body: JSON.stringify({ payload, namespace: this.namespace }),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    const json = await response.json();
+    // Server returns { data: [...] }
+    return json?.data ?? [];
   }
 
   async resetContext(): Promise<void> {

@@ -28,7 +28,8 @@
     "setup": "bash scripts/setup.sh",
     "envc": "bash scripts/envc.sh",
     "cleanup": "bash scripts/cleanup.sh",
-    "release:ai-chat-sdk": "turbo --filter=ai-chat-sdk release"
+    "release:ai-chat-sdk": "turbo --filter=ai-chat-sdk release:pre",
+    "release:ai-chat-bot": "turbo --filter=ai-chat-bot release:pre"
   },
   "devDependencies": {
     "@trigger.dev/build": "^3.3.17",

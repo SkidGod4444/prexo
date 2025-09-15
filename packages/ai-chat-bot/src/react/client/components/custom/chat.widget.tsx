@@ -17,6 +17,8 @@ import type {
 } from "../../../../lib/types";
 import { AIChatSDK, type VectorContextResult } from "@prexo/ai-chat-sdk";
 import type { Message as MessageT } from "ai";
+import { InMemoryHistory } from "../../../../lib/local.memory";
+import { IntVector } from "../../../../lib/vector-db/local.vector";
 
 export interface PrexoAiChatBotProps {
   apiKey: string;
@@ -45,8 +47,8 @@ export interface PrexoAiChatBotProps {
   vector?: {
     url: string;
     token: string;
-    namespace: string;
   };
+  container_id: string;
   RAGDisabled?: boolean;
 }
 
@@ -73,6 +75,7 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
   position = "bottom-right",
   redis,
   vector,
+  container_id,
   RAGDisabled = false,
 }) => {
   // Initialize SDK with professional approach
@@ -80,14 +83,17 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     telemetry: {
       enabled: telementry?.enabled ?? true,
     },
-    apiKey: apiKey, // Pass API key to SDK level
-    context: vector ? { vector } : apiKey ? { apiKey } : undefined,
+    context: vector
+      && { vector: {
+          ...vector,
+        namespace: container_id,
+      } },
     history: redis ? { redis } : undefined,
   });
 
   // Get clients from SDK
-  const history = sdk.getHistoryClient();
-  const context = sdk.getContextClient();
+  const history = redis ? sdk.getHistoryClient() : new InMemoryHistory();
+  const context = vector ? sdk.getContextClient() : new IntVector(container_id, apiKey);
 
   // State and refs
   const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);

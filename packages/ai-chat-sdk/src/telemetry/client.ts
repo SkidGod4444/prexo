@@ -181,49 +181,6 @@ export class Telementry {
     return "unknown";
   }
 
-  /**
-   * Retrieves the user's current geolocation (latitude, longitude) if available.
-   * Returns null if not available or not permitted.
-   */
-  private async getGeolocation(): Promise<{
-    latitude: number;
-    longitude: number;
-  } | null> {
-    if (
-      typeof navigator !== "undefined" &&
-      typeof navigator.geolocation !== "undefined"
-    ) {
-      return new Promise((resolve) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            resolve({ latitude, longitude });
-          },
-          (error) => {
-            // Handle specific error codes for debugging
-            switch (error.code) {
-              case error.PERMISSION_DENIED:
-                console.warn("Geolocation: Permission denied by user");
-                break;
-              case error.POSITION_UNAVAILABLE:
-                console.warn(
-                  "Geolocation: Position unavailable (no signal/GPS)",
-                );
-                break;
-              case error.TIMEOUT:
-                console.warn("Geolocation: Request timed out");
-                break;
-              default:
-                console.warn("Geolocation: Unknown error", error);
-            }
-            resolve(null); // still resolve null to avoid breaking telemetry
-          },
-          { timeout: 5000, maximumAge: 0 }, // optional config
-        );
-      });
-    }
-    return null;
-  }
 
   async send<K extends keyof TelementryEvents>(
     event: K,
@@ -242,9 +199,6 @@ export class Telementry {
       this.ingestionKey = ingestionKey; // cache for future
     }
 
-    // Retrieve geolocation data if available
-    const geolocation = await this.getGeolocation();
-
     const payload = {
       event,
       properties: {
@@ -253,7 +207,6 @@ export class Telementry {
         browser: this.detectBrowser(),
         platform: this.detectPlatform(),
         timestamp: new Date().toISOString(),
-        geolocation, // { latitude, longitude } or null
       },
     };
 

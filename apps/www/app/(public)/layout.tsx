@@ -19,7 +19,6 @@ const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 const vectorUrl = process.env.UPSTASH_VECTOR_REST_URL;
 const vectorToken = process.env.UPSTASH_VECTOR_REST_TOKEN;
-const namespace = "saidev";
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
@@ -31,13 +30,13 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         sessionId="009"
         apiKey={apiKey!}
         model={"mistralai/mistral-small-3.2-24b-instruct:free"}
+        container_id="saidev"
         suggestedActions={suggestedActions}
         {...(redisUrl &&
           redisToken && { redis: { url: redisUrl, token: redisToken } })}
         {...(vectorUrl &&
-          vectorToken &&
-          namespace && {
-            vector: { url: vectorUrl, token: vectorToken, namespace },
+          vectorToken && {
+            vector: { url: vectorUrl, token: vectorToken },
           })}
       />
     </div>

@@ -23,7 +23,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-5 w-5/6 z-[500] border border-border/60 bg-secondary/30 backdrop-blur-lg supports-[backdrop-filter]:bg-secondary/50 dark:border-border rounded-2xl">
-      <div className="container flex h-12 max-w-screen-2xl items-center justify-between px-4">
+      <div className="container flex h-12 max-w-screen items-center justify-between px-4">
         <div className="flex items-center space-x-4">
           <MainNavbar />
         </div>

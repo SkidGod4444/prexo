@@ -3,7 +3,7 @@ import {
   DEFAULT_CHAT_SESSION_ID,
   DEFAULT_HISTORY_LENGTH,
 } from "../lib/constants";
-import type { BaseMessageHistory } from "../types";
+import type { BaseMessageHistory } from "@prexo/ai-chat-sdk/types";
 
 function getSessionKey(sessionId: string) {
   return DEFAULT_CHAT_SESSION_ID(sessionId);
