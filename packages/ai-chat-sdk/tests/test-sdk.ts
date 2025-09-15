@@ -3,12 +3,12 @@
 /**
  * Comprehensive SDK Test Script
  * Tests Firecrawl integration and vector upsert functionality
- * 
+ *
  * Prerequisites:
  * 1. Set FIRECRAWL_API_KEY environment variable
  * 2. Set up a vector database (Upstash Vector) with URL and token
  * 3. Optionally set up Redis for history testing
- * 
+ *
  * Usage:
  * bun run test-sdk.ts
  */
@@ -78,7 +78,7 @@ class SDKTester {
 
   private async runTest<T>(
     name: string,
-    testFn: () => Promise<T>
+    testFn: () => Promise<T>,
   ): Promise<T | null> {
     const startTime = Date.now();
     console.log(`⏳ Running: ${name}`);
@@ -86,7 +86,7 @@ class SDKTester {
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
-      
+
       this.results.push({
         name,
         success: true,
@@ -98,8 +98,9 @@ class SDKTester {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
       this.results.push({
         name,
         success: false,
@@ -134,7 +135,7 @@ class SDKTester {
   async testContextClient() {
     return this.runTest("Context Client Setup", async () => {
       const contextClient = this.sdk.getContextClient();
-      
+
       if (!contextClient) {
         throw new Error("Context client is not available");
       }
@@ -152,9 +153,11 @@ class SDKTester {
   async testHistoryClient() {
     return this.runTest("History Client Setup", async () => {
       const historyClient = this.sdk.getHistoryClient();
-      
+
       if (!historyClient) {
-        console.log("   ⚠️  History client not configured (Redis not available)");
+        console.log(
+          "   ⚠️  History client not configured (Redis not available)",
+        );
         return { configured: false };
       }
 
@@ -176,7 +179,7 @@ class SDKTester {
       }
 
       const results: Array<{ text: string; ids: string[] }> = [];
-      
+
       // Test individual text upserts
       for (let i = 0; i < TEST_TEXT_DATA.length; i++) {
         const text = TEST_TEXT_DATA[i];
@@ -230,7 +233,7 @@ class SDKTester {
         found: number;
         results: Array<{ id: string; data: string; metadata: any }>;
       }> = [];
-      
+
       for (const query of queries) {
         const contextResults = await contextClient.getContext({
           question: query,
@@ -241,7 +244,7 @@ class SDKTester {
         results.push({
           query,
           found: contextResults.length,
-          results: contextResults.map(r => ({
+          results: contextResults.map((r) => ({
             id: r.id,
             data: r.data.substring(0, 100) + "...",
             metadata: r.metadata,
@@ -274,12 +277,12 @@ class SDKTester {
         chunksCreated?: number;
         ids?: string[];
       }> = [];
-      
+
       // Test with each URL
       for (const url of TEST_URLS) {
         try {
           console.log(`   🔍 Scraping: ${url}`);
-          
+
           const result = await contextClient.addContext({
             type: "html",
             source: url,
@@ -305,7 +308,9 @@ class SDKTester {
             ids: result.ids,
           });
 
-          console.log(`   ✅ Processed ${url} - ${result.ids.length} chunks created`);
+          console.log(
+            `   ✅ Processed ${url} - ${result.ids.length} chunks created`,
+          );
         } catch (error) {
           console.log(`   ❌ Error processing ${url}: ${error}`);
           results.push({ url, success: false, error: String(error) });
@@ -314,7 +319,7 @@ class SDKTester {
 
       return {
         totalUrls: TEST_URLS.length,
-        successful: results.filter(r => r.success).length,
+        successful: results.filter((r) => r.success).length,
         results,
       };
     });
@@ -328,7 +333,7 @@ class SDKTester {
       }
 
       await contextClient.resetContext();
-      
+
       // Verify reset by trying to retrieve data
       const results = await contextClient.getContext({
         question: "test query",
@@ -336,8 +341,10 @@ class SDKTester {
       });
 
       // Should return the "no answer" response
-      const isEmpty = results.length === 1 && 
-        results[0].data === "There is no answer for this question in the provided context.";
+      const isEmpty =
+        results.length === 1 &&
+        results[0].data ===
+          "There is no answer for this question in the provided context.";
 
       return {
         resetSuccessful: isEmpty,
@@ -350,16 +357,30 @@ class SDKTester {
     return this.runTest("History Operations", async () => {
       const historyClient = this.sdk.getHistoryClient();
       if (!historyClient) {
-        console.log("   ⚠️  History client not configured - skipping history test");
+        console.log(
+          "   ⚠️  History client not configured - skipping history test",
+        );
         return { configured: false };
       }
 
       const sessionId = `test-session-${Date.now()}`;
       const testMessages = [
         { id: "1", content: "Hello, how are you?", role: "user" as const },
-        { id: "2", content: "I'm doing well, thank you!", role: "assistant" as const },
-        { id: "3", content: "What can you help me with?", role: "user" as const },
-        { id: "4", content: "I can help you with various tasks using the AI Chat SDK.", role: "assistant" as const },
+        {
+          id: "2",
+          content: "I'm doing well, thank you!",
+          role: "assistant" as const,
+        },
+        {
+          id: "3",
+          content: "What can you help me with?",
+          role: "user" as const,
+        },
+        {
+          id: "4",
+          content: "I can help you with various tasks using the AI Chat SDK.",
+          role: "assistant" as const,
+        },
       ];
 
       // Add messages
@@ -416,7 +437,7 @@ class SDKTester {
     console.log("=".repeat(60));
 
     const totalTests = this.results.length;
-    const passedTests = this.results.filter(r => r.success).length;
+    const passedTests = this.results.filter((r) => r.success).length;
     const failedTests = totalTests - passedTests;
     const totalDuration = this.results.reduce((sum, r) => sum + r.duration, 0);
 
@@ -424,23 +445,27 @@ class SDKTester {
     console.log(`✅ Passed: ${passedTests}`);
     console.log(`❌ Failed: ${failedTests}`);
     console.log(`⏱️  Total Duration: ${totalDuration}ms`);
-    console.log(`📈 Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
+    console.log(
+      `📈 Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`,
+    );
 
     if (failedTests > 0) {
       console.log("\n❌ FAILED TESTS:");
       this.results
-        .filter(r => !r.success)
-        .forEach(r => {
+        .filter((r) => !r.success)
+        .forEach((r) => {
           console.log(`   • ${r.name}: ${r.error}`);
         });
     }
 
     console.log("\n" + "=".repeat(60));
-    
+
     if (failedTests === 0) {
       console.log("🎉 All tests passed! Your SDK is working correctly.");
     } else {
-      console.log("⚠️  Some tests failed. Please check the configuration and try again.");
+      console.log(
+        "⚠️  Some tests failed. Please check the configuration and try again.",
+      );
     }
   }
 }
@@ -449,18 +474,18 @@ class SDKTester {
 async function main() {
   // Check environment variables
   console.log("🔍 Checking environment variables...");
-  
+
   const requiredEnvVars = [
     { name: "FIRECRAWL_API_KEY", value: process.env.FIRECRAWL_API_KEY },
     { name: "VECTOR_URL", value: process.env.VECTOR_URL },
     { name: "VECTOR_TOKEN", value: process.env.VECTOR_TOKEN },
   ];
 
-  const missingVars = requiredEnvVars.filter(v => !v.value);
-  
+  const missingVars = requiredEnvVars.filter((v) => !v.value);
+
   if (missingVars.length > 0) {
     console.log("❌ Missing required environment variables:");
-    missingVars.forEach(v => console.log(`   • ${v.name}`));
+    missingVars.forEach((v) => console.log(`   • ${v.name}`));
     console.log("\nPlease set these variables and try again.");
     console.log("\nExample:");
     console.log("export FIRECRAWL_API_KEY='your-firecrawl-key'");
@@ -479,13 +504,13 @@ async function main() {
 }
 
 // Handle uncaught errors
-process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason) => {
-  console.error('❌ Unhandled Rejection:', reason);
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ Unhandled Rejection:", reason);
   process.exit(1);
 });
 

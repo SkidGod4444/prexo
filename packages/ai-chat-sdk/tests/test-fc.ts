@@ -2,16 +2,16 @@
 
 /**
  * Focused Test Script for Firecrawl and Vector Upsert Functions
- * 
+ *
  * This script specifically tests:
  * 1. Firecrawl web scraping functionality
  * 2. Vector database upsert operations
  * 3. Vector retrieval and search
- * 
+ *
  * Prerequisites:
  * - FIRECRAWL_API_KEY environment variable
  * - Vector database credentials (VECTOR_URL, VECTOR_TOKEN)
- * 
+ *
  * Usage:
  * bun run test-firecrawl-vector.ts
  */
@@ -20,15 +20,13 @@ import { AIChatSDK } from "../src/index";
 
 // Test configuration
 const VECTOR_CONFIG = {
-  url: process.env.UPSTASH_VECTOR_REST_URL || "https://your-vector-db.upstash.io",
+  url:
+    process.env.UPSTASH_VECTOR_REST_URL || "https://your-vector-db.upstash.io",
   token: process.env.UPSTASH_VECTOR_REST_TOKEN || "your-vector-token",
   namespace: "test-firecrawl-vector",
 };
 
-const TEST_URLS = [
-  "https://docs.prexoai.xyz",
-  "https://devwtf.in",
-];
+const TEST_URLS = ["https://docs.prexoai.xyz", "https://devwtf.in"];
 
 async function testFirecrawlAndVector() {
   console.log("🧪 Testing Firecrawl and Vector Upsert Functions\n");
@@ -39,8 +37,13 @@ async function testFirecrawlAndVector() {
     process.exit(1);
   }
 
-  if (!process.env.UPSTASH_VECTOR_REST_URL || !process.env.UPSTASH_VECTOR_REST_TOKEN) {
-    console.error("❌ VECTOR_URL and VECTOR_TOKEN environment variables are required");
+  if (
+    !process.env.UPSTASH_VECTOR_REST_URL ||
+    !process.env.UPSTASH_VECTOR_REST_TOKEN
+  ) {
+    console.error(
+      "❌ VECTOR_URL and VECTOR_TOKEN environment variables are required",
+    );
     process.exit(1);
   }
 
@@ -76,7 +79,9 @@ async function testFirecrawlAndVector() {
     });
 
     if (textResult.success) {
-      console.log(`✅ Text upsert successful - IDs: ${textResult.ids.join(", ")}`);
+      console.log(
+        `✅ Text upsert successful - IDs: ${textResult.ids.join(", ")}`,
+      );
     } else {
       console.log(`❌ Text upsert failed: ${textResult.error}`);
     }
@@ -86,10 +91,10 @@ async function testFirecrawlAndVector() {
 
   // Test 2: Firecrawl web scraping and upsert
   console.log("\n🌐 Test 2: Firecrawl Web Scraping and Upsert");
-  
+
   for (const url of TEST_URLS) {
     console.log(`\n   🔍 Processing: ${url}`);
-    
+
     try {
       const scrapeResult = await contextClient.addContext({
         type: "html",
@@ -106,7 +111,9 @@ async function testFirecrawlAndVector() {
       if (scrapeResult.success) {
         console.log(`   ✅ Successfully processed ${url}`);
         console.log(`   📊 Created ${scrapeResult.ids.length} vector chunks`);
-        console.log(`   🆔 Chunk IDs: ${scrapeResult.ids.slice(0, 3).join(", ")}${scrapeResult.ids.length > 3 ? "..." : ""}`);
+        console.log(
+          `   🆔 Chunk IDs: ${scrapeResult.ids.slice(0, 3).join(", ")}${scrapeResult.ids.length > 3 ? "..." : ""}`,
+        );
       } else {
         console.log(`   ❌ Failed to process ${url}: ${scrapeResult.error}`);
       }
@@ -117,7 +124,7 @@ async function testFirecrawlAndVector() {
 
   // Test 3: Vector retrieval and search
   console.log("\n🔍 Test 3: Vector Retrieval and Search");
-  
+
   const searchQueries = [
     "What is the Prexo AI Chat SDK?",
     "Who is Saidev Dhal?",
@@ -126,18 +133,20 @@ async function testFirecrawlAndVector() {
 
   for (const query of searchQueries) {
     console.log(`\n   🔎 Searching: "${query}"`);
-    
+
     try {
       const searchResults = await contextClient.getContext({
         question: query,
       });
 
       console.log(`   📊 Found ${searchResults.length} results:`);
-      
+
       searchResults.forEach((result, index) => {
         console.log(`   ${index + 1}. ID: ${result.id}`);
         console.log(`      Data: ${result.data.substring(0, 100)}...`);
-        console.log(`      Metadata: ${JSON.stringify(result.metadata, null, 2)}`);
+        console.log(
+          `      Metadata: ${JSON.stringify(result.metadata, null, 2)}`,
+        );
         console.log("");
       });
     } catch (error) {
@@ -147,7 +156,7 @@ async function testFirecrawlAndVector() {
 
   // Test 4: Test different data types
   console.log("\n📄 Test 4: Different Data Types");
-  
+
   // Test PDF-like content (simulated)
   try {
     const pdfResult = await contextClient.addContext({
@@ -164,7 +173,9 @@ async function testFirecrawlAndVector() {
     });
 
     if (pdfResult.success) {
-      console.log(`✅ PDF simulation upsert successful - ID: ${pdfResult.ids[0]}`);
+      console.log(
+        `✅ PDF simulation upsert successful - ID: ${pdfResult.ids[0]}`,
+      );
     } else {
       console.log(`❌ PDF simulation upsert failed: ${pdfResult.error}`);
     }
@@ -174,7 +185,7 @@ async function testFirecrawlAndVector() {
 
   // Test 5: Vector operations (remove and reset)
   console.log("\n🗑️  Test 5: Vector Operations");
-  
+
   try {
     // Get some IDs to test removal
     const searchResults = await contextClient.getContext({
@@ -183,9 +194,9 @@ async function testFirecrawlAndVector() {
     });
 
     if (searchResults.length > 0) {
-      const idsToRemove = searchResults.slice(0, 1).map(r => r.id);
+      const idsToRemove = searchResults.slice(0, 1).map((r) => r.id);
       console.log(`   🗑️  Removing IDs: ${idsToRemove.join(", ")}`);
-      
+
       await contextClient.removeContext(idsToRemove);
       console.log(`   ✅ Successfully removed ${idsToRemove.length} vectors`);
     }
@@ -198,14 +209,17 @@ async function testFirecrawlAndVector() {
   try {
     await contextClient.resetContext();
     console.log("   ✅ Successfully reset all context");
-    
+
     // Verify reset by searching
     const verifyResults = await contextClient.getContext({
       question: "test",
       topK: 1,
     });
-    
-    if (verifyResults.length === 1 && verifyResults[0].data.includes("no answer")) {
+
+    if (
+      verifyResults.length === 1 &&
+      verifyResults[0].data.includes("no answer")
+    ) {
       console.log("   ✅ Reset verification successful - no data found");
     } else {
       console.log("   ⚠️  Reset verification failed - data still present");

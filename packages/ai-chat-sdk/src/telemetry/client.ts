@@ -181,7 +181,6 @@ export class Telementry {
     return "unknown";
   }
 
-
   async send<K extends keyof TelementryEvents>(
     event: K,
     properties: TelementryEvents[K],

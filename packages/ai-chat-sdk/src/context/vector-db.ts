@@ -62,7 +62,7 @@ export class VectorDB {
       },
       { namespace },
     );
-    console.log("Vector Retrive: ", result)
+    console.log("Vector Retrive: ", result);
     const allValuesUndefined = result.every(
       (embedding) => embedding.data === undefined,
     );
@@ -170,8 +170,7 @@ export class VectorDB {
           (res as any)?.output?.markdown ??
           (res as any)?.output?.txt ??
           "";
-        const summary =
-          (res as any).summary ?? (res as any)?.output?.summary;
+        const summary = (res as any).summary ?? (res as any)?.output?.summary;
 
         const chunks = chunkText(markdown, chunkSize, overlap);
 

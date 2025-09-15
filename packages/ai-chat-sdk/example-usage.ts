@@ -3,7 +3,7 @@
 /**
  * Example Usage Script
  * Demonstrates basic SDK functionality with Firecrawl and Vector operations
- * 
+ *
  * This is a simplified example showing how to use the SDK in practice
  */
 
@@ -25,7 +25,9 @@ async function exampleUsage() {
 
   const contextClient = sdk.getContextClient();
   if (!contextClient) {
-    console.error("❌ Context client not available. Please check your vector database configuration.");
+    console.error(
+      "❌ Context client not available. Please check your vector database configuration.",
+    );
     return;
   }
 
@@ -65,7 +67,9 @@ async function exampleUsage() {
     });
 
     if (webResult.success) {
-      console.log(`✅ Web content processed - ${webResult.ids.length} chunks created`);
+      console.log(
+        `✅ Web content processed - ${webResult.ids.length} chunks created`,
+      );
     } else {
       console.log(`❌ Failed to process web content: ${webResult.error}`);
     }
@@ -83,7 +87,7 @@ async function exampleUsage() {
 
   for (const query of searchQueries) {
     console.log(`\n   Query: "${query}"`);
-    
+
     const results = await contextClient.getContext({
       question: query,
       topK: 2,

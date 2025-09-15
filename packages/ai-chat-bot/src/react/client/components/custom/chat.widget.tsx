@@ -83,17 +83,20 @@ export const PrexoAiChatBot: React.FC<PrexoAiChatBotProps> = ({
     telemetry: {
       enabled: telementry?.enabled ?? true,
     },
-    context: vector
-      && { vector: {
-          ...vector,
+    context: vector && {
+      vector: {
+        ...vector,
         namespace: container_id,
-      } },
+      },
+    },
     history: redis ? { redis } : undefined,
   });
 
   // Get clients from SDK
   const history = redis ? sdk.getHistoryClient() : new InMemoryHistory();
-  const context = vector ? sdk.getContextClient() : new IntVector(container_id, apiKey);
+  const context = vector
+    ? sdk.getContextClient()
+    : new IntVector(container_id, apiKey);
 
   // State and refs
   const [isOpen, setIsOpen] = useLocalStorage("@prexo-chat-bot-#isOpen", false);
