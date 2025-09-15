@@ -34,10 +34,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         suggestedActions={suggestedActions}
         {...(redisUrl &&
           redisToken && { redis: { url: redisUrl, token: redisToken } })}
-        // {...(vectorUrl &&
-        //   vectorToken && {
-        //     vector: { url: vectorUrl, token: vectorToken },
-        //   })}
+        {...(vectorUrl &&
+          vectorToken && {
+            vector: { url: vectorUrl, token: vectorToken },
+          })}
       />
     </div>
   );
