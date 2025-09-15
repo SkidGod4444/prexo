@@ -1,6 +1,5 @@
 "use client";
 import type { BaseMessageHistory } from "../types";
-import { InMemoryHistory } from "./in-memory";
 import { InRedisHistory } from "./in-redis";
 
 export type GetHistoryClientParams = {
@@ -12,7 +11,7 @@ export type GetHistoryClientParams = {
 
 export const getHistoryClient = (
   params?: GetHistoryClientParams,
-): BaseMessageHistory => {
+): BaseMessageHistory | undefined => {
   const redisUrl = params?.redis?.url;
   const redisToken = params?.redis?.token;
 
@@ -24,6 +23,4 @@ export const getHistoryClient = (
       },
     });
   }
-
-  return new InMemoryHistory();
 };

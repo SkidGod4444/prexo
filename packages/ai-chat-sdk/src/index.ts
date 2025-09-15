@@ -3,8 +3,8 @@
 
 // Import all components
 import { Telementry } from "./telemetry";
-import { getContextClient, VectorDB, ExtVector, IntVector } from "./context";
-import { getHistoryClient, InMemoryHistory, InRedisHistory } from "./history";
+import { getContextClient, VectorDB, ExtVector } from "./context";
+import { getHistoryClient, InRedisHistory } from "./history";
 
 // Import centralized types and version info
 import type {
@@ -29,8 +29,6 @@ export {
   getHistoryClient,
   VectorDB,
   ExtVector,
-  IntVector,
-  InMemoryHistory,
   InRedisHistory,
 };
 

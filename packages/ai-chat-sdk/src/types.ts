@@ -14,7 +14,7 @@ export type GetContextClientParams = {
   vector?: {
     url: string;
     token: string;
-    namespace: string;
+    namespace?: string;
   };
   apiKey?: string;
 };
