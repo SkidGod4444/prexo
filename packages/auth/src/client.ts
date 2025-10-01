@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/client";
 import { polarClient } from "@polar-sh/better-auth";
+import { lastLoginMethodClient, adminClient } from "better-auth/client/plugins";
 
 const baseURL =
   process.env.NODE_ENV === "development"
@@ -9,7 +10,7 @@ const baseURL =
 export const authClient = createAuthClient({
   baseURL,
   basePath: "/v1/auth",
-  plugins: [polarClient()],
+  plugins: [polarClient(), lastLoginMethodClient(), adminClient()],
   fetchOptions: {
     onError: async (context) => {
       const { response } = context;

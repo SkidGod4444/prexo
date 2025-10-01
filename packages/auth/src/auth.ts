@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prisma } from "@prexo/db";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { haveIBeenPwned } from "better-auth/plugins";
+import { haveIBeenPwned, lastLoginMethod, admin } from "better-auth/plugins";
 import { polar, checkout, portal, usage } from "@polar-sh/better-auth";
 import { polarClient } from "@prexo/polar";
 import { generateHashKeyHex } from "@prexo/crypt";
@@ -13,6 +13,13 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   plugins: [
     haveIBeenPwned({
       customPasswordCompromisedMessage: "Please choose a more secure password.",
+    }),
+    lastLoginMethod(),
+    admin({
+      defaultRole: "user",
+      adminRoles: ["admin", "superadmin"],
+      impersonationSessionDuration: 60 * 60 * 24, // 1 day
+      adminUserIds: ["user_id_1", "user_id_2"]
     }),
     polar({
       client: polarClient,

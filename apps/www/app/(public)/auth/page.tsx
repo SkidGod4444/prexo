@@ -11,15 +11,12 @@ import { authClient } from "@prexo/auth/client";
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import TermsAndConditionsDialog from "@/components/custom/terms-and-co";
-import { useLocalStorage } from "usehooks-ts";
+import { Badge } from "@/components/ui/badge";
 
 function LoginPageContent() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
-  const [lastUsedProvider, setLastUsedProvider] = useLocalStorage(
-    "@prexo-#lastUsedProvider",
-    "",
-  );
+  const lastMethod = authClient.getLastUsedLoginMethod()
 
   const baseUrl =
     process.env.NODE_ENV === "development"
@@ -46,7 +43,6 @@ function LoginPageContent() {
             },
           },
         });
-        setLastUsedProvider(provider);
         break;
       case "github":
         await authClient.signIn.social({
@@ -61,7 +57,6 @@ function LoginPageContent() {
             },
           },
         });
-        setLastUsedProvider(provider);
         break;
       case "discord":
         await authClient.signIn.social({
@@ -76,7 +71,6 @@ function LoginPageContent() {
             },
           },
         });
-        setLastUsedProvider(provider);
         break;
       default:
         break;
@@ -97,6 +91,7 @@ function LoginPageContent() {
                 </p>
               </div>
               <div className="flex flex-col gap-3">
+                <div className="relative">
                 <Button
                   variant="outline"
                   type="button"
@@ -105,12 +100,13 @@ function LoginPageContent() {
                 >
                   <IconBrandGoogle size="10" />
                   Continue with Google
-                  {lastUsedProvider === "google" && (
-                    <span className="text-muted-foreground text-sm">
-                      (last used)
-                    </span>
-                  )}
+                  {lastMethod === "google" && (
+                        <Badge className="ml-2">Last used</Badge>
+                    )}
                 </Button>
+                </div>
+
+                <div className="relative">
                 <Button
                   variant="outline"
                   type="button"
@@ -119,12 +115,13 @@ function LoginPageContent() {
                 >
                   <IconBrandGithub size="10" />
                   Continue with Github
-                  {lastUsedProvider === "github" && (
-                    <span className="text-muted-foreground text-sm">
-                      (last used)
-                    </span>
+                  {lastMethod === "github" && (
+                    <Badge className="ml-2">Last used</Badge>
                   )}
                 </Button>
+                </div>
+
+                <div className="relative">
                 <Button
                   variant="outline"
                   type="button"
@@ -133,12 +130,11 @@ function LoginPageContent() {
                 >
                   <IconBrandDiscord size="10" />
                   Continue with Discord
-                  {lastUsedProvider === "discord" && (
-                    <span className="text-muted-foreground text-sm">
-                      (last used)
-                    </span>
+                  {lastMethod === "discord" && (
+                    <Badge className="ml-2">Last used</Badge>
                   )}
                 </Button>
+                </div>
               </div>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t" />
             </div>
