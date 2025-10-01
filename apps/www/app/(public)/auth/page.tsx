@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 function LoginPageContent() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
-  const lastMethod = authClient.getLastUsedLoginMethod()
+  const lastMethod = authClient.getLastUsedLoginMethod();
 
   const baseUrl =
     process.env.NODE_ENV === "development"
@@ -92,48 +92,48 @@ function LoginPageContent() {
               </div>
               <div className="flex flex-col gap-3">
                 <div className="relative">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full cursor-pointer"
-                  onClick={() => handleAuth("google")}
-                >
-                  <IconBrandGoogle size="10" />
-                  Continue with Google
-                  {lastMethod === "google" && (
-                        <Badge className="ml-2">Last used</Badge>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full cursor-pointer"
+                    onClick={() => handleAuth("google")}
+                  >
+                    <IconBrandGoogle size="10" />
+                    Continue with Google
+                    {lastMethod === "google" && (
+                      <Badge className="ml-2">Last used</Badge>
                     )}
-                </Button>
+                  </Button>
                 </div>
 
                 <div className="relative">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full cursor-pointer"
-                  onClick={() => handleAuth("github")}
-                >
-                  <IconBrandGithub size="10" />
-                  Continue with Github
-                  {lastMethod === "github" && (
-                    <Badge className="ml-2">Last used</Badge>
-                  )}
-                </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full cursor-pointer"
+                    onClick={() => handleAuth("github")}
+                  >
+                    <IconBrandGithub size="10" />
+                    Continue with Github
+                    {lastMethod === "github" && (
+                      <Badge className="ml-2">Last used</Badge>
+                    )}
+                  </Button>
                 </div>
 
                 <div className="relative">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full cursor-pointer"
-                  onClick={() => handleAuth("discord")}
-                >
-                  <IconBrandDiscord size="10" />
-                  Continue with Discord
-                  {lastMethod === "discord" && (
-                    <Badge className="ml-2">Last used</Badge>
-                  )}
-                </Button>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full cursor-pointer"
+                    onClick={() => handleAuth("discord")}
+                  >
+                    <IconBrandDiscord size="10" />
+                    Continue with Discord
+                    {lastMethod === "discord" && (
+                      <Badge className="ml-2">Last used</Badge>
+                    )}
+                  </Button>
                 </div>
               </div>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t" />

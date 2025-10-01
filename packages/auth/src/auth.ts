@@ -19,7 +19,7 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       defaultRole: "user",
       adminRoles: ["admin", "superadmin"],
       impersonationSessionDuration: 60 * 60 * 24, // 1 day
-      adminUserIds: ["user_id_1", "user_id_2"]
+      adminUserIds: ["user_id_1", "user_id_2"],
     }),
     polar({
       client: polarClient,
