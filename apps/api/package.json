@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3001",
-    "prebuild": "turbo --filter=@prexo/db db:generate && turbo --filter=@prexo/db db:migrate",
+    "prebuild": "turbo --filter=@prexo/db db:generate",
     "build": "next build",
     "start": "next start",
     "check-types": "tsc --noEmit"
