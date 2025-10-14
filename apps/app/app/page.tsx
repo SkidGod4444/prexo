@@ -7,6 +7,6 @@ export default async function Page() {
   if (orgSlug) {
     redirect(`/orgs/${orgSlug}`);
   } else {
-    redirect("/orgs");
+    console.log("No orgSlug found!");
   }
 }
