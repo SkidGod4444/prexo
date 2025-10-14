@@ -10,7 +10,7 @@
     "dev": "turbo run dev",
     "dev:www": "turbo --filter=www dev",
     "dev:clog": "turbo --filter=changelogs dev",
-    "dev:app": "turbo --filter=console dev",
+    "dev:app": "turbo --filter=app dev",
     "dev:api": "turbo --filter=api dev",
     "dev:docs": "turbo --filter=docs dev",
     "dev:trig": "bunx trigger.dev@latest dev",

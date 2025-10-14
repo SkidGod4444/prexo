@@ -24,6 +24,7 @@ import { rateLimitHandler } from "@/middleware/ratelimit";
 import mailer from "../routes/webhooks/mailer";
 import link from "../routes/link";
 import vectorizer from "../routes/webhooks/vectorizer";
+import clerk from "../routes/webhooks/clerk";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -84,6 +85,7 @@ app.route("/sdk/context", context);
 // Webhook Routes
 app.route("/webhook/mailer", mailer);
 app.route("/webhook/vectorizer", vectorizer);
+app.route("/webhook/clerk", clerk);
 
 // Playground Routes
 app.route("/playground/ai", playgroundAi);
