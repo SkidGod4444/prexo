@@ -5,5 +5,5 @@ import React, { useEffect } from "react";
 
 export default function page() {
   const ldClient = useLDClient();
-  return <FeatureFlagExample/>;
+  return <FeatureFlagExample />;
 }

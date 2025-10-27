@@ -8,10 +8,12 @@ type MaintenanceContextType = {
   isEnabled: boolean;
 };
 
-const MaintenanceContext = createContext<MaintenanceContextType | undefined>(undefined);
+const MaintenanceContext = createContext<MaintenanceContextType | undefined>(
+  undefined,
+);
 
 export const MaintenanceCntxt = ({ children }: { children: ReactNode }) => {
-  const { value: isEnabled } = useFeatureFlag('isMaintenanceModeEnabled');
+  const { value: isEnabled } = useFeatureFlag("isMaintenanceModeEnabled");
   return (
     <MaintenanceContext.Provider value={{ isEnabled }}>
       <>

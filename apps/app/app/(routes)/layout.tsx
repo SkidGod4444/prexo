@@ -10,11 +10,11 @@ export default function RoutesLayout({
   return (
     <MaintenanceCntxt>
       <main>
-      <NavBar />
-      <div className="flex items-center justify-center overflow-hidden">
-        {children}
-      </div>
-    </main>
+        <NavBar />
+        <div className="flex items-center justify-center overflow-hidden">
+          {children}
+        </div>
+      </main>
     </MaintenanceCntxt>
   );
 }

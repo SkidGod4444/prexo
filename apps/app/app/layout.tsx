@@ -92,9 +92,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <ClerkCntxt>
-              <FeatCntxt>
-                {children}
-              </FeatCntxt>
+              <FeatCntxt>{children}</FeatCntxt>
             </ClerkCntxt>
           </ThemeProvider>
         </body>
