@@ -1,7 +1,10 @@
+"use client";
 import OrgsCard from "@/components/custom/orgs/card";
+import { useMaintenance } from "@/contexts/maintenance.cntxt";
 import React from "react";
 
 export default function Orgs() {
+  const {isEnabled} = useMaintenance();
   return (
     <div className="flex flex-col px-4 md:px-16">
       <div className="w-full max-w-8xl mx-auto flex flex-col items-start">
