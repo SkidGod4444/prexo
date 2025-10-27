@@ -15,7 +15,11 @@ export default function MaintenanceBanner() {
         </div>
       </div>
 
-      <Button variant={"outline"} size="sm" className="bg-yellow-50 dark:bg-yellow-900">
+      <Button
+        variant={"outline"}
+        size="sm"
+        className="bg-yellow-50 dark:bg-yellow-900"
+      >
         <a
           href="https://status.example.com"
           target="_blank"

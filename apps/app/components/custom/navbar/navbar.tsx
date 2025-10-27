@@ -149,7 +149,7 @@ export default function NavBar() {
           />
         </div>
         <div className="hidden md:block">
-        <SearchBar/>
+          <SearchBar />
         </div>
         {/* Right side */}
         <div className="flex items-center gap-4">

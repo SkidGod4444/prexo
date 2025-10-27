@@ -16,7 +16,7 @@ export default function Orgs() {
       description: "First organization app for demonstration purposes.",
       isPaidPlan: true,
       isOnProduction: false,
-      endpoint: "https://api.appa.example.com"
+      endpoint: "https://api.appa.example.com",
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ export default function Orgs() {
       description: "Second app with premium subscription active.",
       isPaidPlan: true,
       isOnProduction: true,
-      endpoint: "https://api.appb.example.com"
+      endpoint: "https://api.appb.example.com",
     },
     {
       id: 3,
@@ -32,8 +32,8 @@ export default function Orgs() {
       description: "Third app, still in development.",
       isPaidPlan: false,
       isOnProduction: false,
-      endpoint: "https://dev.appc.example.com"
-    }
+      endpoint: "https://dev.appc.example.com",
+    },
   ]; // Only 3 actual orgs, so we get total 4 cards
 
   return (
@@ -49,8 +49,18 @@ export default function Orgs() {
             <OrgsCard isEmptyCard={true} />
             {/* Map actual org cards */}
             {orgs.map((org) => (
-              <Link key={org.id} href={`${pathname}/apps/${org.id}`} className="flex">
-              <OrgsCard name={org.name} isOnProduction={org.isOnProduction} isPaidPlan={org.isPaidPlan} description={org.description} endpoint={org.endpoint} />
+              <Link
+                key={org.id}
+                href={`${pathname}/apps/${org.id}`}
+                className="flex"
+              >
+                <OrgsCard
+                  name={org.name}
+                  isOnProduction={org.isOnProduction}
+                  isPaidPlan={org.isPaidPlan}
+                  description={org.description}
+                  endpoint={org.endpoint}
+                />
               </Link>
             ))}
           </div>
