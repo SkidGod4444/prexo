@@ -1,4 +1,5 @@
 "use client";
+import SearchBar from "@/components/search.bar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -146,6 +147,9 @@ export default function NavBar() {
             afterCreateOrganizationUrl="/orgs/:slug" // Navigate to the org's slug after creating an org
             afterSelectOrganizationUrl="/orgs/:slug" // Navigate to the org's slug after selecting  it
           />
+        </div>
+        <div className="hidden md:block">
+        <SearchBar/>
         </div>
         {/* Right side */}
         <div className="flex items-center gap-4">
