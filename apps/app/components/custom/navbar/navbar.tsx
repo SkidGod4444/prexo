@@ -1,12 +1,4 @@
-import { ChevronsUpDown } from "lucide-react";
-import { Select as SelectPrimitive } from "radix-ui";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -19,22 +11,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 // Navigation links array to be used in both desktop and mobile menus
-const navigationLinks = [
+const defaultNavLinks = [
   { href: "#", label: "Dashboard", active: false },
   { href: "#", label: "Docs", active: false },
   { href: "#", label: "API reference", active: true },
 ];
 
+const appNavLinks = [
+  { href: "#", label: "Dashboard", active: false },
+  { href: "#", label: "Docs", active: false },
+];
+
 export default function NavBar() {
+  const pathname = usePathname();
+  const navLinks = pathname?.includes("/apps/") ? appNavLinks : defaultNavLinks;
+
   return (
     <header className="border-b bg-secondary mb-10">
       <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
@@ -78,7 +74,7 @@ export default function NavBar() {
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
+                  {navLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
                       <NavigationMenuLink href={link.href} className="py-1.5">
                         {link.label}
@@ -166,7 +162,7 @@ export default function NavBar() {
         {/* Navigation menu */}
         <NavigationMenu>
           <NavigationMenuList className="gap-2">
-            {navigationLinks.map((link, index) => (
+            {navLinks.map((link, index) => (
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink
                   active={link.active}
