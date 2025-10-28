@@ -1,5 +1,8 @@
 "use client";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 import SearchBar from "@/components/search.bar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -13,24 +16,30 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
-
-// Navigation links array to be used in both desktop and mobile menus
-const defaultNavLinks = [
-  { href: "#", label: "Dashboard", active: false },
-  { href: "#", label: "Docs", active: false },
-  { href: "#", label: "API reference", active: true },
-];
-
-const appNavLinks = [
-  { href: "#", label: "Dashboard", active: false },
-  { href: "#", label: "Docs", active: false },
-];
-
 export default function NavBar() {
   const pathname = usePathname();
-  const navLinks = pathname?.includes("/apps/") ? appNavLinks : defaultNavLinks;
+
+  // Navigation links array to be used in both desktop and mobile menus
+  const defaultNavLinks = [
+    { href: "#", label: "Docs" },
+    { href: "#", label: "API reference" },
+  ];
+
+  const segments = pathname.split("/");
+  const appBasePath = segments.slice(0, 5).join("/");
+  // /orgs/prexo-ai/apps/1 (dynamic app slug)
+
+  const appNavLinks = [
+    { href: `${appBasePath}`, label: "Overview", isBeta: false },
+    { href: `${appBasePath}/inbox`, label: "Inbox", isBeta: true },
+    { href: `${appBasePath}/chats`, label: "Chats", isBeta: true },
+    { href: `${appBasePath}/meets`, label: "Meetings", isBeta: true },
+    { href: `${appBasePath}/settings`, label: "Settings", isBeta: false },
+  ];
+  console.log("Current pathname:", pathname);
+  const navLinks = pathname?.includes("/apps/")
+    ? appNavLinks
+    : defaultNavLinks.map((link) => ({ ...link, isBeta: false }));
 
   return (
     <header className="border-b bg-secondary mb-10">
@@ -56,6 +65,7 @@ export default function NavBar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   xmlns="http://www.w3.org/2000/svg"
+                  aria-label="img"
                 >
                   <path
                     d="M4 12L20 12"
@@ -169,11 +179,20 @@ export default function NavBar() {
             {navLinks.map((link, index) => (
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink
-                  active={link.active}
+                  active={pathname === link.href}
                   href={link.href}
-                  className="py-1.5 font-medium text-muted-foreground hover:text-primary"
+                  className="inline-flex flex-row items-center gap-2 text-muted-foreground hover:bg-secondary hover:text-primary-foreground font-medium px-2 py-1"
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+
+                  {link.isBeta && (
+                    <Badge
+                      variant={"outline"}
+                      className="ml-1 text-xs border border-dashed text-blue-600 border-blue-600"
+                    >
+                      Beta
+                    </Badge>
+                  )}
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}

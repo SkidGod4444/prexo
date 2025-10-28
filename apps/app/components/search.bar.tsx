@@ -38,6 +38,7 @@ export default function SearchBar() {
   return (
     <>
       <button
+        type="button"
         className="inline-flex h-9 w-[300px] cursor-pointer rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
         onClick={() => setOpen(true)}
       >

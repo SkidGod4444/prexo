@@ -1,6 +1,6 @@
+import type React from "react";
 import NavBar from "@/components/custom/navbar/navbar";
 import { MaintenanceCntxt } from "@/contexts/maintenance.cntxt";
-import React from "react";
 
 export default function RoutesLayout({
   children,

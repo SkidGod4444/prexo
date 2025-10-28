@@ -1,12 +1,9 @@
 "use client";
-import OrgsCard from "@/components/custom/orgs/card";
-import { useMaintenance } from "@/contexts/maintenance.cntxt";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import OrgsCard from "@/components/custom/orgs/card";
 
 export default function Orgs() {
-  const { isEnabled } = useMaintenance();
   const pathname = usePathname();
   // Example data array for 4 org cards
   const orgs = [

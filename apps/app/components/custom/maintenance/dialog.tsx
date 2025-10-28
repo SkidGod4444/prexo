@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowRightIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export default function MaintenanceDialog({
   isOpenProp,

@@ -9,17 +9,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "bg-primary hover:bg-primary/50 text-primary-foreground shadow-[0px_0px_0px_1.5px_rgb(0_0_0/.30),inset_0px_1px_1px_0_rgb(255_255_255/.20)] focus-visible:ring-primary",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
+          "text-primary-foreground bg-red-800 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-red-900/60 hover:bg-red-800/90 active:scale-[0.97] focus-visible:ring-red-500",
+        warn: "text-primary-foreground bg-yellow-600 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-yellow-600/60 hover:bg-yellow-600/90 active:scale-[0.97]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:ring-secondary",
+          "text-primary-foreground bg-secondary border transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-secondary/60 hover:bg-secondary/80 active:scale-[0.97] focus-visible:ring-secondary",
+        outline:
+          "text-secondary-foreground bg-secondary transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-secondary/60 hover:bg-secondary/80 active:scale-[0.97] focus-visible:ring-secondary",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring",
-        link: "text-primary underline-offset-4 hover:underline focus-visible:ring-ring",
+          "text-primary-foreground bg-transparent hover:bg-accent hover:text-accent-foreground active:scale-[0.97]",
+        link: "text-primary underline underline-offset-4 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] hover:underline active:scale-[0.97] focus-visible:ring-ring bg-transparent border-0 px-0",
+        default:
+          "text-primary-foreground bg-primary transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-primary/60 hover:bg-primary/60 active:scale-[0.97]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

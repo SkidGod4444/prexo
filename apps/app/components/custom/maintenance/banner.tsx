@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { TriangleAlert } from "lucide-react";
+import { Megaphone, TriangleAlert } from "lucide-react";
+import Link from "next/link";
 
 export default function MaintenanceBanner() {
   return (
@@ -15,19 +16,19 @@ export default function MaintenanceBanner() {
         </div>
       </div>
 
-      <Button
-        variant={"outline"}
-        size="sm"
-        className="bg-yellow-50 dark:bg-yellow-900"
+      <Link
+        href="https://status.example.com"
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <a
-          href="https://status.example.com"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button
+          variant={"warn"}
+          size="sm"
+          className="bg-yellow-50 dark:bg-yellow-800"
         >
-          View Status Page
-        </a>
-      </Button>
+          <Megaphone /> Read Notification
+        </Button>
+      </Link>
     </div>
   );
 }

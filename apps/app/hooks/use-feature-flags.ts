@@ -8,7 +8,7 @@ export const useFeatureFlag = (
 ) => {
   const flags = useFlags();
   const ldClient = useLDClient();
-  console.log("Feature Flags:", flags);
+
   return {
     value: flags[flagKey] ?? defaultValue,
     client: ldClient,
