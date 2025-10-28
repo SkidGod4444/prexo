@@ -1,13 +1,12 @@
+import { BookIcon, CirclePlus, DraftingCompass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { BookIcon, CirclePlus, DraftingCompass, RouteIcon } from "lucide-react";
-import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Button } from "@/components/ui/button";
 import { Frame, FramePanel } from "@/components/ui/frame";
 
 interface OrgsCardProps {
@@ -51,7 +50,7 @@ export default function OrgsCard({
     </Frame>
   ) : (
     <Frame className="flex border border-dashed bg-secondary w-[300px] gap-4 p-3">
-      <FramePanel className="flex flex-col justify-between bg-card rounded-xl border h-full">
+      <FramePanel className="flex flex-col justify-between bg-card rounded-xl border h-[190px]">
         <div className="flex flex-row items-center justify-between">
           <DraftingCompass className="size-4" />
 

@@ -42,7 +42,7 @@ export default function NavBar() {
     : defaultNavLinks.map((link) => ({ ...link, isBeta: false }));
 
   return (
-    <header className="border-b bg-secondary mb-10">
+    <header className="border-b bg-secondary">
       <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
         {/* Left side */}
         <div className="flex items-center gap-2">
@@ -65,8 +65,9 @@ export default function NavBar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-label="img"
+                  aria-label="Menu"
                 >
+                  <title>Menu</title>
                   <path
                     d="M4 12L20 12"
                     className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]"

@@ -11,7 +11,7 @@ export default function RoutesLayout({
     <MaintenanceCntxt>
       <main>
         <NavBar />
-        <div className="flex items-center justify-center overflow-hidden">
+        <div className="flex items-center justify-center overflow-hidden my-12">
           {children}
         </div>
       </main>

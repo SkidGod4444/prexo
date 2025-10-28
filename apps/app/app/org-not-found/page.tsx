@@ -11,12 +11,12 @@ export default async function OrgNotFound() {
   }
 
   return (
-    <>
+    <div>
       <p>Sorry, organization is not valid.</p>
       <OrganizationList
         afterCreateOrganizationUrl="/orgs/:slug"
         afterSelectOrganizationUrl="/orgs/:slug"
       />
-    </>
+    </div>
   );
 }

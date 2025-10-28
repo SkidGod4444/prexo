@@ -1,12 +1,13 @@
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+import { consoleConfig } from "@prexo/utils/config";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme.provider";
 import { ClerkCntxt } from "@/contexts/clerk.cntxt";
-import { dark } from "@clerk/themes";
 import { FeatCntxt } from "@/contexts/feat.cntxt";
-import { consoleConfig } from "@prexo/utils/config";
-import type { Metadata } from "next";
+import ConsoleMessage from "@/components/custom/console.msg";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -92,7 +93,10 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <ClerkCntxt>
-              <FeatCntxt>{children}</FeatCntxt>
+              <FeatCntxt>
+                {children}
+                <ConsoleMessage />
+              </FeatCntxt>
             </ClerkCntxt>
           </ThemeProvider>
         </body>
