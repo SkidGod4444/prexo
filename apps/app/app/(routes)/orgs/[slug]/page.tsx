@@ -50,7 +50,7 @@ export default function Orgs() {
   ]; // Only 3 actual orgs, so we get total 4 cards
 
   return (
-    <div className="flex flex-col px-4 md:px-16 min-h-full w-full">
+    <div className="flex flex-col min-h-full w-full">
       <div className="w-full max-w-8xl mx-auto flex flex-col items-start">
         <h1 className="text-3xl font-bold mb-2">Applications</h1>
         <p className="text-muted-foreground text-sm mb-8">

@@ -1,5 +1,6 @@
 "use client";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { socials } from "@prexo/utils/constants";
 import { usePathname } from "next/navigation";
 import SearchBar from "@/components/search.bar";
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +22,9 @@ export default function NavBar() {
 
   // Navigation links array to be used in both desktop and mobile menus
   const defaultNavLinks = [
-    { href: "#", label: "Docs" },
-    { href: "#", label: "API reference" },
+    { href: `${socials.docs}`, label: "Documentation" },
+    { href: `${socials.changelogs}`, label: "Changelogs" },
+    { href: `${socials.discord}`, label: "Support" },
   ];
 
   const segments = pathname.split("/");
@@ -42,7 +44,7 @@ export default function NavBar() {
     : defaultNavLinks.map((link) => ({ ...link, isBeta: false }));
 
   return (
-    <header className="border-b bg-secondary">
+    <header className="sticky top-0 z-50 border-b bg-secondary">
       <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
         {/* Left side */}
         <div className="flex items-center gap-2">
@@ -83,13 +85,29 @@ export default function NavBar() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+            <PopoverContent
+              align="start"
+              className="w-40 p-1 md:hidden bg-secondary"
+            >
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink href={link.href} className="py-1.5">
-                        {link.label}
+                    <NavigationMenuItem key={index} className="min-w-full">
+                      <NavigationMenuLink
+                        active={pathname === link.href}
+                        href={link.href}
+                        className="inline-flex w-full flex-row items-center gap-2 text-muted-foreground hover:bg-secondary hover:text-primary-foreground font-medium px-2 py-1"
+                      >
+                        <span>{link.label}</span>
+
+                        {link.isBeta && (
+                          <Badge
+                            variant={"outline"}
+                            className="ml-1 text-xs border border-dashed text-blue-600 border-blue-600"
+                          >
+                            Beta
+                          </Badge>
+                        )}
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   ))}
@@ -173,19 +191,18 @@ export default function NavBar() {
         </div>
       </div>
       {/* Bottom navigation */}
-      <div className="border-t px-4 md:px-6 py-2 max-md:hidden">
+      <div className="border-t px-4 md:px-6 py-2 max-md:hidden sticky top-16 z-40">
         {/* Navigation menu */}
         <NavigationMenu>
           <NavigationMenuList className="gap-2">
-            {navLinks.map((link, index) => (
-              <NavigationMenuItem key={index}>
+            {navLinks.map((link) => (
+              <NavigationMenuItem key={link.href}>
                 <NavigationMenuLink
                   active={pathname === link.href}
                   href={link.href}
                   className="inline-flex flex-row items-center gap-2 text-muted-foreground hover:bg-secondary hover:text-primary-foreground font-medium px-2 py-1"
                 >
                   <span>{link.label}</span>
-
                   {link.isBeta && (
                     <Badge
                       variant={"outline"}
