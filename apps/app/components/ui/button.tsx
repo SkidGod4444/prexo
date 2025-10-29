@@ -1,6 +1,6 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,7 @@ const buttonVariants = cva(
         outline:
           "text-secondary-foreground bg-secondary transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-secondary/60 hover:bg-secondary/80 active:scale-[0.97] focus-visible:ring-secondary",
         ghost:
-          "text-primary-foreground bg-transparent hover:bg-accent hover:text-accent-foreground active:scale-[0.97]",
+          "text-primary-foreground bg-transparent hover:bg-secondary/50 hover:text-accent-foreground active:scale-[0.97]",
         link: "text-primary underline underline-offset-4 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] hover:underline active:scale-[0.97] focus-visible:ring-ring bg-transparent border-0 px-0",
         default:
           "text-primary-foreground bg-primary transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-primary/60 hover:bg-primary/60 active:scale-[0.97]",
