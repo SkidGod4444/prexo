@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-beta.4",
     "@clerk/nextjs": "^6.33.3",
     "@clerk/themes": "^2.4.25",
     "@hookform/resolvers": "^5.2.2",

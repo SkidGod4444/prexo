@@ -105,7 +105,10 @@ export default function SettingsPage() {
               </h3>
               <p className="text-gray-400 text-sm">
                 For a list of events you can subscribe to, take a look at the{" "}
-                <Link href="/event-catalog" className="text-blue-400 hover:text-blue-300">
+                <Link
+                  href="/event-catalog"
+                  className="text-blue-400 hover:text-blue-300"
+                >
                   Event Catalog
                 </Link>
                 .

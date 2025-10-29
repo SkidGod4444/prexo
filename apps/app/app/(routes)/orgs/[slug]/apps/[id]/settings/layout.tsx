@@ -35,8 +35,16 @@ export default function SettingsLayout({
         { icon: Lock, label: "SSO connections", path: `${basePath}/sso` },
         { icon: Zap, label: "Web3", path: `${basePath}/web3` },
         { icon: Key, label: "Multi-factor", path: `${basePath}/mfa` },
-        { icon: Shield, label: "Restrictions", path: `${basePath}/restrictions` },
-        { icon: AlertCircle, label: "Attack protection", path: `${basePath}/attack-protection` },
+        {
+          icon: Shield,
+          label: "Restrictions",
+          path: `${basePath}/restrictions`,
+        },
+        {
+          icon: AlertCircle,
+          label: "Attack protection",
+          path: `${basePath}/attack-protection`,
+        },
       ],
     },
     {
@@ -53,7 +61,7 @@ export default function SettingsLayout({
     {
       title: "Feature management",
       items: [{ icon: Grid3x3, label: "Features", path: `${basePath}` }],
-    }
+    },
   ];
 
   return (
@@ -88,9 +96,7 @@ export default function SettingsLayout({
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {children}
-      </main>
+      <main className="flex-1 flex flex-col overflow-hidden">{children}</main>
     </div>
   );
 }
