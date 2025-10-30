@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 
 export const OrgCntxt = async ({
   children,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLDClient, useFlags } from "launchdarkly-react-client-sdk";
+import { useFlags, useLDClient } from "launchdarkly-react-client-sdk";
 
 export const useFeatureFlag = (
   flagKey: string,

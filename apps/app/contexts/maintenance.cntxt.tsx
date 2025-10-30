@@ -1,8 +1,7 @@
 "use client";
+import { createContext, type ReactNode, useContext } from "react";
 import MaintenanceBanner from "@/components/custom/maintenance/banner";
-// import MaintenanceDialog from "@/components/custom/maintenance/dialog";
 import { useFeatureFlag } from "@/hooks/use-feature-flags";
-import { ReactNode, createContext, useContext } from "react";
 
 type MaintenanceContextType = {
   isEnabled: boolean;
@@ -16,11 +15,8 @@ export const MaintenanceCntxt = ({ children }: { children: ReactNode }) => {
   const { value: isEnabled } = useFeatureFlag("isMaintenanceModeEnabled");
   return (
     <MaintenanceContext.Provider value={{ isEnabled }}>
-      <>
         {isEnabled && <MaintenanceBanner />}
         {children}
-        {/* <MaintenanceDialog isOpenProp={isEnabled}/> */}
-      </>
     </MaintenanceContext.Provider>
   );
 };

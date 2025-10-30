@@ -1,10 +1,10 @@
 "use client";
-import * as Sentry from "@sentry/nextjs";
-import { ReactNode, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { LDProvider } from "launchdarkly-react-client-sdk";
 import Observability from "@launchdarkly/observability";
 import SessionReplay from "@launchdarkly/session-replay";
+import * as Sentry from "@sentry/nextjs";
+import { LDProvider } from "launchdarkly-react-client-sdk";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { logSentry } from "@/lib/logger";
 
