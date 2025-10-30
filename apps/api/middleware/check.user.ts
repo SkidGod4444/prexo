@@ -23,7 +23,7 @@
 //   }
 // };
 
-import { getAuth } from '@hono/clerk-auth'
+import { getAuth } from "@hono/clerk-auth";
 import { Context, Next } from "hono";
 
 export const checkUser = async (c: Context, next: Next) => {

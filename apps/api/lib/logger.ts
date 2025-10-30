@@ -26,26 +26,26 @@ interface TelegramLogParams {
 }
 
 function escapeMarkdown(text: string) {
-    return text
-      .replace(/_/g, '\\_')
-      .replace(/\*/g, '\\*')
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/~/g, '\\~')
-      .replace(/`/g, '\\`')
-      .replace(/>/g, '\\>')
-      .replace(/#/g, '\\#')
-      .replace(/\+/g, '\\+')
-      .replace(/-/g, '\\-')
-      .replace(/=/g, '\\=')
-      .replace(/\|/g, '\\|')
-      .replace(/{/g, '\\{')
-      .replace(/}/g, '\\}')
-      .replace(/\./g, '\\.')
-      .replace(/!/g, '\\!');
-  }
+  return text
+    .replace(/_/g, "\\_")
+    .replace(/\*/g, "\\*")
+    .replace(/\[/g, "\\[")
+    .replace(/\]/g, "\\]")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)")
+    .replace(/~/g, "\\~")
+    .replace(/`/g, "\\`")
+    .replace(/>/g, "\\>")
+    .replace(/#/g, "\\#")
+    .replace(/\+/g, "\\+")
+    .replace(/-/g, "\\-")
+    .replace(/=/g, "\\=")
+    .replace(/\|/g, "\\|")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}")
+    .replace(/\./g, "\\.")
+    .replace(/!/g, "\\!");
+}
 
 function buildTelegramLogMessage(params: TelegramLogParams) {
   const {
@@ -79,13 +79,13 @@ function buildTelegramLogMessage(params: TelegramLogParams) {
     .addLineBreak()
     .addCode(`Timestamp: ${timestamp ?? new Date().toISOString()}`)
     .addLineBreak()
-    .addLineBreak()
-    if (stackTrace) {
-      builder
-        .addBold("Stack Trace:")
-        .addLineBreak()
-        .addPreformatted(escapeMarkdown(stackTrace), "typescript");
-    }
+    .addLineBreak();
+  if (stackTrace) {
+    builder
+      .addBold("Stack Trace:")
+      .addLineBreak()
+      .addPreformatted(escapeMarkdown(stackTrace), "typescript");
+  }
 
   if (documentationUrl) {
     builder

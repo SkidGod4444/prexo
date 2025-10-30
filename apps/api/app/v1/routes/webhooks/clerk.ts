@@ -18,7 +18,6 @@ clerk.post("/", async (c) => {
 
     // Handle specific event types
     if (eventType === "user.created") {
-      
       console.log("Received new user created event:", id);
 
       const user = await prisma.user.create({
@@ -26,7 +25,8 @@ clerk.post("/", async (c) => {
           id: id || "",
           name: evt.data.first_name + " " + evt.data.last_name,
           email: evt.data.email_addresses[0]?.email_address,
-          emailVerified: evt.data.email_addresses[0]?.verification?.status === "verified",
+          emailVerified:
+            evt.data.email_addresses[0]?.verification?.status === "verified",
           image: evt.data.image_url || "",
           createdAt: new Date(evt.data.created_at * 1000),
           updatedAt: new Date(evt.data.updated_at * 1000),
@@ -53,7 +53,7 @@ clerk.post("/", async (c) => {
         severity: "low",
         stackTrace: `Created User Email: ${evt.data.email_addresses[0]?.email_address}`,
         environment: process.env.NODE_ENV || "development",
-      })
+      });
     }
 
     if (eventType === "user.deleted") {
@@ -66,7 +66,7 @@ clerk.post("/", async (c) => {
         severity: "medium",
         stackTrace: `Deleted User Id: ${evt.data.id}`,
         environment: process.env.NODE_ENV || "development",
-      })
+      });
     }
 
     if (eventType === "organization.created") {
@@ -79,7 +79,7 @@ clerk.post("/", async (c) => {
         severity: "low",
         stackTrace: `Organization Slug: ${evt.data.slug}`,
         environment: process.env.NODE_ENV || "development",
-      })
+      });
     }
 
     if (eventType === "organization.updated") {
@@ -97,7 +97,7 @@ clerk.post("/", async (c) => {
         severity: "medium",
         stackTrace: `Organization Slug: ${evt.data.slug}`,
         environment: process.env.NODE_ENV || "development",
-      })
+      });
     }
 
     if (eventType === "organizationInvitation.created") {
@@ -110,7 +110,7 @@ clerk.post("/", async (c) => {
         severity: "low",
         stackTrace: `Invited Email: ${evt.data.email_address}`,
         environment: process.env.NODE_ENV || "development",
-      })
+      });
     }
 
     if (eventType === "organizationInvitation.accepted") {

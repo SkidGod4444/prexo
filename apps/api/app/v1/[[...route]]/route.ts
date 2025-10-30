@@ -59,7 +59,7 @@ app.use(
 );
 
 app.use(logger());
-app.use(clerkMiddleware())
+app.use(clerkMiddleware());
 app.use(rateLimitHandler);
 
 // Import routes
