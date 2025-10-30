@@ -8,6 +8,27 @@ const clerk = new Hono();
 
 const STREAM_KEY = "email-stream";
 
+// Convert Clerk timestamps (which may be in seconds, milliseconds, or string with prefixes) to a Date
+const toDate = (value: unknown): Date => {
+  if (value instanceof Date) return value;
+  if (typeof value === "number") {
+    // If it's likely seconds (<= 10 digits), convert to ms; otherwise assume ms
+    const ms = value < 1_000_000_000_0 ? value * 1000 : value;
+    return new Date(ms);
+  }
+  if (typeof value === "string") {
+    // Extract numeric part if the string has prefixes like "float1716883200000"
+    const numericPart = Number(value.replace(/[^0-9.-]/g, ""));
+    if (!Number.isNaN(numericPart)) {
+      const ms = numericPart < 1_000_000_000_0 ? numericPart * 1000 : numericPart;
+      return new Date(ms);
+    }
+    const parsed = Date.parse(value);
+    if (!Number.isNaN(parsed)) return new Date(parsed);
+  }
+  return new Date();
+};
+
 clerk.post("/", async (c) => {
   try {
     const evt = await verifyWebhook(c.req.raw);
@@ -28,8 +49,8 @@ clerk.post("/", async (c) => {
           emailVerified:
             evt.data.email_addresses[0]?.verification?.status === "verified",
           image: evt.data.image_url || "",
-          createdAt: new Date(evt.data.created_at * 1000),
-          updatedAt: new Date(evt.data.updated_at * 1000),
+          createdAt: toDate(evt.data.created_at),
+          updatedAt: toDate(evt.data.updated_at),
           role: "user",
           banned: evt.data.banned || false,
         },
