@@ -64,6 +64,7 @@ export function EmptyInbox() {
                     type="text"
                     placeholder="Sales Team"
                     aria-label="Name"
+                    className={"rounded-md"}
                   />
                 </div>
                 <div className="flex flex-col items-start gap-2">
