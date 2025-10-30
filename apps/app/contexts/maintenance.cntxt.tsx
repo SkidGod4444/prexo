@@ -15,8 +15,8 @@ export const MaintenanceCntxt = ({ children }: { children: ReactNode }) => {
   const { value: isEnabled } = useFeatureFlag("isMaintenanceModeEnabled");
   return (
     <MaintenanceContext.Provider value={{ isEnabled }}>
-        {isEnabled && <MaintenanceBanner />}
-        {children}
+      {isEnabled && <MaintenanceBanner />}
+      {children}
     </MaintenanceContext.Provider>
   );
 };
