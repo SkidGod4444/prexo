@@ -46,7 +46,7 @@ clerk.post("/", async (c) => {
 
       console.log("User creation event added to cache stream:", STREAM_KEY);
 
-      logTelegram({
+      await logTelegram({
         logTitle: "Clerk Webhook - User Created",
         logSummary: `A new user has been created with ID: ${id} & Email: ${evt.data.email_addresses[0]?.email_address}`,
         logType: "webhook",
@@ -59,7 +59,7 @@ clerk.post("/", async (c) => {
     if (eventType === "user.deleted") {
       console.log("New user deleted:", id);
       // Handle user creation logic here
-      logTelegram({
+      await logTelegram({
         logTitle: "Clerk Webhook - User Deleted",
         logSummary: `A user has been deleted with ID: ${id}`,
         logType: "webhook",
@@ -72,7 +72,7 @@ clerk.post("/", async (c) => {
     if (eventType === "organization.created") {
       console.log("New org created:", id);
       // Handle user creation logic here
-      logTelegram({
+      await logTelegram({
         logTitle: "Clerk Webhook - Organization Created",
         logSummary: `A new organization has been created with ID: ${id}`,
         logType: "webhook",
@@ -90,7 +90,7 @@ clerk.post("/", async (c) => {
     if (eventType === "organization.deleted") {
       console.log("New org deleted:", id);
       // Handle user creation logic here
-      logTelegram({
+      await logTelegram({
         logTitle: "Clerk Webhook - Organization Deleted",
         logSummary: `An organization has been deleted with ID: ${evt.data.id}`,
         logType: "webhook",
@@ -103,7 +103,7 @@ clerk.post("/", async (c) => {
     if (eventType === "organizationInvitation.created") {
       console.log("New org deleted:", id);
       // Handle user creation logic here
-      logTelegram({
+      await logTelegram({
         logTitle: "Clerk Webhook - Organization Invitation Created",
         logSummary: `A new organization invitation has been created with ID: ${evt.data.organization_id}`,
         logType: "webhook",
