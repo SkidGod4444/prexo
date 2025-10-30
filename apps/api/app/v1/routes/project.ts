@@ -1,6 +1,5 @@
 import { checkUser } from "@/middleware/check.user";
 import { invalidateCache } from "@/lib/utils";
-import { auth } from "@prexo/auth";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 import { auditLogs } from "@/middleware/audit.logs";

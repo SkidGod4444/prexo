@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-// import { logger } from "hono/logger";
+import { logger } from "hono/logger";
 import { handle } from "hono/vercel";
 import health from "../routes/alive";
 import ai from "../routes/ai";
@@ -25,6 +25,7 @@ import mailer from "../routes/webhooks/mailer";
 import link from "../routes/link";
 import vectorizer from "../routes/webhooks/vectorizer";
 import clerk from "../routes/webhooks/clerk";
+import { clerkMiddleware } from "@hono/clerk-auth";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -57,7 +58,8 @@ app.use(
   }),
 );
 
-// app.use(logger());
+app.use(logger());
+app.use(clerkMiddleware())
 app.use(rateLimitHandler);
 
 // Import routes

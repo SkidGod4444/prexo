@@ -8,10 +8,10 @@ import { Hono } from "hono";
 const user = new Hono<{ Variables: Variables }>();
 
 user.use(checkUser);
-user.use(auditLogs);
+// user.use(auditLogs);
 
 user.get("/self", async (c) => {
-  const currentUser = c.get("user");
+  const currentUser = c.get("userId");
   if (!currentUser) {
     return c.json(
       {
@@ -26,7 +26,7 @@ user.get("/self", async (c) => {
 
   user = await prisma.user.findUnique({
     where: {
-      id: currentUser.id,
+      id: currentUser,
     },
   });
 
