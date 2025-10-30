@@ -52,59 +52,59 @@ export default function OrgsCard({
         </EmptyHeader>
         <EmptyContent>
           <div className="flex flex-col gap-2 h-full w-full">
-          <Dialog>
-          <DialogTrigger>
-            <Button size="sm" className="w-full">
-              <CirclePlus className="opacity-72" />
-              Create app
-            </Button>
-            </DialogTrigger>
-            <DialogPopup showCloseButton={false} className={"bg-secondary"}>
-              <DialogHeader>
-                <DialogTitle>Create new Application</DialogTitle>
-                <DialogDescription>
-                  Create a new application to get started with Prexo AI.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4">
-                <div className="flex flex-col items-start gap-2">
-                  <Label htmlFor={id}>Name</Label>
-                  <Input
-                    id={id}
-                    type="text"
-                    placeholder="Sales Team"
-                    aria-label="Name"
-                    className={"rounded-md"}
-                  />
+            <Dialog>
+              <DialogTrigger>
+                <Button size="sm" className="w-full">
+                  <CirclePlus className="opacity-72" />
+                  Create app
+                </Button>
+              </DialogTrigger>
+              <DialogPopup showCloseButton={false} className={"bg-secondary"}>
+                <DialogHeader>
+                  <DialogTitle>Create new Application</DialogTitle>
+                  <DialogDescription>
+                    Create a new application to get started with Prexo AI.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4">
+                  <div className="flex flex-col items-start gap-2">
+                    <Label htmlFor={id}>Name</Label>
+                    <Input
+                      id={id}
+                      type="text"
+                      placeholder="Sales Team"
+                      aria-label="Name"
+                      className={"rounded-md"}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start gap-2">
+                    <Label htmlFor={id}>Slug</Label>
+                    <Input
+                      id={id}
+                      type="text"
+                      placeholder="sales-team"
+                      aria-label="Slug"
+                      className={"rounded-md"}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start gap-2">
+                    <Label htmlFor={id}>Description</Label>
+                    <Textarea
+                      id={id}
+                      placeholder="sales"
+                      aria-label="Description"
+                      className={"rounded-md"}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col items-start gap-2">
-                  <Label htmlFor={id}>Slug</Label>
-                  <Input
-                    id={id}
-                    type="text"
-                    placeholder="sales-team"
-                    aria-label="Slug"
-                    className={"rounded-md"}
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-2">
-                  <Label htmlFor={id}>Description</Label>
-                  <Textarea
-                    id={id}
-                    placeholder="sales"
-                    aria-label="Description"
-                    className={"rounded-md"}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <DialogClose render={<Button variant="outline" />}>
-                  Cancel
-                </DialogClose>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogPopup>
-          </Dialog>
+                <DialogFooter>
+                  <DialogClose render={<Button variant="outline" />}>
+                    Cancel
+                  </DialogClose>
+                  <Button type="submit">Save changes</Button>
+                </DialogFooter>
+              </DialogPopup>
+            </Dialog>
             <Button variant="outline" size="sm">
               <BookIcon className="opacity-72" />
               View docs
