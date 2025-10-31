@@ -91,6 +91,8 @@ type ProjectType = {
   name: string;
   description?: string | null;
   domains: DomainType[];
+  isFreeTier: boolean;
+  endpoint?: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
   userId: string;

@@ -31,7 +31,7 @@ interface OrgsCardProps {
   isEmptyCard?: boolean;
   name?: string;
   description?: string;
-  isPaidPlan?: boolean;
+  isFreeTier?: boolean;
   isOnProduction?: boolean;
   endpoint?: string;
 }
@@ -40,7 +40,7 @@ export default function OrgsCard({
   isEmptyCard,
   name,
   description,
-  isPaidPlan,
+  isFreeTier,
   isOnProduction,
   endpoint,
 }: OrgsCardProps) {
@@ -201,7 +201,7 @@ export default function OrgsCard({
       </FramePanel>
       <div className="flex items-center justify-between">
         <Badge>{isOnProduction ? "Production" : "Development"}</Badge>
-        <Badge>{isPaidPlan ? "Pro Plan" : "Free Plan"}</Badge>
+        <Badge>{isFreeTier ? "Pro Plan" : "Free Plan"}</Badge>
       </div>
     </Frame>
   );

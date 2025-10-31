@@ -64,6 +64,7 @@
         "@hookform/resolvers": "^5.2.2",
         "@launchdarkly/observability": "^0.4.5",
         "@launchdarkly/session-replay": "^0.4.5",
+        "@prexo/types": "workspace:*",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-alert-dialog": "^1.1.15",
         "@radix-ui/react-aspect-ratio": "^1.1.7",

@@ -101,6 +101,8 @@ model Project {
   slug          String?         @unique
   description   String?
   memoId        String?
+  isFreeTier    Boolean         @default(true)
+  endpoint      String?         @unique
   keyId         String?         @unique
   domains       Domain[]
   notifications Notifications[]
