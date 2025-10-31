@@ -33,20 +33,20 @@ export const checkUser = async (c: Context, next: Next) => {
     // First, try to get auth from Hono Clerk middleware (cookies/headers)
     // This works for same-origin requests where cookies are forwarded
     let auth = getAuth(c);
-    
+
     // If authenticated via middleware, proceed
     if (auth && auth.isAuthenticated && auth.userId) {
       c.set("auth", auth);
       c.set("userId", auth.userId);
       return await next();
     }
-    
+
     // If not authenticated via middleware, check for Authorization header
     // This handles cross-origin requests where cookies might not be forwarded
     const authHeader = c.req.header("Authorization");
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.replace("Bearer ", "").trim();
-      
+
       try {
         // Use Clerk's official verifyToken method to verify the session token
         // This properly verifies the token signature and expiration
@@ -54,7 +54,7 @@ export const checkUser = async (c: Context, next: Next) => {
         const result = await verifyToken(token, {
           secretKey: process.env.CLERK_SECRET_KEY,
         });
-        
+
         // verifyToken returns JwtReturnType<JwtPayload, TokenVerificationError>
         // Check if result has data property (success) or errors property (failure)
         if (result.data && !result.errors) {
@@ -70,9 +70,13 @@ export const checkUser = async (c: Context, next: Next) => {
             return await next();
           }
         }
-        
+
         // If we have errors, log them
-        if (result.errors && Array.isArray(result.errors) && result.errors.length > 0) {
+        if (
+          result.errors &&
+          Array.isArray(result.errors) &&
+          result.errors.length > 0
+        ) {
           console.log("Token verification errors:", result.errors);
         }
       } catch (tokenError) {
@@ -80,7 +84,7 @@ export const checkUser = async (c: Context, next: Next) => {
         // Fall through to return 401
       }
     }
-    
+
     // If we get here, authentication failed
     console.log("Access Denied! No valid authentication found.");
     console.log("Debug info:", {

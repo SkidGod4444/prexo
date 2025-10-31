@@ -5,7 +5,7 @@ import { useCallback } from "react";
 /**
  * Custom hook to make authenticated API requests
  * Automatically includes Clerk session token in Authorization header
- * 
+ *
  * @example
  * ```tsx
  * const fetchWithAuth = useAuthenticatedFetch();
@@ -49,4 +49,3 @@ export function useAuthenticatedFetch() {
 
   return authenticatedFetch;
 }
-
