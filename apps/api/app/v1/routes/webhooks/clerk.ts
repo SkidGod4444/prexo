@@ -21,7 +21,8 @@ clerk.post("/", async (c) => {
       console.log("Received new user created event:", id);
 
       const email = evt.data.email_addresses[0]?.email_address || "";
-      const name = `${evt.data.first_name || ""} ${evt.data.last_name || ""}`.trim();
+      const name =
+        `${evt.data.first_name || ""} ${evt.data.last_name || ""}`.trim();
       const emailVerified =
         evt.data.email_addresses[0]?.verification?.status === "verified";
       const image = evt.data.image_url || "";
@@ -44,7 +45,9 @@ clerk.post("/", async (c) => {
           },
         });
       } else {
-        const existingByEmail = await prisma.user.findUnique({ where: { email } });
+        const existingByEmail = await prisma.user.findUnique({
+          where: { email },
+        });
         if (existingByEmail && existingByEmail.id !== id) {
           // Migrate related records to new Clerk id, then update the user id
           await prisma.$transaction([
