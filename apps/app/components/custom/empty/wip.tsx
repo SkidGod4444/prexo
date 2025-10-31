@@ -1,4 +1,6 @@
 import { socials } from "@prexo/utils/constants";
+import { Construction, Link as LinkIcon } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -8,8 +10,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Link as LinkIcon, Construction } from "lucide-react";
-import Link from "next/link";
 
 export function EmptyWIP() {
   return (

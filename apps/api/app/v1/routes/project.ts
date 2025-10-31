@@ -2,13 +2,13 @@ import { checkUser } from "@/middleware/check.user";
 import { invalidateCache } from "@/lib/utils";
 import { prisma } from "@prexo/db";
 import { Hono } from "hono";
-import { auditLogs } from "@/middleware/audit.logs";
+// import { auditLogs } from "@/middleware/audit.logs";
 import { Variables } from "@/types";
 
 const project = new Hono<{ Variables: Variables }>();
 
 project.use(checkUser);
-project.use(auditLogs);
+// project.use(auditLogs);
 
 project.post("/create", async (c) => {
   const { name, userId, description } = await c.req.json();

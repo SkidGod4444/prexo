@@ -1,4 +1,6 @@
-import { BookIcon, CirclePlus, DraftingCompass } from "lucide-react";
+"use client";
+import { BookIcon, CirclePlus, DraftingCompass, Loader } from "lucide-react";
+import { useId, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +22,10 @@ import {
 import { Frame, FramePanel } from "@/components/ui/frame";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useId } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { toastManager } from "@/components/ui/toast";
+import { constants } from "@/lib/constants";
+import { useUser } from "@clerk/nextjs";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -41,13 +45,65 @@ export default function OrgsCard({
   endpoint,
 }: OrgsCardProps) {
   const id = useId();
+  const clerk = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const [projName, setProjName] = useState("");
+  const [projSlug, setProjSlug] = useState("");
+  const [projDesc, setProjDesc] = useState("");
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    await toastManager
+      .promise(
+        (async () => {
+          const payload = {
+            name: projName || "",
+            userId: clerk.user?.id || "",
+            slug: projSlug || "",
+            description: projDesc || "",
+          };
+
+          const res = await fetch(`${constants.apiEndpoint}/project/create`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to create project");
+          }
+          const data = await res.json();
+          return data.project?.name || "Project created";
+        })(),
+        {
+          loading: {
+            title: "Creating project…",
+            description: "Your project is being created.",
+          },
+          success: (data: string) => ({
+            title: "Project Created!",
+            description: `Success: ${data}`,
+          }),
+          error: (err: Error) => ({
+            title: "Error!",
+            description: err.message || "Please try again.",
+          }),
+        },
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return isEmptyCard ? (
     <Frame className="flex border border-dashed bg-secondary h-[250px] w-[300px]">
       <Empty className="min-h-full min-w-full">
         <EmptyHeader>
           <EmptyTitle className="text-muted-foreground">
-            0/5 Apps created
+            0/2 Apps created
           </EmptyTitle>
         </EmptyHeader>
         <EmptyContent>
@@ -75,6 +131,7 @@ export default function OrgsCard({
                       placeholder="Sales Team"
                       aria-label="Name"
                       className={"rounded-md"}
+                      onValueChange={(value) => setProjName(value)}
                     />
                   </div>
                   <div className="flex flex-col items-start gap-2">
@@ -85,6 +142,7 @@ export default function OrgsCard({
                       placeholder="sales-team"
                       aria-label="Slug"
                       className={"rounded-md"}
+                      onValueChange={(value) => setProjSlug(value)}
                     />
                   </div>
                   <div className="flex flex-col items-start gap-2">
@@ -94,6 +152,7 @@ export default function OrgsCard({
                       placeholder="sales"
                       aria-label="Description"
                       className={"rounded-md"}
+                      onChange={e => setProjDesc(e.target.value)}
                     />
                   </div>
                 </div>
@@ -101,7 +160,16 @@ export default function OrgsCard({
                   <DialogClose render={<Button variant="outline" />}>
                     Cancel
                   </DialogClose>
-                  <Button type="submit">Save changes</Button>
+                  {isLoading ? (
+                    <Button type="button" disabled>
+                      <Loader className="size-4 animate-spin" />
+                    Creating...
+                  </Button>
+                  ) : (
+                    <Button type="submit" onClick={handleSubmit}>
+                    Create Application
+                  </Button>
+                  )}
                 </DialogFooter>
               </DialogPopup>
             </Dialog>

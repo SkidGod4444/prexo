@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme.provider";
 import { ClerkCntxt } from "@/contexts/clerk.cntxt";
 import { FeatCntxt } from "@/contexts/feat.cntxt";
 import ConsoleMessage from "@/components/custom/console.msg";
+import { ToastProvider } from "@/components/ui/toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,7 +95,9 @@ export default function RootLayout({
           >
             <ClerkCntxt>
               <FeatCntxt>
+                <ToastProvider position="bottom-center">
                 {children}
+                </ToastProvider>
                 <ConsoleMessage />
               </FeatCntxt>
             </ClerkCntxt>

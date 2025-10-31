@@ -36,9 +36,10 @@ export default function NavBar() {
     { href: `${appBasePath}/inbox`, label: "Inbox", isBeta: true },
     { href: `${appBasePath}/chats`, label: "Chats", isBeta: true },
     { href: `${appBasePath}/meets`, label: "Meetings", isBeta: true },
+    { href: `${appBasePath}/playground`, label: "Playground", isBeta: true },
     { href: `${appBasePath}/settings`, label: "Settings", isBeta: false },
   ];
-  console.log("Current pathname:", pathname);
+
   const navLinks = pathname?.includes("/apps/")
     ? appNavLinks
     : defaultNavLinks.map((link) => ({ ...link, isBeta: false }));
@@ -91,8 +92,8 @@ export default function NavBar() {
             >
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="min-w-full">
+                  {navLinks.map((link) => (
+                    <NavigationMenuItem key={link.href} className="min-w-full">
                       <NavigationMenuLink
                         active={pathname === link.href}
                         href={link.href}
