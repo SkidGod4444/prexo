@@ -112,7 +112,7 @@ clerk.post("/", async (c) => {
 
       console.log("User upserted in DB:", user);
 
-      await cache.xadd(STREAM_KEY, `user-${id}`, {
+      await cache.xadd(STREAM_KEY, "*", {
         id,
         type: eventType,
         email: evt.data.email_addresses[0]?.email_address || "",

@@ -10,7 +10,7 @@ vectorizer.post("/", async (c) => {
   const { container_id, type, url } = await c.req.json();
   try {
     const STREAM_KEY = "vectorizer-stream";
-    await cache.xadd(STREAM_KEY, Date.now().toString(), {
+    await cache.xadd(STREAM_KEY, "*", {
       container_id,
       type,
       url,

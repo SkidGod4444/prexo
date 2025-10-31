@@ -36,7 +36,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.email,
@@ -55,7 +55,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.customerEmail,
@@ -74,7 +74,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.customerEmail,
@@ -93,7 +93,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.customer.email,
@@ -112,7 +112,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.customer.email,
@@ -131,7 +131,7 @@ mailer.post("/", async (c) => {
       console.log(
         `Received ${event.type} event, adding to polar webhook stream`,
       );
-      await cache.xadd(STREAM_KEY, event.data.id, {
+      await cache.xadd(STREAM_KEY, "*", {
         id: event.data.id,
         type: event.type,
         email: event.data.customer.email,
