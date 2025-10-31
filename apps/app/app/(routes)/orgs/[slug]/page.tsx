@@ -2,14 +2,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import OrgsCard from "@/components/custom/orgs/card";
-import { constants } from "@/lib/constants";
+import { useAuthenticatedFetch } from "@/lib/fetch";
 import { useEffect, useState } from "react";
 import OrgCardSkeleton from "@/components/custom/skeletons/org.card";
 import { ProjectType } from "@prexo/types";
 
 export default function Orgs() {
   const pathname = usePathname();
-  const apiEndpoint = `${constants.apiEndpoint}/project/all`;
+  const fetchWithAuth = useAuthenticatedFetch();
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,9 +19,7 @@ export default function Orgs() {
     const fetchProjects = async () => {
       setError(null);
       try {
-        const res = await fetch(apiEndpoint, {
-          credentials: "include",
-        });
+        const res = await fetchWithAuth("/project/all");
         if (!res.ok) {
           throw new Error("Failed to fetch apps");
         }
@@ -35,11 +33,13 @@ export default function Orgs() {
         if (isMounted) setIsLoading(false);
       }
     };
-    fetchProjects();
+    if (projects.length === 0) {
+      fetchProjects();
+    }
     return () => {
       isMounted = false;
     };
-  }, [apiEndpoint]);
+  }, [projects.length]);
 
   return (
     <div className="flex flex-col min-h-full w-full">

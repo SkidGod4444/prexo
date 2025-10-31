@@ -24,8 +24,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toastManager } from "@/components/ui/toast";
-import { constants } from "@/lib/constants";
+import { useAuthenticatedFetch } from "@/lib/fetch";
 import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -46,7 +47,10 @@ export default function OrgsCard({
 }: OrgsCardProps) {
   const id = useId();
   const auth = useAuth();
+  const router = useRouter();
+  const fetchWithAuth = useAuthenticatedFetch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [projName, setProjName] = useState("");
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
@@ -63,9 +67,8 @@ export default function OrgsCard({
             description: projDesc || "",
           };
 
-          const res = await fetch(`${constants.apiEndpoint}/project/create`, {
+          const res = await fetchWithAuth("/project/create", {
             method: "POST",
-            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
@@ -94,7 +97,10 @@ export default function OrgsCard({
         },
       )
       .finally(() => {
+        console.log("Finished creating project");
         setIsLoading(false);
+        setIsOpen(false);
+        router.refresh();
       });
   };
 
@@ -108,7 +114,7 @@ export default function OrgsCard({
         </EmptyHeader>
         <EmptyContent>
           <div className="flex flex-col gap-2 h-full w-full">
-            <Dialog>
+            <Dialog onOpenChange={setIsOpen} open={isOpen}>
               <DialogTrigger>
                 <Button size="sm" className="w-full">
                   <CirclePlus className="opacity-72" />
