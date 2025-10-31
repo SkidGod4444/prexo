@@ -20,22 +20,94 @@ clerk.post("/", async (c) => {
     if (eventType === "user.created") {
       console.log("Received new user created event:", id);
 
-      const user = await prisma.user.create({
-        data: {
-          id: id || "",
-          name: evt.data.first_name + " " + evt.data.last_name,
-          email: evt.data.email_addresses[0]?.email_address,
-          emailVerified:
-            evt.data.email_addresses[0]?.verification?.status === "verified",
-          image: evt.data.image_url || "",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          role: "user",
-          banned: evt.data.banned || false,
-        },
-      });
+      const email = evt.data.email_addresses[0]?.email_address || "";
+      const name = `${evt.data.first_name || ""} ${evt.data.last_name || ""}`.trim();
+      const emailVerified =
+        evt.data.email_addresses[0]?.verification?.status === "verified";
+      const image = evt.data.image_url || "";
+      const banned = evt.data.banned || false;
 
-      console.log("New user created in DB:", user);
+      let user = null;
+
+      // Ensure DB user.id === Clerk user id. Handle duplicates on unique email.
+      const existingById = await prisma.user.findUnique({ where: { id } });
+      if (existingById) {
+        user = await prisma.user.update({
+          where: { id },
+          data: {
+            name,
+            email,
+            emailVerified,
+            image,
+            updatedAt: new Date(),
+            banned,
+          },
+        });
+      } else {
+        const existingByEmail = await prisma.user.findUnique({ where: { email } });
+        if (existingByEmail && existingByEmail.id !== id) {
+          // Migrate related records to new Clerk id, then update the user id
+          await prisma.$transaction([
+            prisma.session.updateMany({
+              where: { userId: existingByEmail.id },
+              data: { userId: id },
+            }),
+            prisma.account.updateMany({
+              where: { userId: existingByEmail.id },
+              data: { userId: id },
+            }),
+            prisma.passkey.updateMany({
+              where: { userId: existingByEmail.id },
+              data: { userId: id },
+            }),
+            prisma.project.updateMany({
+              where: { userId: existingByEmail.id },
+              data: { userId: id },
+            }),
+          ]);
+
+          user = await prisma.user.update({
+            where: { id: existingByEmail.id },
+            data: {
+              id,
+              name,
+              email,
+              emailVerified,
+              image,
+              updatedAt: new Date(),
+              banned,
+            },
+          });
+        } else if (existingByEmail && existingByEmail.id === id) {
+          user = await prisma.user.update({
+            where: { id },
+            data: {
+              name,
+              email,
+              emailVerified,
+              image,
+              updatedAt: new Date(),
+              banned,
+            },
+          });
+        } else {
+          user = await prisma.user.create({
+            data: {
+              id: id || "",
+              name,
+              email,
+              emailVerified,
+              image,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              role: "user",
+              banned,
+            },
+          });
+        }
+      }
+
+      console.log("User upserted in DB:", user);
 
       await cache.xadd(STREAM_KEY, `user-${id}`, {
         id,
