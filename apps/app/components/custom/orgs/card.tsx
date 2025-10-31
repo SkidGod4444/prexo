@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toastManager } from "@/components/ui/toast";
 import { constants } from "@/lib/constants";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -45,7 +45,7 @@ export default function OrgsCard({
   endpoint,
 }: OrgsCardProps) {
   const id = useId();
-  const clerk = useUser();
+  const auth = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [projName, setProjName] = useState("");
   const [projSlug, setProjSlug] = useState("");
@@ -58,7 +58,7 @@ export default function OrgsCard({
         (async () => {
           const payload = {
             name: projName || "",
-            userId: clerk.user?.id || "",
+            userId: auth.userId || "",
             slug: projSlug || "",
             description: projDesc || "",
           };

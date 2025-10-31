@@ -11,7 +11,7 @@ project.use(checkUser);
 // project.use(auditLogs);
 
 project.post("/create", async (c) => {
-  const { name, userId, description } = await c.req.json();
+  const { name, userId, description, slug } = await c.req.json();
   if (!name || !userId) {
     return c.json({ message: "Name and UserId are required" }, 400);
   }
@@ -20,6 +20,7 @@ project.post("/create", async (c) => {
     data: {
       name: name,
       userId: userId,
+      slug: slug,
       description: description || null,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -96,9 +97,9 @@ project.post("/update", async (c) => {
 });
 
 project.get("/all", async (c) => {
-  const user = c.get("user");
+  const userId = c.get("userId");
 
-  if (!user) {
+  if (!userId) {
     return c.json(
       {
         message: "Oops! seems like your session is expired",
@@ -107,8 +108,6 @@ project.get("/all", async (c) => {
       400,
     );
   }
-
-  const userId = user.id;
 
   try {
     const projects = await prisma.project.findMany({
