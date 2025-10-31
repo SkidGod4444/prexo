@@ -152,7 +152,7 @@ export default function OrgsCard({
                       placeholder="sales"
                       aria-label="Description"
                       className={"rounded-md"}
-                      onChange={e => setProjDesc(e.target.value)}
+                      onChange={(e) => setProjDesc(e.target.value)}
                     />
                   </div>
                 </div>
@@ -163,12 +163,12 @@ export default function OrgsCard({
                   {isLoading ? (
                     <Button type="button" disabled>
                       <Loader className="size-4 animate-spin" />
-                    Creating...
-                  </Button>
+                      Creating...
+                    </Button>
                   ) : (
                     <Button type="submit" onClick={handleSubmit}>
-                    Create Application
-                  </Button>
+                      Create Application
+                    </Button>
                   )}
                 </DialogFooter>
               </DialogPopup>

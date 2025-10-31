@@ -96,7 +96,7 @@ export default function RootLayout({
             <ClerkCntxt>
               <FeatCntxt>
                 <ToastProvider position="bottom-center">
-                {children}
+                  {children}
                 </ToastProvider>
                 <ConsoleMessage />
               </FeatCntxt>
