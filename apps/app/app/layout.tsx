@@ -10,6 +10,8 @@ import { FeatCntxt } from "@/contexts/feat.cntxt";
 import ConsoleMessage from "@/components/custom/console.msg";
 import { ToastProvider } from "@/components/ui/toast";
 import { Analytics } from "@vercel/analytics/next";
+import { UserProvider } from "@/contexts/user.cntxt";
+import { ContentProvider } from "@/contexts/store.cntxt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -96,11 +98,15 @@ export default function RootLayout({
           >
             <ClerkCntxt>
               <FeatCntxt>
-                <ToastProvider position="bottom-center">
-                  {children}
-                  <Analytics />
-                </ToastProvider>
-                <ConsoleMessage />
+                <UserProvider>
+                  <ContentProvider>
+                    <ToastProvider position="bottom-center">
+                      {children}
+                      <Analytics />
+                    </ToastProvider>
+                    <ConsoleMessage />
+                  </ContentProvider>
+                </UserProvider>
               </FeatCntxt>
             </ClerkCntxt>
           </ThemeProvider>

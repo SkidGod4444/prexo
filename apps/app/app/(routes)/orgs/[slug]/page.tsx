@@ -2,44 +2,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import OrgsCard from "@/components/custom/orgs/card";
-import { useAuthenticatedFetch } from "@/lib/fetch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OrgCardSkeleton from "@/components/custom/skeletons/org.card";
-import { ProjectType } from "@prexo/types";
+import { useProjectsStore } from "@prexo/store";
 
 export default function Orgs() {
   const pathname = usePathname();
-  const fetchWithAuth = useAuthenticatedFetch();
-  const [projects, setProjects] = useState<ProjectType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchProjects = async () => {
-      setError(null);
-      try {
-        const res = await fetchWithAuth("/project/all");
-        if (!res.ok) {
-          throw new Error("Failed to fetch apps");
-        }
-        const data = await res.json();
-        if (isMounted) {
-          setProjects(Array.isArray(data?.projects) ? data.projects : []);
-        }
-      } catch (e: any) {
-        if (isMounted) setError(e?.message || "Something went wrong");
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    };
-    if (projects.length === 0) {
-      fetchProjects();
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [projects.length]);
+  const { projects } = useProjectsStore();
+  const [isLoading, _] = useState<boolean>(false);
 
   return (
     <div className="flex flex-col min-h-full w-full">
@@ -66,11 +36,10 @@ export default function Orgs() {
               </div>
             )} */}
             {!isLoading &&
-              !error &&
               projects.map((proj) => (
                 <Link
                   key={proj.id}
-                  href={`${pathname}/apps/${proj.id}`}
+                  href={`${pathname}/apps/${proj.slug}`}
                   className="flex"
                 >
                   <OrgsCard

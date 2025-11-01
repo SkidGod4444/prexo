@@ -93,6 +93,7 @@ type ProjectType = {
   domains: DomainType[];
   isFreeTier: boolean;
   endpoint?: string | null;
+  slug: string;
   createdAt: Date | string;
   updatedAt: Date | string;
   userId: string;

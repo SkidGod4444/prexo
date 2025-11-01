@@ -37,7 +37,7 @@ export default function NavBar() {
     { href: `${appBasePath}/chats`, label: "Chats", isBeta: true },
     { href: `${appBasePath}/meets`, label: "Meetings", isBeta: true },
     { href: `${appBasePath}/playground`, label: "Playground", isBeta: true },
-    { href: `${appBasePath}/settings`, label: "Settings", isBeta: false },
+    { href: `${appBasePath}/configure`, label: "Configure", isBeta: false },
   ];
 
   const navLinks = pathname?.includes("/apps/")
