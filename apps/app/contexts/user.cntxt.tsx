@@ -31,18 +31,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { setProjects } = useProjectsStore();
   const { removeKey } = useApiKeyStore();
   const fetchWithAuth = useAuthenticatedFetch();
-  
+
   // Hooks must be called at the top level, not inside useEffect
   const { user: clerkUser, isLoaded, isSignedIn } = useClerkUser();
 
   // Use refs to track previous values and prevent duplicate calls
   const prevClerkUserIdRef = useRef<string | undefined>(undefined);
   const fetchingRef = useRef(false);
-  
+
   // Store latest values in refs to avoid stale closures
   const myProfileRef = useRef(myProfile);
   const fetchWithAuthRef = useRef(fetchWithAuth);
-  
+
   // Update refs when values change
   useEffect(() => {
     myProfileRef.current = myProfile;
@@ -69,7 +69,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
 
     let isMounted = true;
-    
+
     async function getData() {
       fetchingRef.current = true;
       setLoading(true);
@@ -92,9 +92,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             throw new Error("Failed to fetch user!");
           }
           const data = await res.json();
-          
+
           if (!isMounted) return;
-          
+
           setUser(data.user);
           addMyProfile(data.user);
           prevClerkUserIdRef.current = currentClerkUserId;
@@ -102,7 +102,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         } else if (!isSignedIn) {
           // User is signed out - clear state
           if (!isMounted) return;
-          
+
           setUser(null);
           prevClerkUserIdRef.current = undefined;
 
@@ -122,14 +122,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     }
-    
+
     getData();
-    
+
     return () => {
       isMounted = false;
       fetchingRef.current = false;
     };
-  }, [isLoaded, isSignedIn, clerkUser?.id, addMyProfile, removeMyProfile, setProjects]);
+  }, [
+    isLoaded,
+    isSignedIn,
+    clerkUser?.id,
+    addMyProfile,
+    removeMyProfile,
+    setProjects,
+  ]);
 
   return (
     <UserContext.Provider value={{ user, loading, setUser }}>

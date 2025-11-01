@@ -55,7 +55,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   // Store refs to avoid stale closures
   const fetchWithAuthRef = useRef(fetchWithAuth);
   const userRef = useRef(user);
-  
+
   // Update refs when values change
   useEffect(() => {
     fetchWithAuthRef.current = fetchWithAuth;
@@ -80,7 +80,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
     async function fetchProjects() {
       if (!isMounted) return;
-      
+
       setContentLoading(true);
       try {
         const data = await fetchWithAuthRef.current("/project/all", {
