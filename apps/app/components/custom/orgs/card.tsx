@@ -1,6 +1,6 @@
 "use client";
 import { BookIcon, CirclePlus, DraftingCompass, Loader } from "lucide-react";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +27,7 @@ import { toastManager } from "@/components/ui/toast";
 import { useAuthenticatedFetch } from "@/lib/fetch";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { slugMaker } from "@/lib/utils";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -55,6 +56,29 @@ export default function OrgsCard({
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
 
+  // Auto-generate slug from project name after user stops typing (debounced)
+  useEffect(() => {
+    if (!projName) {
+      setProjSlug("");
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setProjSlug(slugMaker(projName));
+    }, 800); // Wait 800ms after user stops typing
+
+    return () => clearTimeout(timeoutId);
+  }, [projName]);
+
+  // Reset form when dialog closes
+  useEffect(() => {
+    if (!isOpen) {
+      setProjName("");
+      setProjSlug("");
+      setProjDesc("");
+    }
+  }, [isOpen]);
+
   const handleSubmit = async () => {
     setIsLoading(true);
     await toastManager
@@ -63,7 +87,7 @@ export default function OrgsCard({
           const payload = {
             name: projName || "",
             userId: auth.userId || "",
-            slug: projSlug || "",
+            slug: projSlug || slugMaker(projName || ""),
             description: projDesc || "",
           };
 
@@ -100,6 +124,9 @@ export default function OrgsCard({
         console.log("Finished creating project");
         setIsLoading(false);
         setIsOpen(false);
+        setProjName("");
+        setProjSlug("");
+        setProjDesc("");
         router.refresh();
       });
   };
@@ -148,6 +175,7 @@ export default function OrgsCard({
                       placeholder="sales-team"
                       aria-label="Slug"
                       className={"rounded-md"}
+                      value={projSlug}
                       onValueChange={(value) => setProjSlug(value)}
                     />
                   </div>

@@ -1,16 +1,23 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import OrgsCard from "@/components/custom/orgs/card";
-import { useState } from "react";
+import { useState, use } from "react";
 import OrgCardSkeleton from "@/components/custom/skeletons/org.card";
 import { useProjectsStore } from "@prexo/store";
+import { useAuth } from "@clerk/nextjs";
 
-export default function Orgs() {
+export default function Orgs({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const pathname = usePathname();
+  const { orgSlug } = useAuth()
   const { projects } = useProjectsStore();
   const [isLoading, _] = useState<boolean>(false);
-
+  const router = useRouter();
+  
+  if (slug != orgSlug) {
+    return router.push(`/org-not-found`);
+  }
   return (
     <div className="flex flex-col min-h-full w-full">
       <div className="w-full max-w-8xl mx-auto flex flex-col items-start">
