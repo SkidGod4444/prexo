@@ -98,7 +98,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           setUser(data.user);
           addMyProfile(data.user);
           prevClerkUserIdRef.current = currentClerkUserId;
-          console.log("User fetched:", data.user);
         } else if (!isSignedIn) {
           // User is signed out - clear state
           if (!isMounted) return;

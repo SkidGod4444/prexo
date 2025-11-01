@@ -7,12 +7,12 @@ import { use } from "react";
 export default function page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { slug } = use(params);
+  const { id } = use(params);
   const { projects } = useProjectsStore();
 
-  if (!projects.find((proj) => proj.slug === slug)) {
+  if (!projects.find((proj) => proj.slug === id)) {
     return redirect("/");
   }
 
