@@ -6,10 +6,10 @@ import { use } from "react";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const {projects} = useProjectsStore();
+  const { projects } = useProjectsStore();
 
-  if (!projects.find(proj => proj.id === id)) {
-    return redirect('/');
+  if (!projects.find((proj) => proj.id === id)) {
+    return redirect("/");
   }
 
   return <div>hey</div>;

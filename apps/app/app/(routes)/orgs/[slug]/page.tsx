@@ -7,14 +7,18 @@ import OrgCardSkeleton from "@/components/custom/skeletons/org.card";
 import { useProjectsStore } from "@prexo/store";
 import { useAuth } from "@clerk/nextjs";
 
-export default function Orgs({ params }: { params: Promise<{ slug: string }> }) {
+export default function Orgs({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = use(params);
   const pathname = usePathname();
-  const { orgSlug } = useAuth()
+  const { orgSlug } = useAuth();
   const { projects } = useProjectsStore();
   const [isLoading, _] = useState<boolean>(false);
   const router = useRouter();
-  
+
   if (slug != orgSlug) {
     return router.push(`/org-not-found`);
   }
