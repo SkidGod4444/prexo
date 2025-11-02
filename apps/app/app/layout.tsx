@@ -1,17 +1,11 @@
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import { consoleConfig } from "@prexo/utils/config";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme.provider";
-import { ClerkCntxt } from "@/contexts/clerk.cntxt";
-import { FeatCntxt } from "@/contexts/feat.cntxt";
-import ConsoleMessage from "@/components/custom/console.msg";
-import { ToastProvider } from "@/components/ui/toast";
-import { Analytics } from "@vercel/analytics/next";
-import { UserProvider } from "@/contexts/user.cntxt";
-import { ContentProvider } from "@/contexts/store.cntxt";
+import { AppProviders } from "@/components/providers";
+import { Spinner } from "@/components/ui/spinner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -80,38 +74,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: dark,
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          forcedTheme="dark"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            forcedTheme="dark"
-            enableSystem
-            disableTransitionOnChange
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen w-full">
+                <Spinner className="h-8 w-8 animate-spin" />
+              </div>
+            }
           >
-            <ClerkCntxt>
-              <FeatCntxt>
-                <UserProvider>
-                  <ContentProvider>
-                    <ToastProvider position="bottom-center">
-                      {children}
-                      <Analytics />
-                    </ToastProvider>
-                    <ConsoleMessage />
-                  </ContentProvider>
-                </UserProvider>
-              </FeatCntxt>
-            </ClerkCntxt>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+            <AppProviders>{children}</AppProviders>
+          </Suspense>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

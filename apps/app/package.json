@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3002",
-    "build": "next build --turbopack",
+    "next:upgrade": "bunx @next/codemod@latest upgrade latest",
+    "build": "next build --turbopack --debug",
     "start": "next start",
     "lint": "biome check --max-diagnostics 100",
     "format": "biome format --write"
