@@ -8,6 +8,7 @@
     "build:docs": "turbo --filter=docs build",
     "build:trig": "bunx trigger.dev@latest deploy",
     "dev": "turbo run dev",
+    "turbo:upgrade": "bunx @turbo/codemod migrate",
     "dev:www": "turbo --filter=www dev",
     "dev:clog": "turbo --filter=changelogs dev",
     "dev:app": "turbo --filter=app dev",
@@ -35,7 +36,7 @@
     "@trigger.dev/build": "^3.3.17",
     "prettier": "^3.5.3",
     "tsx": "^4.19.4",
-    "turbo": "^2.5.8",
+    "turbo": "^2.6.0",
     "typescript": "5.8.2"
   },
   "engines": {
