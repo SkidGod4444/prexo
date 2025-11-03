@@ -5,7 +5,7 @@ import SessionReplay from "@launchdarkly/session-replay";
 import * as Sentry from "@sentry/nextjs";
 import { LDProvider } from "launchdarkly-react-client-sdk";
 import { type ReactNode, useEffect, useState } from "react";
-import { IdentifyComponent, OpenPanelComponent } from '@openpanel/nextjs';
+import { IdentifyComponent, OpenPanelComponent } from "@openpanel/nextjs";
 import { logSentry } from "@/lib/logger";
 import Script from "next/script";
 
@@ -13,8 +13,17 @@ declare global {
   interface Window {
     $ujq?: unknown[][];
     uj?: {
-      init: (key: string, options: { widget: boolean; position: string; theme: string }) => void;
-      identify: (user: { id: string; email: string; firstName: string; lastName: string; avatar: string }) => void;
+      init: (
+        key: string,
+        options: { widget: boolean; position: string; theme: string },
+      ) => void;
+      identify: (user: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatar: string;
+      }) => void;
     };
   }
 }
@@ -36,8 +45,10 @@ export const FeatCntxt = ({ children }: { children: ReactNode }) => {
         (new Proxy(
           {},
           {
-            get: (_: unknown, p: string) =>
-              (...a: unknown[]) => window.$ujq?.push([p, ...a]),
+            get:
+              (_: unknown, p: string) =>
+              (...a: unknown[]) =>
+                window.$ujq?.push([p, ...a]),
           },
         ) as Window["uj"]);
     }
@@ -128,7 +139,7 @@ export const FeatCntxt = ({ children }: { children: ReactNode }) => {
         ],
       }}
     >
-    <OpenPanelComponent
+      <OpenPanelComponent
         clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID || ""}
         trackScreenViews={true}
         trackAttributes={true}

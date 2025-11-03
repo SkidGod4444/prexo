@@ -66,9 +66,7 @@ export function Navbar() {
             </div>
           </Link>
           <Link href={consoleUrl} className="hidden md:flex">
-            <Button className="h-8 px-3 cursor-pointer">
-              Go to Console
-            </Button>
+            <Button className="h-8 px-3 cursor-pointer">Go to Console</Button>
           </Link>
 
           <Button
