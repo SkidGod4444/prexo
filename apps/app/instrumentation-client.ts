@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { logSentry } from "./lib/logger";
+// import { logSentry } from "./lib/logger";
 
 Sentry.init({
   dsn: "https://3b2939275de3154fd80045f66543684c@o4510188601606145.ingest.de.sentry.io/4510188607766608",
@@ -9,15 +9,8 @@ Sentry.init({
     Sentry.replayIntegration(),
     Sentry.launchDarklyIntegration(),
     Sentry.feedbackIntegration({
-      colorScheme: "dark",
-      isNameRequired: true,
-      isEmailRequired: true,
-      onSubmitSuccess: () => {
-        logSentry("Sentry feedback form submitted", "info");
-      },
-      onSubmitError: (error: Error) => {
-        logSentry("Sentry feedback form submission error", "error", { error });
-      },
+      // Disable the injection of the default widget
+      autoInject: false,
     }),
   ],
 

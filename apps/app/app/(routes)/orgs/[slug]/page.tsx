@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import OrgsCard from "@/components/custom/orgs/card";
-import { useState, use } from "react";
+import { useState, use, useId } from "react";
 import OrgCardSkeleton from "@/components/custom/skeletons/org.card";
 import { useProjectsStore } from "@prexo/store";
 import { useAuth } from "@clerk/nextjs";
@@ -12,15 +12,15 @@ export default function Orgs({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const id = useId() as string;
   const { slug } = use(params);
   const pathname = usePathname();
   const { orgSlug } = useAuth();
   const { projects } = useProjectsStore();
   const [isLoading, _] = useState<boolean>(false);
-  const router = useRouter();
 
-  if (slug != orgSlug) {
-    return router.push(`/org-not-found`);
+  if (slug !== orgSlug) {
+    redirect(`/org-not-found?redirect=${encodeURIComponent(pathname)}`);
   }
   return (
     <div className="flex flex-col min-h-full w-full">
@@ -36,16 +36,11 @@ export default function Orgs({
             {/* Map actual org cards */}
             {isLoading && (
               <>
-                {Array.from({ length: 7 }).map((_, idx) => (
-                  <OrgCardSkeleton key={`org-skel-${idx}`} />
+                {Array.from({ length: 7 }).map(() => (
+                    <OrgCardSkeleton key={id} />
                 ))}
               </>
             )}
-            {/* {error && !isLoading && (
-              <div className="col-span-full text-sm text-red-500">
-                {error}
-              </div>
-            )} */}
             {!isLoading &&
               projects.map((proj) => (
                 <Link

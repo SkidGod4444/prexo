@@ -6,20 +6,13 @@ import { useState } from "react";
 import { MainNavbar } from "./main.nav";
 import { Icons } from "@/constants/icons";
 import { constants } from "@/constants";
-import { useMyProfileStore } from "@prexo/store";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const { myProfile } = useMyProfileStore();
   const consoleUrl =
     process.env.NODE_ENV === "production"
-      ? "https://console.prexoai.xyz"
+      ? "https://app.prexoai.xyz"
       : "http://localhost:3002";
-
-  let loginURL = "/auth";
-  if (myProfile) {
-    loginURL = myProfile.role === "onboarded" ? consoleUrl : "/onboarding";
-  }
 
   return (
     <header className="fixed top-5 w-5/6 z-[500] border border-border/60 bg-secondary/30 backdrop-blur-lg supports-[backdrop-filter]:bg-secondary/50 dark:border-border rounded-2xl">
@@ -72,9 +65,9 @@ export function Navbar() {
               <span className="sr-only">Discord</span>
             </div>
           </Link>
-          <Link href={loginURL} className="hidden md:flex">
-            <Button variant={"secondary"} className="h-8 px-3 cursor-pointer">
-              Log in
+          <Link href={consoleUrl} className="hidden md:flex">
+            <Button className="h-8 px-3 cursor-pointer">
+              Go to Console
             </Button>
           </Link>
 

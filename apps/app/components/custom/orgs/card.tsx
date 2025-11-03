@@ -28,6 +28,7 @@ import { useAuthenticatedFetch } from "@/lib/fetch";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { slugMaker } from "@/lib/utils";
+import { useOpenPanel } from "@openpanel/nextjs";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -55,6 +56,7 @@ export default function OrgsCard({
   const [projName, setProjName] = useState("");
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
+  const op = useOpenPanel();
 
   // Auto-generate slug from project name after user stops typing (debounced)
   useEffect(() => {
@@ -128,6 +130,11 @@ export default function OrgsCard({
         setProjSlug("");
         setProjDesc("");
         router.refresh();
+        op.track("project_created", {
+          project_name: projName,
+          project_slug: projSlug,
+          project_description: projDesc,
+        });
       });
   };
 

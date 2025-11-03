@@ -8,7 +8,7 @@ const socials = {
   sponsor: "https://l.devwtf.in/sponsor",
   me: "https://devwtf.in",
   myX: "https://l.devwtf.in/x",
-  dashboard: "https://console.prexoai.xyz",
+  dashboard: "https://app.prexoai.xyz",
 };
 
 const logoUrl =
