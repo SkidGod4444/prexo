@@ -94,6 +94,7 @@ type ProjectType = {
   isFreeTier: boolean;
   endpoint?: string | null;
   slug: string;
+  podId: string;
   createdAt: Date | string;
   updatedAt: Date | string;
   userId: string;

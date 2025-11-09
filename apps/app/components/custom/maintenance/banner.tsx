@@ -1,6 +1,7 @@
 import { Megaphone, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { constants } from "@/lib/constants";
 
 export default function MaintenanceBanner() {
   return (
@@ -22,7 +23,7 @@ export default function MaintenanceBanner() {
 
       <div className="w-full md:w-auto flex md:justify-end">
         <Link
-          href="https://status.example.com"
+          href={constants.maintenancePageURL}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full md:w-auto"

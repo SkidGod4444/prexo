@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useMyUser } from "./user.cntxt";
 import { useAuthenticatedFetch } from "@/lib/fetch";
+import { useReadLocalStorage } from "usehooks-ts";
 
 interface StoreContextType {
   contentLoading: boolean;
@@ -34,6 +35,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
   const { user, loading } = useMyUser();
   const { projects, setProjects } = useProjectsStore();
+  const selectedProjId = useReadLocalStorage<string>("@prexo-#selectedApp");
   const fetchWithAuth = useAuthenticatedFetch();
 
   // Hard reload function: empties all stores and optionally localStorage
@@ -116,13 +118,64 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchInboxes() {
+      if (!isMounted) return;
+      const selectedProject = projects.find(
+        (proj) => proj.id === selectedProjId,
+      );
+      setContentLoading(true);
+      try {
+        const data = await fetchWithAuthRef.current(
+          `/inbox/list?pod_id=${selectedProject?.podId}`,
+          {
+            headers: {
+              // "x-project-id": String(consoleId || ""),
+              "x-polling-req": "true", // Indicate this is a polling request
+            },
+          },
+        );
+
+        if (!isMounted) return;
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch inboxes: ${data.status}`);
+        }
+
+        const response = await data.json();
+        console.log("Inboxes fetched:", response);
+        if (!isMounted) return;
+
+        if (Array.isArray(response?.inboxes)) {
+          // setProjects(response.projects.map((project: ProjectType) => project));
+        } else {
+          // setProjects([]);
+        }
+      } catch (error) {
+        console.error("Error fetching inboxes:", error);
+        if (isMounted) {
+          // setProjects([]);
+        }
+      } finally {
+        if (isMounted) {
+          setContentLoading(false);
+        }
+      }
+    }
+
     // Always fetch once when user loads or changes
     fetchProjects();
+
+    if (projects.length > 0) {
+      fetchInboxes();
+    }
 
     // Set up polling interval (30 seconds)
     intervalId = setInterval(() => {
       if (isMounted && userRef.current) {
         fetchProjects();
+        if (projects.length > 0) {
+          fetchInboxes();
+        }
       }
     }, 30000);
 

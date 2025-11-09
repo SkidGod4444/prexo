@@ -1,5 +1,7 @@
 "use client";
+import { useAuth } from "@clerk/nextjs";
 import { BookIcon, CirclePlus, DraftingCompass, Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,11 +26,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toastManager } from "@/components/ui/toast";
+import { useMaintenance } from "@/contexts/maintenance.cntxt";
 import { useAuthenticatedFetch } from "@/lib/fetch";
-import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import { slugMaker } from "@/lib/utils";
-import { useOpenPanel } from "@openpanel/nextjs";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -51,12 +51,12 @@ export default function OrgsCard({
   const auth = useAuth();
   const router = useRouter();
   const fetchWithAuth = useAuthenticatedFetch();
+  const { isEnabled: isMaintenanceModeEnabled } = useMaintenance();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [projName, setProjName] = useState("");
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
-  const op = useOpenPanel();
 
   // Auto-generate slug from project name after user stops typing (debounced)
   useEffect(() => {
@@ -130,11 +130,6 @@ export default function OrgsCard({
         setProjSlug("");
         setProjDesc("");
         router.refresh();
-        op.track("project_created", {
-          project_name: projName,
-          project_slug: projSlug,
-          project_description: projDesc,
-        });
       });
   };
 
@@ -207,7 +202,11 @@ export default function OrgsCard({
                       Creating...
                     </Button>
                   ) : (
-                    <Button type="submit" onClick={handleSubmit}>
+                    <Button
+                      type="submit"
+                      onClick={handleSubmit}
+                      disabled={isMaintenanceModeEnabled}
+                    >
                       Create Application
                     </Button>
                   )}

@@ -44,6 +44,16 @@ export default function NavBar() {
     ? appNavLinks
     : defaultNavLinks.map((link) => ({ ...link, isBeta: false }));
 
+  // Helper function to determine if a link is active
+  const isLinkActive = (linkHref: string, linkLabel: string) => {
+    // For Overview, only match exact path (not sub-routes)
+    if (linkLabel === "Overview") {
+      return pathname === linkHref;
+    }
+    // For other links, match if pathname starts with the href followed by / or equals it exactly
+    return pathname === linkHref || pathname.startsWith(`${linkHref}/`);
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b bg-secondary">
       <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
@@ -95,7 +105,7 @@ export default function NavBar() {
                   {navLinks.map((link) => (
                     <NavigationMenuItem key={link.href} className="min-w-full">
                       <NavigationMenuLink
-                        active={pathname === link.href}
+                        active={isLinkActive(link.href, link.label)}
                         href={link.href}
                         className="inline-flex w-full flex-row items-center gap-2 text-muted-foreground hover:bg-secondary hover:text-primary-foreground font-medium px-2 py-1"
                       >
@@ -199,7 +209,7 @@ export default function NavBar() {
             {navLinks.map((link) => (
               <NavigationMenuItem key={link.href}>
                 <NavigationMenuLink
-                  active={pathname === link.href}
+                  active={isLinkActive(link.href, link.label)}
                   href={link.href}
                   className="inline-flex flex-row items-center gap-2 text-muted-foreground hover:bg-secondary hover:text-primary-foreground font-medium px-2 py-1"
                 >

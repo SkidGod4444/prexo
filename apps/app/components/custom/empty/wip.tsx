@@ -13,7 +13,7 @@ import {
 
 export function EmptyWIP() {
   return (
-    <Empty>
+    <Empty className="border">
       <EmptyHeader>
         <EmptyMedia variant="icon" className="bg-secondary border">
           <Construction />

@@ -1,6 +1,9 @@
 "use client";
 
 import { useProjectsStore } from "@prexo/store";
+import { useRouter } from "next/navigation";
+import { use, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,14 +13,16 @@ import {
   DialogPopup,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { use } from "react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { projects } = useProjectsStore();
+  const [_, setSelectedApp, removeSelectedApp] = useLocalStorage(
+    "@prexo-#selectedApp",
+    "",
+  );
 
   if (!projects.find((proj) => proj.slug === id)) {
     return (
@@ -49,6 +54,15 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
       </Dialog>
     );
   }
+
+  useEffect(() => {
+    const matchedProj = projects.find((proj) => proj.slug === id);
+    if (matchedProj) {
+      setSelectedApp(matchedProj.id);
+    } else {
+      removeSelectedApp();
+    }
+  }, [id, setSelectedApp, removeSelectedApp, projects]);
 
   return <div>hey</div>;
 }

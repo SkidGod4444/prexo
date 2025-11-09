@@ -4,6 +4,7 @@ import { prisma } from "@prexo/db";
 import { Hono } from "hono";
 // import { auditLogs } from "@/middleware/audit.logs";
 import { Variables } from "@/types";
+import { MailClient } from "@/lib/agentmail";
 
 const project = new Hono<{ Variables: Variables }>();
 
@@ -16,17 +17,23 @@ project.post("/create", async (c) => {
     return c.json({ message: "Name and UserId are required" }, 400);
   }
 
+  const pod = await MailClient.pods.create({
+    name: `proj-${slug}`,
+  });
+
   const newProject = await prisma.project.create({
     data: {
       name: name,
       userId: userId,
       slug: slug,
       description: description || null,
+      podId: pod.podId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
   });
   if (!newProject) {
+    await MailClient.pods.delete(pod.podId);
     return c.json({ message: "Failed to create project" }, 500);
   }
   console.log("Created new project:", newProject);

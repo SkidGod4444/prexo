@@ -32,15 +32,15 @@ model User {
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   impersonatedBy String?
 
   @@unique([token])
@@ -103,6 +103,7 @@ model Project {
   memoId        String?
   isFreeTier    Boolean         @default(true)
   endpoint      String?         @unique
+  podId         String?         @unique
   keyId         String?         @unique
   domains       Domain[]
   notifications Notifications[]
@@ -110,11 +111,25 @@ model Project {
   containers    Containers[]
   auditLogs     AuditLogs[]
   usageLogs     UsageLogs[]
+  inboxes       Inbox[]
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime
   updatedAt     DateTime
 
   @@map("project")
+}
+
+model Inbox {
+  id          String   @id @default(uuid())
+  displayName String?
+  email       String
+  status      String?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("inbox")
 }
 
 model Domain {
@@ -192,7 +207,7 @@ model Files {
 model Links {
   id          String     @id @default(uuid())
   type        String?
-  url         String @unique
+  url         String     @unique
   markdown    String?
   summary     String?
   containerId String

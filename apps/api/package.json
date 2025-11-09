@@ -26,6 +26,7 @@
     "@unkey/api": "^0.36.0",
     "@unkey/hono": "^1.5.0",
     "@upstash/ratelimit": "^2.0.6",
+    "agentmail": "^0.1.5",
     "ai": "^4.3.16",
     "getlogs-sdk": "^1.0.1",
     "hono": "^4.10.4",

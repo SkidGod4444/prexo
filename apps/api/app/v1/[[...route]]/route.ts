@@ -26,6 +26,7 @@ import link from "../routes/link";
 import vectorizer from "../routes/webhooks/vectorizer";
 import clerk from "../routes/webhooks/clerk";
 import { clerkMiddleware } from "@hono/clerk-auth";
+import inbox from "../routes/inbox";
 
 export const runtime = "edge";
 const app = new Hono().basePath("/v1");
@@ -78,6 +79,7 @@ app.route("/container", containers);
 app.route("/file", file);
 app.route("/telementry", telementryEvents);
 app.route("/logger", auditLogs);
+app.route("/inbox", inbox);
 
 // SDK Routes
 app.route("/sdk/configs", configs);
