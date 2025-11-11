@@ -24,12 +24,13 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     "@prexo-#selectedApp",
     "",
   );
-  const [ selectedOrgSlug ] =
-    useLocalStorage("@prexo-#selectedOrgSlug", "");
+  const [selectedOrgSlug] = useLocalStorage("@prexo-#selectedOrgSlug", "");
 
-  const selectedOrg = useMemo(() => { {
-    return orgs.find((o) => o.slug === selectedOrgSlug);
-  }}, [orgs, selectedOrgSlug]);
+  const selectedOrg = useMemo(() => {
+    {
+      return orgs.find((o) => o.slug === selectedOrgSlug);
+    }
+  }, [orgs, selectedOrgSlug]);
 
   const appsOfSelectedOrg = useMemo(() => {
     if (!selectedOrg) return [];

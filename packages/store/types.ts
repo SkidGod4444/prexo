@@ -116,5 +116,5 @@ export type {
   UsageLogStore,
   LinksStore,
   FilesStore,
-  OrganizationStore
+  OrganizationStore,
 };

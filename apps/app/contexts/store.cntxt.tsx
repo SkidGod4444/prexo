@@ -36,7 +36,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useMyUser();
   const { projects, setProjects } = useProjectsStore();
   const { orgs, setOrgs } = useOrganizationStore();
-  const selectedOrgSlug = useReadLocalStorage<string>("@prexo-#selectedOrgSlug");
+  const selectedOrgSlug = useReadLocalStorage<string>(
+    "@prexo-#selectedOrgSlug",
+  );
   const selectedProjId = useReadLocalStorage<string>("@prexo-#selectedApp");
   const fetchWithAuth = useAuthenticatedFetch();
 
@@ -114,7 +116,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         } else {
           setOrgs([]);
         }
-
       } catch (error) {
         console.error("Error fetching store:", error);
         if (isMounted) {

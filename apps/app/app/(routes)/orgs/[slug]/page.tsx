@@ -25,9 +25,11 @@ export default function Orgs({
   const [selectedOrgSlug, setSelectedOrgSlug, removeSelectedOrgSlug] =
     useLocalStorage("@prexo-#selectedOrgSlug", "");
 
-  const selectedOrg = useMemo(() => { {
-    return orgs.find((o) => o.slug === selectedOrgSlug);
-  }}, [orgs, selectedOrgSlug]);
+  const selectedOrg = useMemo(() => {
+    {
+      return orgs.find((o) => o.slug === selectedOrgSlug);
+    }
+  }, [orgs, selectedOrgSlug]);
 
   const appsOfSelectedOrg = useMemo(() => {
     if (!selectedOrg) return [];

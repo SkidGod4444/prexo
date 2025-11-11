@@ -196,5 +196,5 @@ export type {
   UsageLogType,
   LinkType,
   FileType,
-  OrganizationType
+  OrganizationType,
 };
