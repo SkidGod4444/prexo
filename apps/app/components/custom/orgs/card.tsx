@@ -29,6 +29,7 @@ import { toastManager } from "@/components/ui/toast";
 import { useMaintenance } from "@/contexts/maintenance.cntxt";
 import { useAuthenticatedFetch } from "@/lib/fetch";
 import { slugMaker } from "@/lib/utils";
+import { useProjectsStore } from "@prexo/store";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -57,6 +58,8 @@ export default function OrgsCard({
   const [projName, setProjName] = useState("");
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
+  const { projects } = useProjectsStore();
+  const totalApps = projects.length;
 
   // Auto-generate slug from project name after user stops typing (debounced)
   useEffect(() => {
@@ -138,7 +141,7 @@ export default function OrgsCard({
       <Empty className="min-h-full min-w-full">
         <EmptyHeader>
           <EmptyTitle className="text-muted-foreground">
-            0/2 Apps created
+            {totalApps}/2 Apps created
           </EmptyTitle>
         </EmptyHeader>
         <EmptyContent>
@@ -205,7 +208,8 @@ export default function OrgsCard({
                     <Button
                       type="submit"
                       onClick={handleSubmit}
-                      disabled={isMaintenanceModeEnabled}
+                      // disabled={isMaintenanceModeEnabled}
+                      disabled={totalApps >= 2}
                     >
                       Create Application
                     </Button>

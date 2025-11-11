@@ -53,7 +53,7 @@ type FileType = {
 
 type NotificationType = {
   id: string;
-  userId: string;
+  orgId: string;
   title: string;
   desc?: string | null;
   icon?: string | null;
@@ -97,9 +97,23 @@ type ProjectType = {
   podId: string;
   createdAt: Date | string;
   updatedAt: Date | string;
-  userId: string;
+  orgId: string;
   memoId?: string | null;
   keyId?: string | null;
+};
+
+type OrganizationType = {
+  id: string;
+  name?: string | null;
+  slug?: string | null;
+  imgUrl?: string | null;
+  status: "ACTIVE" | "INACTIVE" | "DELETED";
+  membersCount?: number | null;
+  maxAllowedMembers?: number | null;
+  createdBy: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  deletedAt?: Date | string | null;
 };
 
 type DomainType = {
@@ -182,4 +196,5 @@ export type {
   UsageLogType,
   LinkType,
   FileType,
+  OrganizationType
 };

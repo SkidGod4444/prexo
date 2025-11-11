@@ -1,8 +1,8 @@
 "use client";
 
-import { useProjectsStore } from "@prexo/store";
+import { useOrganizationStore, useProjectsStore } from "@prexo/store";
 import { useRouter } from "next/navigation";
-import { use, useEffect } from "react";
+import { use, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,12 +19,24 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { projects } = useProjectsStore();
+  const { orgs } = useOrganizationStore();
   const [_, setSelectedApp, removeSelectedApp] = useLocalStorage(
     "@prexo-#selectedApp",
     "",
   );
+  const [ selectedOrgSlug ] =
+    useLocalStorage("@prexo-#selectedOrgSlug", "");
 
-  if (!projects.find((proj) => proj.slug === id)) {
+  const selectedOrg = useMemo(() => { {
+    return orgs.find((o) => o.slug === selectedOrgSlug);
+  }}, [orgs, selectedOrgSlug]);
+
+  const appsOfSelectedOrg = useMemo(() => {
+    if (!selectedOrg) return [];
+    return projects.filter((p) => p.orgId === selectedOrg.id);
+  }, [projects, selectedOrg]);
+
+  if (!appsOfSelectedOrg.find((proj) => proj.slug === id)) {
     return (
       <Dialog open={true}>
         <DialogPopup>
@@ -56,7 +68,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
   }
 
   useEffect(() => {
-    const matchedProj = projects.find((proj) => proj.slug === id);
+    const matchedProj = appsOfSelectedOrg.find((proj) => proj.slug === id);
     if (matchedProj) {
       setSelectedApp(matchedProj.id);
     } else {

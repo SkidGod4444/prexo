@@ -1,4 +1,10 @@
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertAction,
+} from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { OrganizationList } from "@clerk/nextjs";
 import { TriangleAlertIcon } from "lucide-react";
 
@@ -10,9 +16,18 @@ export default async function OrgNotFound() {
           <TriangleAlertIcon />
           <AlertTitle>Organization Not Found!</AlertTitle>
           <AlertDescription>
-            The organization you are trying to access does not exist or you do
-            not have permission to view it. Please select a different
-            organization or contact support if you believe this is an error.
+            <span>
+              The organization you are trying to access does not exist or you do
+              not have permission to view it. Please select a different
+              organization or{" "}
+              <a
+                href="mailto:connect.saidev@gmail.com"
+                className="underline text-primary-foreground"
+              >
+                contact support
+              </a>{" "}
+              if you believe this is an error.
+            </span>
           </AlertDescription>
         </Alert>
         <div className="w-full flex flex-col items-center justify-center">

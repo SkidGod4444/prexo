@@ -10,6 +10,7 @@ import {
   LinksStore,
   MyProfileStore,
   NotificationsStore,
+  OrganizationStore,
   ProjectStore,
   UsageLogStore,
   UserStore,
@@ -58,6 +59,24 @@ const useProjectsStore = create<ProjectStore>()(
     }),
     {
       name: "@prexo-#projects",
+    },
+  ),
+);
+
+const useOrganizationStore = create<OrganizationStore>()(
+  persist(
+    (set) => ({
+      orgs: [],
+      addOrg: (org) =>
+        set((state) => ({ orgs: [...state.orgs, org] })),
+      removeOrg: (orgId) =>
+        set((state) => ({
+          orgs: state.orgs.filter((org) => org.id !== orgId),
+        })),
+      setOrgs: (orgs) => set({ orgs }),
+    }),
+    {
+      name: "@prexo-#orgs",
     },
   ),
 );
@@ -235,4 +254,5 @@ export {
   useUsageLogsStore,
   useLinksStore,
   useFilesStore,
+  useOrganizationStore
 };

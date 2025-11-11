@@ -50,24 +50,6 @@ clerk.post("/", async (c) => {
         });
         if (existingByEmail && existingByEmail.id !== id) {
           // Migrate related records to new Clerk id, then update the user id
-          await prisma.$transaction([
-            prisma.session.updateMany({
-              where: { userId: existingByEmail.id },
-              data: { userId: id },
-            }),
-            prisma.account.updateMany({
-              where: { userId: existingByEmail.id },
-              data: { userId: id },
-            }),
-            prisma.passkey.updateMany({
-              where: { userId: existingByEmail.id },
-              data: { userId: id },
-            }),
-            prisma.project.updateMany({
-              where: { userId: existingByEmail.id },
-              data: { userId: id },
-            }),
-          ]);
 
           user = await prisma.user.update({
             where: { id: existingByEmail.id },
@@ -147,6 +129,26 @@ clerk.post("/", async (c) => {
     if (eventType === "organization.created") {
       console.log("New org created:", id);
       // Handle user creation logic here
+      if (!evt.data.created_by) {
+        throw new Error(
+          "Organization created event missing created_by user id",
+        );
+      }
+      const org = await prisma.organization.create({
+        data: {
+          id: evt.data.id,
+          name: evt.data.name,
+          slug: evt.data.slug,
+          imgUrl: evt.data.image_url,
+          status: "ACTIVE",
+          membersCount: evt.data.members_count,
+          maxAllowedMembers: evt.data.max_allowed_memberships,
+          user: {
+            connect: { id: evt.data.created_by },
+          },
+        },
+      });
+      console.log("Organization created in DB:", org);
       await logTelegram({
         logTitle: "Clerk Webhook - Organization Created",
         logSummary: `A new organization has been created with ID: ${id}`,
@@ -160,11 +162,27 @@ clerk.post("/", async (c) => {
     if (eventType === "organization.updated") {
       console.log("New org updated:", id);
       // Handle user creation logic here
+      const org = await prisma.organization.updateMany({
+        where: { id: evt.data.id },
+        data: {
+          name: evt.data.name,
+          slug: evt.data.slug,
+          imgUrl: evt.data.image_url,
+          membersCount: evt.data.members_count,
+          maxAllowedMembers: evt.data.max_allowed_memberships,
+          updatedAt: new Date(),
+        },
+      });
     }
 
     if (eventType === "organization.deleted") {
       console.log("New org deleted:", id);
       // Handle user creation logic here
+      const org = await prisma.organization.updateMany({
+        where: { id: evt.data.id },
+        data: { status: "DELETED", deletedAt: new Date() },
+      });
+      console.log("Organization marked as deleted in DB:", org);
       await logTelegram({
         logTitle: "Clerk Webhook - Organization Deleted",
         logSummary: `An organization has been deleted with ID: ${evt.data.id}`,

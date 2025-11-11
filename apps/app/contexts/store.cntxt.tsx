@@ -1,6 +1,6 @@
 "use client";
-import { useProjectsStore } from "@prexo/store";
-import { ProjectType } from "@prexo/types";
+import { useOrganizationStore, useProjectsStore } from "@prexo/store";
+import { OrganizationType, ProjectType } from "@prexo/types";
 import {
   createContext,
   useContext,
@@ -35,6 +35,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [contentLoading, setContentLoading] = useState(false);
   const { user, loading } = useMyUser();
   const { projects, setProjects } = useProjectsStore();
+  const { orgs, setOrgs } = useOrganizationStore();
+  const selectedOrgSlug = useReadLocalStorage<string>("@prexo-#selectedOrgSlug");
   const selectedProjId = useReadLocalStorage<string>("@prexo-#selectedApp");
   const fetchWithAuth = useAuthenticatedFetch();
 
@@ -80,12 +82,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     let intervalId: NodeJS.Timeout | null = null;
 
-    async function fetchProjects() {
+    async function fetchStore() {
       if (!isMounted) return;
 
       setContentLoading(true);
       try {
-        const data = await fetchWithAuthRef.current("/project/all", {
+        const data = await fetchWithAuthRef.current("/store", {
           headers: {
             // "x-project-id": String(consoleId || ""),
             "x-polling-req": "true", // Indicate this is a polling request
@@ -95,7 +97,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         if (!isMounted) return;
 
         if (!data.ok) {
-          throw new Error(`Failed to fetch projects: ${data.status}`);
+          throw new Error(`Failed to fetch store data: ${data.status}`);
         }
 
         const response = await data.json();
@@ -106,10 +108,18 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         } else {
           setProjects([]);
         }
+
+        if (Array.isArray(response?.orgs)) {
+          setOrgs(response.orgs.map((org: OrganizationType) => org));
+        } else {
+          setOrgs([]);
+        }
+
       } catch (error) {
-        console.error("Error fetching projects:", error);
+        console.error("Error fetching store:", error);
         if (isMounted) {
           setProjects([]);
+          setOrgs([]);
         }
       } finally {
         if (isMounted) {
@@ -163,7 +173,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     }
 
     // Always fetch once when user loads or changes
-    fetchProjects();
+    fetchStore();
 
     if (projects.length > 0) {
       fetchInboxes();
@@ -172,7 +182,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     // Set up polling interval (30 seconds)
     intervalId = setInterval(() => {
       if (isMounted && userRef.current) {
-        fetchProjects();
+        fetchStore();
         if (projects.length > 0) {
           fetchInboxes();
         }
@@ -185,7 +195,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         clearInterval(intervalId);
       }
     };
-  }, [setProjects, user?.id, loading]);
+  }, [setProjects, setOrgs, user?.id, loading]);
 
   const value = {
     contentLoading,

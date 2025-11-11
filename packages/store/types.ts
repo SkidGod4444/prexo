@@ -10,6 +10,7 @@ import {
   UsageLogType,
   LinkType,
   FileType,
+  OrganizationType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -30,6 +31,13 @@ type MyProfileStore = {
   myProfile: UserType | null;
   addMyProfile: (user: UserType) => void;
   removeMyProfile: (userId: string) => void;
+};
+
+type OrganizationStore = {
+  orgs: OrganizationType[];
+  addOrg: (org: OrganizationType) => void;
+  removeOrg: (orgId: string) => void;
+  setOrgs: (orgs: OrganizationType[]) => void;
 };
 
 type ProjectStore = {
@@ -108,4 +116,5 @@ export type {
   UsageLogStore,
   LinksStore,
   FilesStore,
+  OrganizationStore
 };

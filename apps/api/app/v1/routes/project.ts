@@ -12,9 +12,9 @@ project.use(checkUser);
 // project.use(auditLogs);
 
 project.post("/create", async (c) => {
-  const { name, userId, description, slug } = await c.req.json();
-  if (!name || !userId) {
-    return c.json({ message: "Name and UserId are required" }, 400);
+  const { name, orgId, description, slug } = await c.req.json();
+  if (!name || !orgId) {
+    return c.json({ message: "Name and OrgId are required" }, 400);
   }
 
   const pod = await MailClient.pods.create({
@@ -24,7 +24,7 @@ project.post("/create", async (c) => {
   const newProject = await prisma.project.create({
     data: {
       name: name,
-      userId: userId,
+      orgId: orgId,
       slug: slug,
       description: description || null,
       podId: pod.podId,
@@ -54,12 +54,20 @@ project.delete("/delete", async (c) => {
 
     const proj = await prisma.project.findUnique({
       where: { id },
-      select: { id: true, userId: true },
+      select: { id: true, orgId: true },
     });
     if (!proj) {
       return c.json({ message: "Not found" }, 404);
     }
-    if (proj.userId !== user.id) {
+    // Authorize by checking org's creator
+    const org = await prisma.organization.findUnique({
+      where: { id: proj.orgId },
+      select: { createdBy: true },
+    });
+    if (!org) {
+      return c.json({ message: "Organization not found" }, 404);
+    }
+    if (org.createdBy !== user.id) {
       return c.json({ message: "Forbidden" }, 403);
     }
 
@@ -106,19 +114,9 @@ project.post("/update", async (c) => {
 project.get("/all", async (c) => {
   const userId = c.get("userId");
 
-  if (!userId) {
-    return c.json(
-      {
-        message: "Oops! seems like your session is expired",
-        status: 400,
-      },
-      400,
-    );
-  }
-
   try {
     const projects = await prisma.project.findMany({
-      where: { userId },
+      where: { org: { createdBy: userId } },
       orderBy: { createdAt: "desc" },
       cacheStrategy: {
         ttl: 60,
