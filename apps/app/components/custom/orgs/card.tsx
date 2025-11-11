@@ -2,7 +2,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { BookIcon, CirclePlus, DraftingCompass, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,8 @@ import { toastManager } from "@/components/ui/toast";
 import { useMaintenance } from "@/contexts/maintenance.cntxt";
 import { useAuthenticatedFetch } from "@/lib/fetch";
 import { slugMaker } from "@/lib/utils";
-import { useProjectsStore } from "@prexo/store";
+import { useOrganizationStore, useProjectsStore } from "@prexo/store";
+import { useLocalStorage } from "usehooks-ts";
 
 interface OrgsCardProps {
   isEmptyCard?: boolean;
@@ -59,6 +60,13 @@ export default function OrgsCard({
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
   const { projects } = useProjectsStore();
+  const { orgs } = useOrganizationStore();const [selectedOrgSlug] = useLocalStorage("@prexo-#selectedOrgSlug", "");
+
+  const selectedOrg = useMemo(() => {
+    {
+      return orgs.find((o) => o.slug === selectedOrgSlug);
+    }
+  }, [orgs, selectedOrgSlug]);
   const totalApps = projects.length;
 
   // Auto-generate slug from project name after user stops typing (debounced)
@@ -91,7 +99,7 @@ export default function OrgsCard({
         (async () => {
           const payload = {
             name: projName || "",
-            userId: auth.userId || "",
+            orgId: selectedOrg?.id || "",
             slug: projSlug || slugMaker(projName || ""),
             description: projDesc || "",
           };
