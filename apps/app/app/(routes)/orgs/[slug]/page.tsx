@@ -78,7 +78,7 @@ export default function Orgs({
             {isLoading && (
               <>
                 {Array.from({ length: 7 }).map((_, idx) => (
-                  <OrgCardSkeleton key={`${id}-${idx}`} />
+                  <OrgCardSkeleton key={`skeleton-${idx}`} />
                 ))}
               </>
             )}
