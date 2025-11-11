@@ -60,7 +60,8 @@ export default function OrgsCard({
   const [projSlug, setProjSlug] = useState("");
   const [projDesc, setProjDesc] = useState("");
   const { projects } = useProjectsStore();
-  const { orgs } = useOrganizationStore();const [selectedOrgSlug] = useLocalStorage("@prexo-#selectedOrgSlug", "");
+  const { orgs } = useOrganizationStore();
+  const [selectedOrgSlug] = useLocalStorage("@prexo-#selectedOrgSlug", "");
 
   const selectedOrg = useMemo(() => {
     {
