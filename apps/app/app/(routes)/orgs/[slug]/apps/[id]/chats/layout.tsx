@@ -48,7 +48,7 @@ export default function ChatsLayout({
     "relative flex flex-col gap-2 bg-secondary overflow-hidden rounded-xl transition-all duration-200",
     isFullscreen
       ? "fixed inset-0 z-50 h-screen w-screen rounded-none p-4 sm:p-6 shadow-2xl"
-      : "h-full w-full p-2"
+      : "h-full w-full p-2",
   );
 
   return (
@@ -83,7 +83,7 @@ export default function ChatsLayout({
                 "flex flex-col overflow-hidden rounded-xl bg-secondary p-1 transition-all",
                 isFullscreen
                   ? "mr-0 max-h-[var(--chat-window-max-height,100vh)]"
-                  : "mr-2 max-h-[70dvh]"
+                  : "mr-2 max-h-[70dvh]",
               )}
             >
               <ConvoPanel />
@@ -94,7 +94,7 @@ export default function ChatsLayout({
               minSize={isFullscreen ? 45 : 60}
               className={cn(
                 "flex h-full flex-col overflow-hidden rounded-xl bg-secondary transition-all",
-                isFullscreen ? "ml-0" : "ml-2"
+                isFullscreen ? "ml-0" : "ml-2",
               )}
             >
               <div

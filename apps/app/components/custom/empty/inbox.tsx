@@ -188,7 +188,7 @@ export function EmptyInbox() {
                   <Button
                     type="submit"
                     onClick={handleInboxCreation}
-                    disabled={isMaintenanceModeEnabled}
+                    // disabled={isMaintenanceModeEnabled}
                   >
                     Create Inbox
                   </Button>

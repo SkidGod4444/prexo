@@ -1,18 +1,26 @@
-"use client"
+"use client";
 
 interface ChatMessageProps {
-  text: string
-  sender: "user" | "other"
-  timestamp: string
-  avatar?: string
-  name?: string
+  text: string;
+  sender: "user" | "other";
+  timestamp: string;
+  avatar?: string;
+  name?: string;
 }
 
-export default function ChatMessage({ text, sender, timestamp, avatar, name }: ChatMessageProps) {
-  const isUser = sender === "user"
+export default function ChatMessage({
+  text,
+  sender,
+  timestamp,
+  avatar,
+  name,
+}: ChatMessageProps) {
+  const isUser = sender === "user";
 
   return (
-    <div className={`flex gap-3 mb-2 ${isUser ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`flex gap-3 mb-2 ${isUser ? "justify-end" : "justify-start"}`}
+    >
       {/* Avatar for received messages */}
       {!isUser && avatar && (
         <img
@@ -23,8 +31,14 @@ export default function ChatMessage({ text, sender, timestamp, avatar, name }: C
       )}
 
       {/* Message Bubble */}
-      <div className={`flex max-w-[20rem] flex-col ${isUser ? "items-end" : "items-start"}`}>
-        {!isUser && name && <span className="mb-0.5 text-sm font-semibold text-foreground">{name}</span>}
+      <div
+        className={`flex max-w-[20rem] flex-col ${isUser ? "items-end" : "items-start"}`}
+      >
+        {!isUser && name && (
+          <span className="mb-0.5 text-sm font-semibold text-foreground">
+            {name}
+          </span>
+        )}
         <div
           className={`rounded-xl px-3 py-1.5 text-xs shadow-sm ${
             isUser
@@ -34,8 +48,10 @@ export default function ChatMessage({ text, sender, timestamp, avatar, name }: C
         >
           {text}
         </div>
-        <span className="mt-0.5 text-xs text-muted-foreground">{timestamp}</span>
+        <span className="mt-0.5 text-xs text-muted-foreground">
+          {timestamp}
+        </span>
       </div>
     </div>
-  )
+  );
 }
