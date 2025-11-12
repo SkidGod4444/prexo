@@ -14,7 +14,6 @@ export default function Orgs({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const id = useId() as string;
   const { slug } = use(params);
   const { orgSlug, isLoaded: isAuthLoaded } = useAuth();
   const pathname = usePathname();
@@ -26,9 +25,7 @@ export default function Orgs({
     useLocalStorage("@prexo-#selectedOrgSlug", "");
 
   const selectedOrg = useMemo(() => {
-    {
-      return orgs.find((o) => o.slug === selectedOrgSlug);
-    }
+    return orgs.find((o) => o.slug === selectedOrgSlug);
   }, [orgs, selectedOrgSlug]);
 
   const appsOfSelectedOrg = useMemo(() => {

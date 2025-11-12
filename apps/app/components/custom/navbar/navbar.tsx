@@ -24,6 +24,7 @@ export default function NavBar() {
   const defaultNavLinks = [
     { href: `${socials.docs}`, label: "Documentation" },
     { href: `${socials.changelogs}`, label: "Changelogs" },
+    { href: `${socials.status}`, label: "Status" },
     { href: `${socials.discord}`, label: "Support" },
   ];
 
@@ -34,7 +35,7 @@ export default function NavBar() {
   const appNavLinks = [
     { href: `${appBasePath}`, label: "Overview", isBeta: false },
     { href: `${appBasePath}/inbox`, label: "Inbox", isBeta: true },
-    { href: `${appBasePath}/chats`, label: "Chats", isBeta: true },
+    { href: `${appBasePath}/chats`, label: "Chats", isBeta: false },
     { href: `${appBasePath}/meets`, label: "Meetings", isBeta: true },
     { href: `${appBasePath}/playground`, label: "Playground", isBeta: true },
     { href: `${appBasePath}/configure`, label: "Configure", isBeta: false },

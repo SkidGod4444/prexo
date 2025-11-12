@@ -5,6 +5,7 @@ const socials = {
   github: "https://git.new/prexo",
   docs: "https://docs.prexoai.xyz",
   changelogs: "https://changelogs.prexoai.xyz",
+  status: "https://status.prexoai.xyz",
   sponsor: "https://l.devwtf.in/sponsor",
   me: "https://devwtf.in",
   myX: "https://l.devwtf.in/x",

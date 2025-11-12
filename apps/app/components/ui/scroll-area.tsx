@@ -23,14 +23,14 @@ function ScrollArea({
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
-      {orientation === "both" ? (
+      {/* {orientation === "both" ? (
         <>
           <ScrollBar orientation="vertical" />
           <ScrollBar orientation="horizontal" />
         </>
       ) : (
         <ScrollBar orientation={orientation} />
-      )}
+      )} */}
       <ScrollAreaPrimitive.Corner data-slot="scroll-area-corner" />
     </ScrollAreaPrimitive.Root>
   );

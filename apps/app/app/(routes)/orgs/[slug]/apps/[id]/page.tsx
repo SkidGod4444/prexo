@@ -27,9 +27,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
   const [selectedOrgSlug] = useLocalStorage("@prexo-#selectedOrgSlug", "");
 
   const selectedOrg = useMemo(() => {
-    {
-      return orgs.find((o) => o.slug === selectedOrgSlug);
-    }
+    return orgs.find((o) => o.slug === selectedOrgSlug);
   }, [orgs, selectedOrgSlug]);
 
   const appsOfSelectedOrg = useMemo(() => {

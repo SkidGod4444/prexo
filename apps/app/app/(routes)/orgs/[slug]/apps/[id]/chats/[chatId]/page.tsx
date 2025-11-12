@@ -1,10 +1,17 @@
 import { use } from "react";
+import ChatWindow from "@/components/custom/chats/chat.window";
 
 export default function ChatPage({
   params,
 }: {
   params: Promise<{ chatId: string }>;
 }) {
-  const { chatId } = use(params);
-  return <div>{`Inbox Page - Inbox ID: ${chatId}`}</div>;
+  use(params);
+  return (
+    <div className="flex h-full w-full overflow-hidden items-center justify-center">
+      <div className="w-full max-w-4xl max-h-[70vh]">
+        <ChatWindow />
+      </div>
+    </div>
+  );
 }
