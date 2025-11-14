@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import ConvoFilter from "@/components/custom/chats/convo.filter";
 import ConvoPanel from "@/components/custom/chats/convo.panel";
 import { Button } from "@/components/ui/button";
-import { Frame, FramePanel } from "@/components/ui/frame";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -20,6 +19,7 @@ export default function ChatsLayout({
   children: React.ReactNode;
 }>) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [filterValue, setFilterValue] = useState<string>("all");
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -44,24 +44,25 @@ export default function ChatsLayout({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isFullscreen]);
 
-  const frameClassName = cn(
-    "relative flex flex-col gap-2 bg-secondary overflow-hidden rounded-xl transition-all duration-200",
+  const containerClassName = cn(
+    "relative flex flex-col gap-3 bg-background transition-all duration-200",
     isFullscreen
-      ? "fixed inset-0 z-50 h-screen w-screen rounded-none p-4 sm:p-6 shadow-2xl"
-      : "h-full w-full p-2",
+      ? "fixed inset-0 z-50 h-screen w-screen p-4 sm:p-6"
+      : "h-[calc(100vh-12rem)] w-full",
   );
 
   return (
     <>
       {isFullscreen && (
-        <div className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm transition-opacity" />
+        <div className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity" />
       )}
-      <Frame className={frameClassName}>
-        <div className="flex items-center justify-between">
-          <ConvoFilter />
+      <div className={containerClassName}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-1">
+          <ConvoFilter value={filterValue} onChange={setFilterValue} />
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={toggleFullscreen}
             className="h-9 w-9"
@@ -74,43 +75,25 @@ export default function ChatsLayout({
             )}
           </Button>
         </div>
-        <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-          <FramePanel className="flex h-full w-full gap-0 overflow-hidden rounded-xl bg-background p-0">
+
+        {/* Main Chat Area */}
+        <div className="flex-1 overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+          <ResizablePanelGroup direction="horizontal" className="h-full">
             <ResizablePanel
-              defaultSize={25}
-              minSize={isFullscreen ? 20 : 25}
-              className={cn(
-                "flex flex-col overflow-hidden rounded-xl bg-secondary p-1 transition-all",
-                isFullscreen
-                  ? "mr-0 max-h-[var(--chat-window-max-height,100vh)]"
-                  : "mr-2 max-h-[70dvh]",
-              )}
+              defaultSize={30}
+              minSize={20}
+              maxSize={40}
+              className="flex flex-col"
             >
-              <ConvoPanel />
+              <ConvoPanel filter={filterValue} />
             </ResizablePanel>
-            <ResizableHandle withHandle className="h-full" />
-            <ResizablePanel
-              defaultSize={isFullscreen ? 75 : 75}
-              minSize={isFullscreen ? 45 : 60}
-              className={cn(
-                "flex h-full flex-col overflow-hidden rounded-xl bg-secondary transition-all",
-                isFullscreen ? "ml-0" : "ml-2",
-              )}
-            >
-              <div
-                className="flex h-full w-full"
-                style={
-                  {
-                    "--chat-window-max-height": isFullscreen ? "100vh" : "70vh",
-                  } as React.CSSProperties
-                }
-              >
-                {children}
-              </div>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={70} minSize={50}>
+              {children}
             </ResizablePanel>
-          </FramePanel>
-        </ResizablePanelGroup>
-      </Frame>
+          </ResizablePanelGroup>
+        </div>
+      </div>
     </>
   );
 }

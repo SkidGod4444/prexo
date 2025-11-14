@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+
 interface ChatMessageProps {
   text: string;
   sender: "user" | "other";
@@ -19,38 +22,47 @@ export default function ChatMessage({
 
   return (
     <div
-      className={`flex gap-3 mb-2 ${isUser ? "justify-end" : "justify-start"}`}
+      className={cn(
+        "flex gap-3 animate-in fade-in-0 slide-in-from-bottom-2 duration-300",
+        isUser ? "justify-end" : "justify-start",
+      )}
     >
       {/* Avatar for received messages */}
       {!isUser && avatar && (
-        <img
-          src={avatar || "/placeholder.svg"}
-          alt={name}
-          className="h-12 w-12 flex-shrink-0 rounded-full object-cover ring-1 ring-border/40"
-        />
+        <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border shadow-sm">
+          <Image
+            src={avatar}
+            alt={name || "User"}
+            fill
+            className="object-cover"
+            sizes="32px"
+          />
+        </div>
       )}
 
       {/* Message Bubble */}
       <div
-        className={`flex max-w-[20rem] flex-col ${isUser ? "items-end" : "items-start"}`}
+        className={cn(
+          "flex max-w-[75%] flex-col gap-1",
+          isUser ? "items-end" : "items-start",
+        )}
       >
         {!isUser && name && (
-          <span className="mb-0.5 text-sm font-semibold text-foreground">
+          <span className="px-1 text-xs font-medium text-foreground">
             {name}
           </span>
         )}
         <div
-          className={`rounded-xl px-3 py-1.5 text-xs shadow-sm ${
+          className={cn(
+            "rounded-2xl px-4 py-2 text-sm shadow-sm",
             isUser
               ? "rounded-br-md bg-primary text-primary-foreground"
-              : "rounded-bl-md border border-border/60 bg-background/80 text-foreground"
-          }`}
+              : "rounded-bl-md border border-border bg-card text-foreground",
+          )}
         >
-          {text}
+          <p className="whitespace-pre-wrap break-words">{text}</p>
         </div>
-        <span className="mt-0.5 text-xs text-muted-foreground">
-          {timestamp}
-        </span>
+        <span className="px-1 text-xs text-muted-foreground">{timestamp}</span>
       </div>
     </div>
   );

@@ -3,6 +3,8 @@
 import { Paperclip, Send, Smile } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ChatInputProps {
   onSendMessage?: (message: string) => void;
@@ -18,7 +20,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -26,48 +28,50 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 border-t border-border/60 bg-background/60 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+    <div className="flex items-end gap-2 border-t border-border bg-background px-4 py-3">
       {/* Attachment Button */}
-      <button
+      <Button
         type="button"
-        className="flex-shrink-0 rounded-full p-1.5 transition-colors hover:bg-muted"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 flex-shrink-0"
         aria-label="Attach file"
       >
-        <Paperclip size={16} className="text-muted-foreground" />
-      </button>
+        <Paperclip size={18} className="text-muted-foreground" />
+      </Button>
 
       {/* Input Field */}
-      <input
-        type="text"
-        placeholder="Type a message..."
+      <Textarea
+        placeholder="Type a message... (Shift + Enter for new line)"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress}
-        className="flex-1 rounded-full border border-border/60 bg-transparent px-3 py-1.5 text-xs text-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        onKeyDown={handleKeyDown}
+        className="min-h-[2.5rem] max-h-32 resize-none text-sm"
+        rows={1}
       />
 
       {/* Emoji Button */}
-      <button
+      <Button
         type="button"
-        className="flex-shrink-0 rounded-full p-1.5 transition-colors hover:bg-muted"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 flex-shrink-0"
         aria-label="Emoji picker"
       >
-        <Smile size={16} className="text-muted-foreground" />
-      </button>
+        <Smile size={18} className="text-muted-foreground" />
+      </Button>
 
       {/* Send Button */}
-      <button
+      <Button
         type="button"
         onClick={handleSend}
         disabled={!message.trim()}
-        className="flex-shrink-0 rounded-full p-1.5 transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-50"
+        size="icon"
+        className="h-9 w-9 flex-shrink-0"
         aria-label="Send message"
       >
-        <Send
-          size={16}
-          className={message.trim() ? "text-primary" : "text-muted-foreground"}
-        />
-      </button>
+        <Send size={16} />
+      </Button>
     </div>
   );
 }

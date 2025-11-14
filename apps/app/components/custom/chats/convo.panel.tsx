@@ -2,10 +2,12 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatListCard, { type ChatListCardProps } from "./convo.list.card";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
 
 const mockChats: (ChatListCardProps & { id: number })[] = [
-  // Add one of isEscalated, isResolved, isUnResolved to each conversation randomly
   {
     id: 1,
     name: "Micky Doe",
@@ -189,25 +191,83 @@ const mockChats: (ChatListCardProps & { id: number })[] = [
   },
 ];
 
-export default function ConvoPanel() {
+interface ConvoPanelProps {
+  filter: string;
+}
+
+export default function ConvoPanel({ filter }: ConvoPanelProps) {
+  const params = useParams();
   const pathname = usePathname();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Get the current chat ID from params
+  const currentChatId = params?.chatId ? Number(params.chatId) : null;
+
+  // Build the base path for chats
   const segments = pathname.split("/");
   const chatBasePath = segments.slice(0, 6).join("/");
 
-  // /orgs/prexo-ai/apps/1/chats (dynamic app slug)
+  // Filter conversations based on filter and search query
+  const filteredChats = useMemo(() => {
+    return mockChats.filter((chat) => {
+      // Apply filter
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "escalated" && chat.isEscalated) ||
+        (filter === "resolved" && chat.isResolved) ||
+        (filter === "unresolved" && chat.isUnResolved);
+
+      // Apply search query
+      const matchesSearch =
+        searchQuery === "" ||
+        chat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        chat.message.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [filter, searchQuery]);
+
   return (
-    <div className="flex flex-col h-full w-full">
-      <ScrollArea>
-        <div className="space-y-1">
-          {mockChats.map((chat) => (
-            <Link
-              href={`${chatBasePath}/${chat.id}`}
-              key={chat.id}
-              className="block"
-            >
-              <ChatListCard {...chat} />
-            </Link>
-          ))}
+    <div className="flex h-full w-full flex-col border-r border-border">
+      {/* Search Input */}
+      <div className="border-b border-border p-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search conversations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-9 pl-9 text-sm"
+          />
+        </div>
+      </div>
+
+      {/* Conversations List */}
+      <ScrollArea className="flex-1">
+        <div className="space-y-1 p-2">
+          {filteredChats.length > 0 ? (
+            filteredChats.map((chat) => (
+              <Link
+                href={`${chatBasePath}/${chat.id}`}
+                key={chat.id}
+                className="block"
+              >
+                <ChatListCard {...chat} isActive={currentChatId === chat.id} />
+              </Link>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-sm text-muted-foreground">
+                No conversations found
+              </p>
+              {searchQuery && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Try adjusting your search query
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </ScrollArea>
     </div>

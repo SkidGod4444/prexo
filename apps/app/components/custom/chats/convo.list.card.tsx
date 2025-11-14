@@ -3,6 +3,7 @@
 import { Tooltip, TooltipPopup, TooltipTrigger } from "@/components/ui/tooltip";
 import { Check, CheckCheck, BellRing } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export interface ChatListCardProps {
   name: string;
@@ -13,6 +14,7 @@ export interface ChatListCardProps {
   isEscalated?: boolean;
   isResolved?: boolean;
   isUnResolved?: boolean;
+  isActive?: boolean;
 }
 
 export default function ChatListCard({
@@ -24,16 +26,25 @@ export default function ChatListCard({
   isEscalated = false,
   isResolved = false,
   isUnResolved = false,
+  isActive = false,
 }: ChatListCardProps) {
+  const bgColorClass = cn(
+    "relative flex items-center gap-3 rounded-xl border cursor-pointer px-3 py-2 shadow-sm transition-all duration-200",
+    isActive && "bg-primary/10 border-primary/30 shadow-md",
+    !isActive &&
+      isEscalated &&
+      "bg-red-600/10 hover:bg-red-600/20 border-red-600/30",
+    !isActive && isUnResolved && "bg-muted hover:bg-muted/80",
+    !isActive && !isEscalated && !isUnResolved && "hover:bg-muted/60",
+  );
+
   return (
-    <div
-      className={`relative flex items-center gap-3 ${(isUnResolved && "bg-muted") || (isEscalated && "bg-red-600/30 hover:bg-red-600/40")} rounded-xl border cursor-pointer px-2 py-1 shadow-sm transition-colors hover:bg-muted/60 overflow-hidden`}
-    >
+    <div className={bgColorClass}>
       {/* Avatar Section */}
       <div className="relative flex-shrink-0">
         <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted shadow-sm">
           <Image
-            src={avatar || "/placeholder.svg"}
+            src={avatar}
             alt={name}
             width={48}
             height={48}
@@ -41,28 +52,30 @@ export default function ChatListCard({
           />
         </div>
         {/* Flag Overlay */}
-        <div className="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-background text-xs shadow-sm">
+        <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-background text-xs shadow-sm">
           {flag}
         </div>
       </div>
 
       {/* Content Section */}
       <div className="min-w-0 flex-1">
-        <div className="mb-0.5 flex items-center gap-2">
+        <div className="mb-0.5 flex items-center justify-between gap-2">
           <h3 className="truncate text-sm font-semibold text-foreground">
             {name}
           </h3>
-          <span className="text-xs text-muted-foreground">{timestamp}</span>
+          <span className="flex-shrink-0 text-xs text-muted-foreground">
+            {timestamp}
+          </span>
         </div>
-        <p className="flex items-center truncate text-xs text-muted-foreground">
-          <span>{message}</span>
-        </p>
+        <p className="truncate text-xs text-muted-foreground">{message}</p>
       </div>
+
+      {/* Status Indicators */}
       {isEscalated && (
         <Tooltip>
           <TooltipTrigger>
-            <div className="absolute cursor-pointer top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full text-red-600 bg-background text-xs shadow-sm z-10">
-              <BellRing size={15} strokeWidth={2.3} />
+            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-red-600/20 text-red-600">
+              <BellRing size={14} strokeWidth={2.3} />
             </div>
           </TooltipTrigger>
           <TooltipPopup>Escalated</TooltipPopup>
@@ -71,18 +84,18 @@ export default function ChatListCard({
       {isResolved && (
         <Tooltip>
           <TooltipTrigger>
-            <div className="absolute cursor-pointer top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-background text-xs shadow-sm z-10">
-              <CheckCheck size={15} strokeWidth={2.3} />
+            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-600/20 text-green-600">
+              <CheckCheck size={14} strokeWidth={2.3} />
             </div>
           </TooltipTrigger>
           <TooltipPopup>Resolved</TooltipPopup>
         </Tooltip>
       )}
-      {isUnResolved && (
+      {isUnResolved && !isEscalated && (
         <Tooltip>
           <TooltipTrigger>
-            <div className="text-white/50 cursor-pointer absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-background text-xs shadow-sm z-10">
-              <Check size={15} strokeWidth={2.3} />
+            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <Check size={14} strokeWidth={2.3} />
             </div>
           </TooltipTrigger>
           <TooltipPopup>Unresolved</TooltipPopup>

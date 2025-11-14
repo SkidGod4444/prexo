@@ -37,10 +37,18 @@ const items = [
   },
 ];
 
-export default function ConvoFilter() {
+interface ConvoFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export default function ConvoFilter({ value, onChange }: ConvoFilterProps) {
+  const selectedItem = items.find((item) => item.value === value) || items[0];
+
   return (
     <Select
-      defaultValue={items[0]}
+      value={selectedItem}
+      onValueChange={(item) => onChange(item.value)}
       itemToStringValue={(item) => item.value}
       aria-label="Search conversations by filter"
     >
