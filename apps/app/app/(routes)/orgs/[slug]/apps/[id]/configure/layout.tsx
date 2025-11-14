@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function SettingsLayout({
   children,
@@ -24,8 +25,8 @@ export default function SettingsLayout({
 }) {
   const pathname = usePathname();
   const segments = pathname.split("/");
-  const settingsIndex = segments.indexOf("settings");
-  const basePath = segments.slice(0, settingsIndex + 1).join("/");
+  const configureIndex = segments.indexOf("configure");
+  const basePath = segments.slice(0, configureIndex + 1).join("/");
 
   const sidebarSections = [
     {
@@ -50,53 +51,60 @@ export default function SettingsLayout({
     {
       title: "Session management",
       items: [
-        { icon: Clock, label: "Sessions", path: `${basePath}` },
-        { icon: Settings, label: "JWT templates", path: `${basePath}` },
+        { icon: Clock, label: "Sessions", path: `${basePath}/sessions` },
+        { icon: Settings, label: "JWT templates", path: `${basePath}/jwt` },
       ],
     },
     {
       title: "Compliance",
-      items: [{ icon: Users, label: "Legal", path: `${basePath}` }],
+      items: [{ icon: Users, label: "Legal", path: `${basePath}/legal` }],
     },
     {
       title: "Feature management",
-      items: [{ icon: Grid3x3, label: "Features", path: `${basePath}` }],
+      items: [
+        { icon: Grid3x3, label: "Features", path: `${basePath}/features` },
+      ],
     },
   ];
 
   return (
-    <div className="flex h-full w-full">
-      <aside className="w-64 mr-5">
-        <div>
-          {sidebarSections.map((section) => (
-            <div key={section.title} className="mb-4">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                {section.title}
-              </h3>
-              {/* Add space between the buttons (vertical gap-1) */}
-              <nav className="border-b pb-4 flex flex-col gap-1">
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.path;
-                  return (
-                    <Link key={item.label} href={item.path} className="w-full">
-                      <Button
-                        variant={isActive ? "outline" : "ghost"}
-                        className="w-full justify-start gap-3 text-sm font-medium"
+    <div className="flex h-full w-full gap-6">
+      <aside className="w-64 flex-shrink-0">
+        <ScrollArea className="h-full">
+          <div className="pr-2">
+            {sidebarSections.map((section, index) => (
+              <div key={section.title} className={index > 0 ? "mt-6" : ""}>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+                  {section.title}
+                </h3>
+                <nav className="flex flex-col gap-1 pb-4 border-b border-border">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.path;
+                    return (
+                      <Link
+                        key={item.label}
+                        href={item.path}
+                        className="w-full"
                       >
-                        <Icon size={18} />
-                        <span>{item.label}</span>
-                      </Button>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-          ))}
-        </div>
+                        <Button
+                          variant={isActive ? "secondary" : "ghost"}
+                          className="w-full justify-start gap-3 text-sm font-medium"
+                        >
+                          <Icon size={18} />
+                          <span>{item.label}</span>
+                        </Button>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-hidden">{children}</main>
+      <main className="flex-1 min-w-0 overflow-hidden">{children}</main>
     </div>
   );
 }
