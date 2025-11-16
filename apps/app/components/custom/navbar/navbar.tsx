@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import PlansDialog from "../plans.dialog";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -199,6 +200,7 @@ export default function NavBar() {
             {/* <SettingsMenu /> */}
           </div>
           {/* User menu */}
+          <PlansDialog/>
           <UserButton />
         </div>
       </div>

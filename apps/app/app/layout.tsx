@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme.provider";
 import { AppProviders } from "@/components/providers";
 import { Spinner } from "@/components/ui/spinner";
-import { PosthogProvider } from "@/hooks/use-posthog";
+// import { PosthogProvider } from "@/hooks/use-posthog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,7 +75,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <PosthogProvider>
+    // <PosthogProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -99,6 +99,6 @@ export default function RootLayout({
           </ThemeProvider>
         </body>
       </html>
-    </PosthogProvider>
+    // </PosthogProvider>
   );
 }

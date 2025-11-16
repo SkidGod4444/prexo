@@ -10,6 +10,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { Analytics } from "@vercel/analytics/next";
 import ConsoleMessage from "@/components/custom/console.msg";
 import type { ReactNode } from "react";
+import { RedeemCntxt } from "@/contexts/redeem.ctxt";
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
@@ -22,10 +23,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
         <FeatCntxt>
           <UserProvider>
             <ContentProvider>
+              <RedeemCntxt>
               <ToastProvider position="bottom-center">
                 {children}
                 <Analytics />
               </ToastProvider>
+              </RedeemCntxt>
               <ConsoleMessage />
             </ContentProvider>
           </UserProvider>
