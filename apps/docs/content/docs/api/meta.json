@@ -1,8 +1,0 @@
-{
-    "title": "Prexo API",
-    "slug": "api",
-    "description": "The Prexo REST API",
-    "icon": "Terminal",
-    "root": true,
-    "defaultOpen": false
-  }
