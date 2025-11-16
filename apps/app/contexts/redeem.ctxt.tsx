@@ -30,7 +30,6 @@ export const RedeemCntxt = ({ children }: { children: ReactNode }) => {
   return (
     <RedeemContext.Provider value={{ redeemCode, clearRedeemCode }}>
       {children}
-      
     </RedeemContext.Provider>
   );
 };

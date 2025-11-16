@@ -200,7 +200,7 @@ export default function NavBar() {
             {/* <SettingsMenu /> */}
           </div>
           {/* User menu */}
-          <PlansDialog/>
+          <PlansDialog />
           <UserButton />
         </div>
       </div>

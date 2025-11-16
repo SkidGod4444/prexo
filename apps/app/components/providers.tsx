@@ -24,10 +24,10 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <UserProvider>
             <ContentProvider>
               <RedeemCntxt>
-              <ToastProvider position="bottom-center">
-                {children}
-                <Analytics />
-              </ToastProvider>
+                <ToastProvider position="bottom-center">
+                  {children}
+                  <Analytics />
+                </ToastProvider>
               </RedeemCntxt>
               <ConsoleMessage />
             </ContentProvider>

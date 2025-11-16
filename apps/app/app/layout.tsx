@@ -76,29 +76,29 @@ export default function RootLayout({
 }>) {
   return (
     // <PosthogProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          forcedTheme="dark"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            forcedTheme="dark"
-            enableSystem
-            disableTransitionOnChange
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen w-full">
+                <Spinner className="h-8 w-8 animate-spin" />
+              </div>
+            }
           >
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center min-h-screen w-full">
-                  <Spinner className="h-8 w-8 animate-spin" />
-                </div>
-              }
-            >
-              <AppProviders>{children}</AppProviders>
-            </Suspense>
-          </ThemeProvider>
-        </body>
-      </html>
+            <AppProviders>{children}</AppProviders>
+          </Suspense>
+        </ThemeProvider>
+      </body>
+    </html>
     // </PosthogProvider>
   );
 }
