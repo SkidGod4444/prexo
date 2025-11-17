@@ -1,9 +1,9 @@
 import { AI_MODELS_FREE_TIER } from "@prexo/utils/constants";
-
 type UserType = {
   id: string;
   name: string;
   email: string;
+  customerId?: string | null;
   role?: string | null;
   hashKey?: string | null;
   lang?: string | null;

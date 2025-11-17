@@ -12,6 +12,7 @@ const buttonVariants = cva(
         destructive:
           "text-primary-foreground bg-red-800 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-red-900/60 hover:bg-red-800/90 active:scale-[0.97] focus-visible:ring-red-500",
         warn: "text-primary-foreground bg-yellow-600 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-yellow-600/60 hover:bg-yellow-600/90 active:scale-[0.97]",
+        annc: "text-primary-foreground bg-blue-600 transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-blue-600/60 hover:bg-blue-600/90 active:scale-[0.90]",
         secondary:
           "text-primary-foreground bg-secondary border transition duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] shadow-[0_2px_8px_0_rgba(0,0,0,0.22),inset_0_0_0_1px_#ffffff1f,inset_0_2px_3px_#ffffff1a,inset_0_-4px_1px_#00000029] border border-secondary/60 hover:bg-secondary/80 active:scale-[0.97] focus-visible:ring-secondary",
         outline:

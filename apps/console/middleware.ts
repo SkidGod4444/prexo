@@ -1,5 +1,4 @@
 import { betterFetch } from "@better-fetch/fetch";
-import type { Session } from "@prexo/auth";
 import { NextResponse, type NextRequest } from "next/server";
 const baseDomain =
   process.env.NODE_ENV === "production"

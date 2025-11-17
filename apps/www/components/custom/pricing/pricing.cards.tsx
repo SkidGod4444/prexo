@@ -13,7 +13,6 @@ import { TextMorph } from "../text-morph";
 import { AnimatedNumber } from "../anim-numb";
 import type { PCards } from "@prexo/types";
 import Link from "next/link";
-import { getCheckoutLink } from "@prexo/auth/client";
 import { useRouter } from "next/navigation";
 
 export default function PricingCards({

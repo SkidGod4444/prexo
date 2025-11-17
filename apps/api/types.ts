@@ -1,4 +1,3 @@
-import { Session } from "@prexo/auth";
 import { UserType } from "@prexo/types";
 
 export type Variables = {

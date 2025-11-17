@@ -6,11 +6,9 @@
         ".": "./src/index.ts"
     },
     "dependencies": {
-        "@polar-sh/better-auth": "^1.0.8",
-        "@polar-sh/sdk": "^0.34.9",
+        "@polar-sh/sdk": "^0.41.4",
         "@prexo/db": "workspace:*",
-        "@prexo/utils": "workspace:*",
-        "better-auth": "^1.2.9"
+        "@prexo/utils": "workspace:*"
     },
     "devDependencies": {}
 }

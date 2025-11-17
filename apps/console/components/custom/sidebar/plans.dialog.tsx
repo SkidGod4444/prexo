@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMyProfileStore } from "@prexo/store";
 import { useRouter } from "next/navigation";
-import { getCheckoutLink } from "@prexo/auth/client";
 import { pricingModels } from "@prexo/utils/constants";
 
 export default function PlansDialog() {

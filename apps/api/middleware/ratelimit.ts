@@ -1,4 +1,3 @@
-import { auth } from "@prexo/auth";
 import { cache } from "@prexo/cache";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Context, Next } from "hono";

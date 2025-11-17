@@ -1,5 +1,4 @@
 "use client";
-import { authClient } from "@prexo/auth/client";
 import { useMyProfileStore } from "@prexo/store";
 import { UserType } from "@prexo/types";
 import { useRouter } from "next/navigation";

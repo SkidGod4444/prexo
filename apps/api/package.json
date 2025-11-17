@@ -12,7 +12,6 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.0",
     "@ai-sdk/togetherai": "^0.2.14",
-    "@better-fetch/fetch": "^1.1.18",
     "@clerk/backend": "^2.17.2",
     "@hono/clerk-auth": "^3.0.3",
     "@openrouter/ai-sdk-provider": "^0.7.3",
@@ -23,6 +22,7 @@
     "@prexo/logs": "workspace:*",
     "@prexo/store": "workspace:*",
     "@prexo/utils": "workspace:*",
+    "@prexo/polar": "workspace:*",
     "@unkey/api": "^0.36.0",
     "@unkey/hono": "^1.5.0",
     "@upstash/ratelimit": "^2.0.6",

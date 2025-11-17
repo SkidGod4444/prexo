@@ -23,7 +23,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/auth.context";
-import { authClient } from "@prexo/auth/client";
 import { useMyProfileStore } from "@prexo/store";
 import PlansDialog from "./plans.dialog";
 import { useRouter } from "next/navigation";

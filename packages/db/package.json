@@ -18,10 +18,10 @@
     },
     "dependencies": {
         "@prexo/utils": "workspace:*",
-        "@prisma/client": "^6.18.0",
+        "@prisma/client": "^6.19.0",
         "@prisma/extension-accelerate": "^2.0.1",
         "drizzle-orm": "^0.44.2",
         "postgres": "^3.4.7",
-        "prisma": "^6.18.0"
+        "prisma": "^6.19.0"
     }
 }

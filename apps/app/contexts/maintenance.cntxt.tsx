@@ -1,6 +1,7 @@
 "use client";
 import { createContext, type ReactNode, useContext } from "react";
 import MaintenanceBanner from "@/components/custom/maintenance/banner";
+import CommunityBanner from "@/components/custom/community/banner";
 import { useFeatureFlag } from "@/hooks/use-feature-flags";
 
 type MaintenanceContextType = {
@@ -16,6 +17,7 @@ export const MaintenanceCntxt = ({ children }: { children: ReactNode }) => {
   return (
     <MaintenanceContext.Provider value={{ isEnabled }}>
       {isEnabled && <MaintenanceBanner />}
+      {!isEnabled && <CommunityBanner />}
       {children}
     </MaintenanceContext.Provider>
   );

@@ -1,5 +1,4 @@
 "use client";
-import { authClient } from "@prexo/auth/client";
 import {
   useApiKeyStore,
   useMyProfileStore,

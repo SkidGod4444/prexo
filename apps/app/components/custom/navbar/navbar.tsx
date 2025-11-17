@@ -38,6 +38,7 @@ export default function NavBar() {
     { href: `${appBasePath}/inbox`, label: "Inbox", isBeta: true },
     { href: `${appBasePath}/chats`, label: "Chats", isBeta: false },
     { href: `${appBasePath}/meets`, label: "Meetings", isBeta: true },
+    { href: `${appBasePath}/models`, label: "Models", isBeta: false },
     { href: `${appBasePath}/playground`, label: "Playground", isBeta: true },
     { href: `${appBasePath}/configure`, label: "Configure", isBeta: false },
   ];

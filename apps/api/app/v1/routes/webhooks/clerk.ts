@@ -3,6 +3,7 @@ import { verifyWebhook } from "@clerk/backend/webhooks";
 import { cache } from "@prexo/cache";
 import { prisma } from "@prexo/db";
 import { logTelegram } from "@/lib/logger";
+import { polarClient } from "@prexo/polar";
 
 const clerk = new Hono();
 
@@ -27,17 +28,67 @@ clerk.post("/", async (c) => {
         evt.data.email_addresses[0]?.verification?.status === "verified";
       const image = evt.data.image_url || "";
       const banned = evt.data.banned || false;
+      const userId = evt.data.id;
 
       let user = null;
+      let customerId = null;
+
+      const existingInPolar = await polarClient.customers.getExternal({
+        externalId: userId,
+      });
+
+      if (existingInPolar) {
+        const updateInPolar = await polarClient.customers.update({
+          id: existingInPolar.id,
+          customerUpdate: {
+            email,
+            name,
+            externalId: userId,
+          },
+        });
+        customerId = updateInPolar.id;
+        console.log(
+          `Updated customer data in polar with id: ${updateInPolar.id}`,
+        );
+        await logTelegram({
+          logTitle: "Customer data found in polar & updated!",
+          logSummary: `A new user has been found in polar with ID: ${existingInPolar.id} & Email: ${evt.data.email_addresses[0]?.email_address}`,
+          logType: "webhook",
+          severity: "low",
+          stackTrace: `Found Customer Email: ${evt.data.email_addresses[0]?.email_address}`,
+          environment: process.env.NODE_ENV || "development",
+        });
+      } else {
+        const createCustomer = await polarClient.customers.create({
+          externalId: userId,
+          name,
+          email,
+        });
+        customerId = createCustomer.id;
+        console.log(
+          `New customer created in polar with id: ${createCustomer.id}`,
+        );
+        await logTelegram({
+          logTitle: "New customer created in polar!",
+          logSummary: `A new user has been created in polar with ID: ${createCustomer.id} & Email: ${evt.data.email_addresses[0]?.email_address}`,
+          logType: "webhook",
+          severity: "high",
+          stackTrace: `Created Customer Email: ${evt.data.email_addresses[0]?.email_address}`,
+          environment: process.env.NODE_ENV || "development",
+        });
+      }
 
       // Ensure DB user.id === Clerk user id. Handle duplicates on unique email.
-      const existingById = await prisma.user.findUnique({ where: { id } });
+      const existingById = await prisma.user.findUnique({
+        where: { id: userId },
+      });
       if (existingById) {
         user = await prisma.user.update({
-          where: { id },
+          where: { id: userId },
           data: {
             name,
             email,
+            customerId,
             emailVerified,
             image,
             updatedAt: new Date(),
@@ -48,27 +99,29 @@ clerk.post("/", async (c) => {
         const existingByEmail = await prisma.user.findUnique({
           where: { email },
         });
-        if (existingByEmail && existingByEmail.id !== id) {
+        if (existingByEmail && existingByEmail.id !== userId) {
           // Migrate related records to new Clerk id, then update the user id
 
           user = await prisma.user.update({
             where: { id: existingByEmail.id },
             data: {
-              id,
+              id: userId,
               name,
               email,
+              customerId,
               emailVerified,
               image,
               updatedAt: new Date(),
               banned,
             },
           });
-        } else if (existingByEmail && existingByEmail.id === id) {
+        } else if (existingByEmail && existingByEmail.id === userId) {
           user = await prisma.user.update({
-            where: { id },
+            where: { id: userId },
             data: {
               name,
               email,
+              customerId,
               emailVerified,
               image,
               updatedAt: new Date(),
@@ -78,9 +131,10 @@ clerk.post("/", async (c) => {
         } else {
           user = await prisma.user.create({
             data: {
-              id: id || "",
+              id: userId || "",
               name,
               email,
+              customerId,
               emailVerified,
               image,
               createdAt: new Date(),
@@ -95,7 +149,7 @@ clerk.post("/", async (c) => {
       console.log("User upserted in DB:", user);
 
       await cache.xadd(STREAM_KEY, "*", {
-        id,
+        id: userId,
         type: eventType,
         email: evt.data.email_addresses[0]?.email_address || "",
         payload: JSON.stringify(evt.data),
@@ -105,7 +159,7 @@ clerk.post("/", async (c) => {
 
       await logTelegram({
         logTitle: "Clerk Webhook - User Created",
-        logSummary: `A new user has been created with ID: ${id} & Email: ${evt.data.email_addresses[0]?.email_address}`,
+        logSummary: `A new user has been created with ID: ${userId} & Email: ${evt.data.email_addresses[0]?.email_address}`,
         logType: "webhook",
         severity: "low",
         stackTrace: `Created User Email: ${evt.data.email_addresses[0]?.email_address}`,
