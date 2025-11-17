@@ -33,7 +33,7 @@ export default function PlansDialog() {
         console.log("User is not authenticated, redirecting to auth page");
         router.push(`${redirectUrl}?redirect=/pricing`);
       }
-      const checkoutLink = '';
+      const checkoutLink = "";
       if (checkoutLink) {
         router.push(checkoutLink);
       } else {
