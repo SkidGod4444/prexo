@@ -1,9 +1,6 @@
-import React from 'react'
+import { ModelsTable } from "@/components/custom/models/table";
+import React from "react";
 
 export default function ModelsPage() {
-  return (
-    <div>
-      hii
-    </div>
-  )
+  return <ModelsTable />;
 }

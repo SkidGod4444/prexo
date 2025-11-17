@@ -181,6 +181,19 @@ type AIModelsFreeTierId = (typeof AI_MODELS_FREE_TIER)[number]["id"];
  */
 type AIModelsFreeTier = (typeof AI_MODELS_FREE_TIER)[number];
 
+type ModelsType = {
+  id: string;
+  model: string;
+  name: string;
+  description: string;
+  context: number;
+  inputTokens: number;
+  outputTokens: number;
+  provider: "openai" | "meta" | "google" | "deepseek" | "anthropic";
+  marketplaces: string[];
+  type: "chat" | "reasoning" | "image";
+};
+
 export type {
   UserType,
   ProjectType,
@@ -196,5 +209,6 @@ export type {
   UsageLogType,
   LinkType,
   FileType,
+  ModelsType,
   OrganizationType,
 };

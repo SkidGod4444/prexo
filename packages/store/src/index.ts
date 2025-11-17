@@ -8,6 +8,7 @@ import {
   EnvStore,
   FilesStore,
   LinksStore,
+  ModelsStore,
   MyProfileStore,
   NotificationsStore,
   OrganizationStore,
@@ -76,6 +77,24 @@ const useOrganizationStore = create<OrganizationStore>()(
     }),
     {
       name: "@prexo-#orgs",
+    },
+  ),
+);
+
+const useModelsStore = create<ModelsStore>()(
+  persist(
+    (set) => ({
+      models: [],
+      addModel: (model) =>
+        set((state) => ({ models: [...state.models, model] })),
+      removeModel: (modelId) =>
+        set((state) => ({
+          models: state.models.filter((model) => model.id !== modelId),
+        })),
+      setModels: (models) => set({ models }),
+    }),
+    {
+      name: "@prexo-#models",
     },
   ),
 );
@@ -254,4 +273,5 @@ export {
   useLinksStore,
   useFilesStore,
   useOrganizationStore,
+  useModelsStore,
 };

@@ -11,6 +11,7 @@ import {
   LinkType,
   FileType,
   OrganizationType,
+  ModelsType,
 } from "@prexo/types";
 
 type UserStore = {
@@ -38,6 +39,13 @@ type OrganizationStore = {
   addOrg: (org: OrganizationType) => void;
   removeOrg: (orgId: string) => void;
   setOrgs: (orgs: OrganizationType[]) => void;
+};
+
+type ModelsStore = {
+  models: ModelsType[];
+  addModel: (model: ModelsType) => void;
+  removeModel: (modelId: string) => void;
+  setModels: (models: ModelsType[]) => void;
 };
 
 type ProjectStore = {
@@ -117,4 +125,5 @@ export type {
   LinksStore,
   FilesStore,
   OrganizationStore,
+  ModelsStore,
 };

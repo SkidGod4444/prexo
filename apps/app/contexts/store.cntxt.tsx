@@ -1,6 +1,10 @@
 "use client";
-import { useOrganizationStore, useProjectsStore } from "@prexo/store";
-import { OrganizationType, ProjectType } from "@prexo/types";
+import {
+  useModelsStore,
+  useOrganizationStore,
+  useProjectsStore,
+} from "@prexo/store";
+import { ModelsType, OrganizationType, ProjectType } from "@prexo/types";
 import {
   createContext,
   useContext,
@@ -36,6 +40,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useMyUser();
   const { projects, setProjects } = useProjectsStore();
   const { orgs, setOrgs } = useOrganizationStore();
+  const { models, setModels } = useModelsStore();
   const selectedOrgSlug = useReadLocalStorage<string>(
     "@prexo-#selectedOrgSlug",
   );
@@ -173,20 +178,60 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    async function fetchModels() {
+      if (!isMounted) return;
+      setContentLoading(true);
+      try {
+        const data = await fetchWithAuthRef.current(`/models`, {
+          headers: {
+            // "x-project-id": String(consoleId || ""),
+            "x-polling-req": "true", // Indicate this is a polling request
+          },
+        });
+
+        if (!isMounted) return;
+
+        if (!data.ok) {
+          throw new Error(`Failed to fetch models: ${data.status}`);
+        }
+
+        const response = await data.json();
+        console.log("Models fetched:", response);
+        if (!isMounted) return;
+
+        if (Array.isArray(response?.models)) {
+          setModels(response.models.map((model: ModelsType) => model));
+        } else {
+          setModels([]);
+        }
+      } catch (error) {
+        console.error("Error fetching models:", error);
+        if (isMounted) {
+          setModels([]);
+        }
+      } finally {
+        if (isMounted) {
+          setContentLoading(false);
+        }
+      }
+    }
+
     // Always fetch once when user loads or changes
     fetchStore();
+    fetchModels(); // REMOVE IT WHEN STORE IS > 0
 
     if (projects.length > 0) {
       fetchInboxes();
+      fetchModels();
     }
 
     // Set up polling interval (30 seconds)
     intervalId = setInterval(() => {
       if (isMounted && userRef.current) {
         fetchStore();
-        if (projects.length > 0) {
-          fetchInboxes();
-        }
+        // if (projects.length > 0) {
+        //   fetchInboxes();
+        // }
       }
     }, 30000);
 

@@ -1,6 +1,7 @@
 import { cache } from "@prexo/cache";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Context, Next } from "hono";
+import { getAuth } from "@hono/clerk-auth";
 
 const getClientIp = (c: Context) =>
   c.req.header("x-forwarded-for") ||
@@ -33,7 +34,9 @@ const getRatelimitInstance = (limit: number) => ({
 });
 
 export const rateLimitHandler = async (c: Context, next: Next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  let auth = getAuth(c);
+  console.log(`Ratelimiting user: ${auth?.userId}`);
+  // const session = await auth.api.getSession({ headers: c.req.raw.headers });
   const telementryKey =
     c.req.header("x-ingest-key") || c.req.header("x-telemetry-key");
   const projectId = c.req.header("x-project-id");
@@ -47,24 +50,9 @@ export const rateLimitHandler = async (c: Context, next: Next) => {
   let key: string | undefined;
   let limiter: Ratelimit | undefined;
 
-  if (session?.user) {
-    if ("role" in session.user && session.user.role === "pro") {
-      key =
-        session.user.id ||
-        session?.session.ipAddress ||
-        ip ||
-        userAgent ||
-        "anonymous";
-      limiter = ratelimit.pro;
-    } else {
-      key =
-        session?.session.ipAddress ||
-        session?.session.userId ||
-        ip ||
-        userAgent ||
-        "anonymous";
-      limiter = ratelimit.free;
-    }
+  if (auth && auth.isAuthenticated) {
+    key = auth.userId || ip || userAgent || "anonymous";
+    limiter = ratelimit.free;
   } else if (telementryKey) {
     key = telementryKey || ip || userAgent || "anonymous";
     limiter = ratelimit.free;

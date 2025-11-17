@@ -50,137 +50,101 @@ const AI_MODELS_PRO_TIER = [
     model: "gpt-5-mini",
     name: "GPT-5 Mini",
     provider: "openai",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.75",
-        output: "6.00"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.75",
+    outputTokens: "6.00",
     context: "128",
-    description: "Advanced language model with superior reasoning capabilities"
+    description: "Advanced language model with superior reasoning capabilities",
   },
   {
     id: "gpt-4o-mini",
     model: "gpt-4o-mini",
     name: "GPT-4o Mini",
     provider: "openai",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.45",
-        output: "1.8"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.45",
+    outputTokens: "1.8",
     context: "128",
-    description: "Advanced language model with superior reasoning capabilities"
+    description: "Advanced language model with superior reasoning capabilities",
   },
   {
     id: "llama3.3-70b-instruct",
     model: "llama3.3-70b-instruct",
     name: "Llama 3.3 Instruct (70B)",
     provider: "meta",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.36",
-        output: "0.90"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.36",
+    outputTokens: "0.90",
     context: "131",
-    description: "Open-source large language model"
+    description: "Open-source large language model",
   },
   {
     id: "llama3-8b-instruct",
     model: "llama3-8b-instruct",
     name: "Llama 3.1 Instruct (8B)",
     provider: "meta",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.90",
-        output: "1.80"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.90",
+    outputTokens: "1.80",
     context: "8",
-    description: "Open-source large language model"
+    description: "Open-source large language model",
   },
   {
     id: "openai-gpt-oss-20b",
     model: "openai-gpt-oss-20b",
     name: "OpenAI GPT OSS 20b",
     provider: "meta",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.21",
-        output: "0.90"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.21",
+    outputTokens: "0.90",
     context: "128",
-    description: "Open-source large language model"
+    description: "Open-source large language model",
   },
   {
     id: "openai-gpt-oss-120b",
     model: "openai-gpt-oss-120b",
     name: "OpenAI GPT OSS 120b",
     provider: "openai",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "0.45",
-        output: "1.8"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "0.45",
+    outputTokens: "1.8",
     context: "128",
-    description: "Advanced language model with superior reasoning capabilities"
+    description: "Advanced language model with superior reasoning capabilities",
   },
   {
     id: "deepseek-r1-distill-llama-70b",
     model: "deepseek-r1-distill-llama-70b",
     name: "DeepSeek R1 Distill Llama 70B",
     provider: "deepseek",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "2.25",
-        output: "2.97"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "2.25",
+    outputTokens: "2.97",
     context: "128",
-    description: "Open-source large language model"
+    description: "Open-source large language model",
   },
   {
     id: "gemini-2.5-flash",
     model: "gemini-2.5-flash",
     name: "Gemini 2.5 Flash",
     provider: "google",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "3",
-        output: "3"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "3.00",
+    outputTokens: "3.00",
     context: "196",
-    description: "Open-source large language model"
+    description: "Open-source large language model",
   },
   {
     id: "claude-haiku-4-5-20251001",
     model: "claude-haiku-4-5-20251001",
     name: "Claude Haiku 4.5",
     provider: "anthropic",
-    marketplace: "mega-llm",
-    pricing: [
-      {
-        input: "3.00",
-        output: "15.00"
-      }
-    ],
+    marketplaces: ["mega-llm"],
+    inputTokens: "3.00",
+    outputTokens: "15.00",
     context: "128",
-    description: "Claude Haiku 4.5 - Advanced AI model"
-  }
-];
+    description: "Claude Haiku 4.5 - Advanced AI model",
+  },
+] as const;
 
 const AI_MODELS_FREE_TIER = [
   {
@@ -239,4 +203,10 @@ const AI_MODELS_FREE_TIER = [
   },
 ] as const;
 
-export { socials, pricingModels, logoUrl, AI_MODELS_FREE_TIER };
+export {
+  socials,
+  pricingModels,
+  logoUrl,
+  AI_MODELS_FREE_TIER,
+  AI_MODELS_PRO_TIER,
+};
