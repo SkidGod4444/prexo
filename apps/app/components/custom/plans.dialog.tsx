@@ -33,7 +33,7 @@ export default function PlansDialog() {
         console.log("User is not authenticated, redirecting to auth page");
         router.push(`${redirectUrl}?redirect=/pricing`);
       }
-      const checkoutLink = await getCheckoutLink([prodId]);
+      const checkoutLink = '';
       if (checkoutLink) {
         router.push(checkoutLink);
       } else {
@@ -108,8 +108,8 @@ export default function PlansDialog() {
             <ul className="text-muted-foreground space-y-2 text-sm">
               {pricingModels
                 .find((plan) => plan.productId === value)
-                ?.features.map((feature, i) => (
-                  <li className="flex gap-2" key={i}>
+                ?.features.map((feature) => (
+                  <li className="flex gap-2" key={feature}>
                     <CheckIcon
                       size={16}
                       className="text-primary mt-0.5 shrink-0"
