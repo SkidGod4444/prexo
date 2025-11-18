@@ -2,7 +2,7 @@
   "name": "@prexo/agents",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "dev": "mastra dev",
     "build": "mastra build",
