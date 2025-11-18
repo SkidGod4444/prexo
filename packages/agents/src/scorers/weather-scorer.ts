@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { createToolCallAccuracyScorerCode } from '@mastra/evals/scorers/code';
-import { createCompletenessScorer } from '@mastra/evals/scorers/code';
-import { createScorer } from '@mastra/core/scores';
+import { z } from "zod";
+import { createToolCallAccuracyScorerCode } from "@mastra/evals/scorers/code";
+import { createCompletenessScorer } from "@mastra/evals/scorers/code";
+import { createScorer } from "@mastra/core/scores";
 
 export const toolCallAppropriatenessScorer = createToolCallAccuracyScorerCode({
-  expectedTool: 'weatherTool',
+  expectedTool: "weatherTool",
   strictMode: false,
 });
 
@@ -12,32 +12,32 @@ export const completenessScorer = createCompletenessScorer();
 
 // Custom LLM-judged scorer: evaluates if non-English locations are translated appropriately
 export const translationScorer = createScorer({
-  name: 'Translation Quality',
+  name: "Translation Quality",
   description:
-    'Checks that non-English location names are translated and used correctly',
-  type: 'agent',
+    "Checks that non-English location names are translated and used correctly",
+  type: "agent",
   judge: {
-    model: 'openai/gpt-4o-mini',
+    model: "openai/gpt-4o-mini",
     instructions:
-      'You are an expert evaluator of translation quality for geographic locations. ' +
-      'Determine whether the user text mentions a non-English location and whether the assistant correctly uses an English translation of that location. ' +
-      'Be lenient with transliteration differences and diacritics. ' +
-      'Return only the structured JSON matching the provided schema.',
+      "You are an expert evaluator of translation quality for geographic locations. " +
+      "Determine whether the user text mentions a non-English location and whether the assistant correctly uses an English translation of that location. " +
+      "Be lenient with transliteration differences and diacritics. " +
+      "Return only the structured JSON matching the provided schema.",
   },
 })
   .preprocess(({ run }) => {
-    const userText = (run.input?.inputMessages?.[0]?.content as string) || '';
-    const assistantText = (run.output?.[0]?.content as string) || '';
+    const userText = (run.input?.inputMessages?.[0]?.content as string) || "";
+    const assistantText = (run.output?.[0]?.content as string) || "";
     return { userText, assistantText };
   })
   .analyze({
     description:
-      'Extract location names and detect language/translation adequacy',
+      "Extract location names and detect language/translation adequacy",
     outputSchema: z.object({
       nonEnglish: z.boolean(),
       translated: z.boolean(),
       confidence: z.number().min(0).max(1).default(1),
-      explanation: z.string().default(''),
+      explanation: z.string().default(""),
     }),
     createPrompt: ({ results }) => `
             You are evaluating if a weather assistant correctly handled translation of a non-English location.
@@ -71,7 +71,7 @@ export const translationScorer = createScorer({
   })
   .generateReason(({ results, score }) => {
     const r = (results as any)?.analyzeStepResult || {};
-    return `Translation scoring: nonEnglish=${r.nonEnglish ?? false}, translated=${r.translated ?? false}, confidence=${r.confidence ?? 0}. Score=${score}. ${r.explanation ?? ''}`;
+    return `Translation scoring: nonEnglish=${r.nonEnglish ?? false}, translated=${r.translated ?? false}, confidence=${r.confidence ?? 0}. Score=${score}. ${r.explanation ?? ""}`;
   });
 
 export const scorers = {
