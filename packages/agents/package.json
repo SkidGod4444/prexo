@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "mastra dev",
-    "build": "mastra build",
+    "dev": "mastra dev --dir src",
+    "build": "mastra build --dir src",
     "start": "mastra start"
   },
   "keywords": [],
