@@ -12,6 +12,11 @@ import {
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
   agents: { weatherAgent },
+  server: {
+    build: {
+      swaggerUI: true,
+    },
+  },
   scorers: {
     toolCallAppropriatenessScorer,
     completenessScorer,
